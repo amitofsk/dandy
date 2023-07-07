@@ -40,6 +40,13 @@ class DigDisplay(tk.Tk):
     async def checkdigin(self, interval, qIn:asyncio.Queue):
         #This asyncio function reads from the serial port and writes to the queue if it finds T or F.
         print("Yo")
+        #Change the next line depending on your setup.
+        #On a windows machine it might be something like.
+        #port='COM1'
+        #You should be able to figure it out using something like ...
+        #ports=list(port_list.comports())
+        #print(ports[0].device)
+        #port=ports[0].device
         port='/dev/ttyACM0'
         baudrate=115200
         serialPort=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)

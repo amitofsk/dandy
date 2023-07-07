@@ -5,59 +5,75 @@
 #Let's start by assuming a viewing angle of theta=45 and phi=45. Later I can generalize this...
 
 #Watch the minus signs carefully here, positive x is to the LEFT, (origin - newXValue).
-#However, positive y is UP, so (origin-newYValue).
+#However, positive y is DOWN, so (origin-newYValue).
 #I think I finally got the minus signs working here...
 
 
 import tkinter as tk
-import math #Is this needed?
+import math  
 import AnalogInDisplay as ain
 
 radiusScaleFactor=0.75
 
 class VectorDisplay(ain.AnalogInDisplay):
-    def __init__(self, vdWindow):
-        super().__init__(vdWindow)
-        #xOrigin and yOrigin are used in Dial too. Maybe I should move them to AnalogInDisplay?
-        self.xOrigin=0.5*self.aInWidth
-        self.yOrigin=0.5*self.aInHeight
+    def __init__(self, windowV, height=100, width=100):
+        super().__init__(windowV, a_height=height, a_width=width)
+        #xOrigin and yOrigin are used in Dial too.
+        #Maybe I should move them to AnalogInDisplay?
+        self.xOrigin=0.5*self.ain_width
+        self.yOrigin=0.5*self.ain_height
         self.radius=radiusScaleFactor*self.xOrigin
-        self.thetaView=math.radians(45) 
-        self.phiView=math.radians(225)
-        self.xAxis=self.aInCanvas.create_line(self.xOrigin, self.yOrigin, (self.xOrigin-(math.cos(self.thetaView)*self.radius)), \
-                                              (self.yOrigin-(math.sin(self.thetaView)*math.sin(self.phiView)*self.radius)), fill="blue", arrow=tk.LAST)
-        self.yAxis=self.aInCanvas.create_line(self.xOrigin, self.yOrigin, self.xOrigin, (self.yOrigin-self.radius*math.cos(self.phiView)), fill="blue", arrow=tk.LAST)
-        self.zAxis=self.aInCanvas.create_line(self.xOrigin,self.yOrigin ,(self.xOrigin-(-math.sin(self.thetaView)*self.radius)), \
-                                              (self.yOrigin-(math.sin(self.phiView)*math.cos(self.thetaView)*self.radius)), fill="blue", arrow=tk.LAST)
-        self.lineA=self.aInCanvas.create_line(self.xOrigin+self.radius , self.yOrigin+self.radius, self.xOrigin, self.yOrigin, width=2, arrow=tk.FIRST)
-        vdWindow.update()
+        self.theta_view=math.radians(45) 
+        self.phi_view=math.radians(225)
+        self.axisX=self.ain_canvas.create_line(self.xOrigin, self.yOrigin, \
+                    (self.xOrigin-(math.cos(self.theta_view)*self.radius)), \
+                    (self.yOrigin-(math.sin(self.theta_view) \
+                    *math.sin(self.phi_view)*self.radius)), \
+                    fill="blue", arrow=tk.LAST)
+        self.axisY=self.ain_canvas.create_line(self.xOrigin, self.yOrigin, \
+                    self.xOrigin, (self.yOrigin-self.radius\
+                    *math.cos(self.phi_view)), fill="blue", arrow=tk.LAST)
+        self.axisZ=self.ain_canvas.create_line(self.xOrigin,self.yOrigin , \
+                    (self.xOrigin-(-math.sin(self.theta_view)*self.radius)), \
+                    (self.yOrigin-(math.sin(self.phi_view) \
+                    *math.cos(self.theta_view)*self.radius)), \
+                    fill="blue", arrow=tk.LAST)
+        self.lineA=self.ain_canvas.create_line(self.xOrigin+self.radius, \
+                    self.yOrigin+self.radius, self.xOrigin, self.yOrigin, \
+                    width=2, arrow=tk.FIRST)
+        windowV.update()
 
-    #New constructor scalable to different sizes?
+    #FIXME this has problems if height<width
 
-    def setToValue(self, xValue, yValue, zValue):
-        xPos=0.0
-        yPos=0.0
-        self.aInCanvas.delete(self.lineA)
-        xProjected=(xValue*math.cos(self.thetaView))-(zValue*math.sin(self.thetaView))
-        yProjected=(xValue*math.sin(self.phiView)*math.sin(self.thetaView))+(yValue*math.cos(self.phiView))+ \
-                    (zValue*math.sin(self.phiView)*math.cos(self.thetaView))
-        xPos=self.xOrigin-xProjected
-        yPos=self.yOrigin-yProjected 
-        self.lineA=self.aInCanvas.create_line(xPos, yPos, self.xOrigin, self.yOrigin, width=2, arrow=tk.FIRST)
+
+    def set_to_value(self, xValue, yValue, zValue):
+        positionX=0.0
+        positionY=0.0
+        self.ain_canvas.delete(self.lineA)
+        projectedX=(xValue*math.cos(self.theta_view))- \
+                    (zValue*math.sin(self.theta_view))
+        projectedY=(xValue*math.sin(self.phi_view)*math.sin(self.theta_view)) \
+                    +(yValue*math.cos(self.phi_view)) \
+                    +(zValue*math.sin(self.phi_view)*math.cos(self.theta_view))
+        positionX=self.xOrigin-projectedX
+        positionY=self.yOrigin-projectedY 
+        self.lineA=self.ain_canvas.create_line(positionX, positionY, self.xOrigin, \
+                    self.yOrigin, width=2, arrow=tk.FIRST)
         #I don't think I need an update here, but I'm not sure.
         
 
-    def setViewAngle(self, vdWindow, thetaViewNew, phiViewNew):
-        self.aInCanvas.delete(self.lineA)
-        self.thetaView=thetaViewNew
-        self.phiView=phiViewNew
+    def setViewAngle(self, windowV, theta_new, phi_new):
+        self.ain_canvas.delete(self.lineA)
+        self.theta_view=theta_new
+        self.phi_view=phi_new
         #UNFINISHED
         #More math needed here...
         #reset the axes in this view...
         #reset lineA in this view
-        vdWindow.update()
+        windowV.update()
+
 
 if __name__=="__main__":
-    vecWidget=tk.Tk()
-    vecWidg=VectorDisplay(vecWidget)
-    vecWidg.pack()
+    vec_example=tk.Tk()
+    vec_widget=VectorDisplay(vec_example)
+    vec_widget.pack()
