@@ -2,7 +2,8 @@
 #It is a child of AnalogInDisplay
 
 import tkinter as tk
-import AnalogInDisplay as ain
+#import AnalogInDisplay as ain
+import src.widgets.AnalogInDisplay as ain
 
 xScaleFactor=0.75
 yScaleFactor=0.9

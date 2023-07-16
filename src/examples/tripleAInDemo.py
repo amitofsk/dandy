@@ -4,8 +4,8 @@
 import tkinter as tk
 import sys
 sys.path.append('../widgets')
-import VectorDisplay
-import DialDisplay
+import src.widgets.VectorDisplay as vd
+#import src.widgets.DialDisplay as dd
 
 class TripleAInDemo:
     def __init__(self):
@@ -21,8 +21,8 @@ class TripleAInDemo:
                             orient=tk.HORIZONTAL, length=200, resolution=0.1)
         self.scaleZ=tk.Scale(self.main_window, from_=0, to=50, \
                             orient=tk.HORIZONTAL, length=200, resolution=0.1)
-        self.vector1=VectorDisplay.VectorDisplay(self.main_window, \
-                            height=100, width=100)
+        self.vector1=vd.VectorDisplay(self.main_window, \
+                            height=100, width=200)
 
         self.label1.pack()
         self.scaleX.pack()

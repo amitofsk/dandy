@@ -3,7 +3,8 @@
 
 import tkinter as tk
 import math
-import AnalogInDisplay as ain
+#import AnalogInDisplay as ain
+import src.widgets.AnalogInDisplay as ain
 
 radiusScaleFactor=0.9
 
@@ -11,8 +12,12 @@ class DialDisplay(ain.AnalogInDisplay):
     def __init__(self, windowDD, height=100, width=100):
         super().__init__(windowDD, a_height=height, a_width=width)
         self.xOrigin=0.5*self.ain_width
-        self.yOrigin=0.75*self.ain_height
-        self.radius=radiusScaleFactor*self.xOrigin
+        self.yOrigin=0.95*self.ain_height
+        if height<width:
+            self.radius=0.5*radiusScaleFactor*self.ain_height
+        else:
+            self.radius=0.5*radiusScaleFactor*self.ain_width
+        
         self.xStart=self.xOrigin-self.radius
         self.xStop=self.xOrigin+self.radius
         self.yStart=self.yOrigin-self.radius
@@ -23,7 +28,7 @@ class DialDisplay(ain.AnalogInDisplay):
         self.lineA=self.ain_canvas.create_line(self.xStart, self.yOrigin, \
                             self.xOrigin, self.yOrigin, width=2)
         windowDD.update()
-        #Fixme... This doesn't work if height<width.     
+
 
 
     def set_to_value(self, aValue):

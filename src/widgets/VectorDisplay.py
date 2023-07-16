@@ -22,7 +22,11 @@ class VectorDisplay(ain.AnalogInDisplay):
         #Maybe I should move them to AnalogInDisplay?
         self.xOrigin=0.5*self.ain_width
         self.yOrigin=0.5*self.ain_height
-        self.radius=radiusScaleFactor*self.xOrigin
+        if height<width:
+            self.radius=0.5*radiusScaleFactor*self.ain_height
+        else:
+            self.radius=0.5*radiusScaleFactor*self.ain_width
+      
         self.theta_view=math.radians(45) 
         self.phi_view=math.radians(225)
         self.axisX=self.ain_canvas.create_line(self.xOrigin, self.yOrigin, \
@@ -43,7 +47,7 @@ class VectorDisplay(ain.AnalogInDisplay):
                     width=2, arrow=tk.FIRST)
         windowV.update()
 
-    #FIXME this has problems if height<width
+ 
 
 
     def set_to_value(self, xValue, yValue, zValue):

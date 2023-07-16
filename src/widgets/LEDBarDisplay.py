@@ -1,6 +1,6 @@
 #This class displays multiple digital inputs as an LED bar.
 import tkinter as tk
-import LEDDisplay
+import src.widgets.LEDDisplay as ld
 
 #Add memeber variables for on_color, off_color, height, width, orientation,
 #number of LEDs, 
@@ -12,12 +12,15 @@ class LEDBarDisplay():
     def __init__(self, bar_window, led_count=5, orientation="vertical",\
                  LED_height=50, LED_width=50):
         self.d_frame=tk.Frame(bar_window)
-        self.bar=[]        
+        self.bar=[]
+        count=1
         for jj in range (led_count):
-            self.bar=self.bar+[LEDDisplay.LEDDisplay(self.d_frame, \
+            self.bar=self.bar+[ld.LEDDisplay(self.d_frame, \
                         height=LED_height, width=LED_width)]
         for ii in self.bar:
-            ii.pack(LED_orientation=orientation)
+            ii.pin_number=count
+            count=count+1
+            ii.pack(bar_orientation=orientation)
             ii.change_LED_color("pink")
 
 

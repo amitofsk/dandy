@@ -4,9 +4,9 @@
 
 import tkinter as tk
 #import AnalogInDisplay as ain
-import LEDDisplay
+import src.widgets.LEDDisplay as LEDD
 
-class TricolorDisplay(LEDDisplay.LEDDisplay):
+class TricolorDisplay(LEDD.LEDDisplay):
     def __init__(self, windowT, height=100, width=100, low_level=3.0, \
                  high_level=8.0):
         super().__init__(windowT, height=height, width=width)
