@@ -21,6 +21,8 @@ class MCDisplay:
                        outline="")
         self.rect2=self.mc_canvas.create_rectangle(140, 40, 170, 70, \
                         fill="gray", outline="")
+
+       
         #self.left_bar_frame=tk.Frame(windowMC)
         #self.left_bar=[ld.LEDDisplay(self.left_bar_frame, height=25,width=25),\
         #            ld.LEDDisplay(self.left_bar_frame, height=25,width=25),\
@@ -35,6 +37,8 @@ class MCDisplay:
       
         windowMC.update()
 
+    
+      
     def pack(self):
         self.mc_canvas.pack()
 
