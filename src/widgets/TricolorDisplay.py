@@ -3,8 +3,10 @@
 #It is a child of LEDDisplay, not AnalogInDisplay... Not sure if this is right.
 
 import tkinter as tk
+import sys # Veronica 
+sys.path.append ('../widgets') #Veronica
 #import AnalogInDisplay as ain
-import src.widgets.LEDDisplay as LEDD
+import LEDDisplay as LEDD #Veronica
 
 class TricolorDisplay(LEDD.LEDDisplay):
     def __init__(self, windowT, height=100, width=100, low_level=3.0, \

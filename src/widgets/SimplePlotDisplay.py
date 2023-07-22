@@ -10,7 +10,9 @@
 
 
 import tkinter as tk
-import src.widgets.AnalogInDisplay as ain
+import sys # Veronica 
+sys.path.append ('../widgets') #Veronica
+import AnalogInDisplay as ain #Veronica
 
 max_points=25
 

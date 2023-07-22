@@ -1,8 +1,10 @@
 #This example is used to test MCDisplay and all its children.
 
 import tkinter as tk
-import src.widgets.MCDisplay as mcd
-import src.widgets.RPiPicoDisplay as rpp
+import sys #Veronica
+sys.path.append('../widgets') #Veronica
+import MCDisplay as mcd  #Veronica
+import RPiPicoDisplay as rpp  #Veronica
 
 
 class MCDemo:

@@ -4,10 +4,10 @@
 
 
 import tkinter as tk
-#import sys
-#sys.path.append('../widgets')
-import src.widgets.LEDDisplay as ld
-import src.widgets.LEDBarDisplay as ld_bar
+import sys #Veronica
+sys.path.append('../widgets') #Veronica
+import LEDDisplay as ld #Veronica
+import LEDBarDisplay as ld_bar #Veronica
 
 
 class DInDemo:

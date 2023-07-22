@@ -3,8 +3,10 @@
 
 import tkinter as tk
 import math
+import sys # Veronica 
+sys.path.append ('../widgets') #Veronica
 #import AnalogInDisplay as ain
-import src.widgets.AnalogInDisplay as ain
+import AnalogInDisplay as ain #Veronica
 
 radiusScaleFactor=0.9
 

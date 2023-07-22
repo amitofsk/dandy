@@ -4,9 +4,11 @@
 #It is 51x21mm.
 
 import tkinter as tk
-import src.widgets.MCDisplay as mcd
-import src.widgets.LEDDisplay as ld
-import src.widgets.SymbolDisplay as sd
+import sys # Veronica 
+sys.path.append ('../widgets') #Veronica
+import MCDisplay as mcd #Veronica
+import LEDDisplay as ld #Veronica
+import SymbolDisplay as sd #Veronica
 
 
 class RPiPicoDisplay(mcd.MCDisplay):

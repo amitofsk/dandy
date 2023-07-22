@@ -4,7 +4,9 @@
 #Dimensions are 61.5x25mm
 
 import tkinter as tk
-import src.widgets.MCDisplay as mcd
+import sys # Veronica
+sys.path.append ('../widgets') #Veronica
+import MCDisplay as mcd #Veronica
 
 class AMKRDisplay(mcd.MCDisplay):
     def __init__(self, windowP):

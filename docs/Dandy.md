@@ -11,7 +11,7 @@ This guide is intended for,
  
 
 
-### 1.2 What is Dandy?<br>
+### 1.2 What is Dandy?
 I plan to write a set of reusable python examples or a library of python functions to help display sensor data in a graphical user interface (GUI).
 
 What am I building?
@@ -147,6 +147,19 @@ When executing the code of above, you will two button & an LED and when you pres
 (TODO Andy, put pictures)
 
 ### 3.3 Hardware: LED, button, RPiPico
+
+#### 3.3.1 Solder headers on RPiPico
+(TODO Andy, put pictures) If there are not headers on the RPi then they can be soldered.
+
+#### 3.3.2 Build the circuit
+Connect a button and a resistor between GP16 & 5V (pin 39) <br>
+Connect a resistor and LED between GP19 & GND
+
+(TODO Andy, put pictures)
+
+#### 3.3.3 Install Micropython on the RPiPico
+Follow the instructions provided by Thonny link thru the Use digital inputs and outputs.
+
 ### 3.4 Hardware & Dandy Widgets
 ### 3.5 Hrdware, Dandy, Widgets & asyncio
 

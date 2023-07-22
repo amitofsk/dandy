@@ -1,6 +1,8 @@
 #This class displays multiple digital inputs as an LED bar.
 import tkinter as tk
-import src.widgets.LEDDisplay as ld
+import sys # Veronica 
+sys.path.append ('../widgets') #Veronica
+import LEDDisplay as ld #Veronica
 
 #Add memeber variables for on_color, off_color, height, width, orientation,
 #number of LEDs, 

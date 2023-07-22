@@ -4,7 +4,7 @@
 import tkinter as tk
 import sys
 sys.path.append('../widgets')
-import src.widgets.VectorDisplay as vd
+import VectorDisplay as vd #Veronica
 #import src.widgets.DialDisplay as dd
 
 class TripleAInDemo:

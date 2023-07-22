@@ -7,14 +7,14 @@
 
 import tkinter as tk
 #FIXME: I should properly set up a package, not use the next two lines.
-#import sys
-#sys.path.append('../widgets')
+import sys #Veronica
+sys.path.append('../widgets') #Veronica
 #import DialDisplay
 #import src.widgets.AnalogInDisplay
-import src.widgets.DialDisplay as dd
-import src.widgets.SlideDisplay as sd
-import src.widgets.TricolorDisplay as td
-import src.widgets.SimplePlotDisplay as spd
+import DialDisplay as dd #Veronica
+import SlideDisplay as sd #Veronica
+import TricolorDisplay as td #Veronica
+import SimplePlotDisplay as spd #Veronica
 
  
 

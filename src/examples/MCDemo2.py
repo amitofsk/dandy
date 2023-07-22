@@ -2,10 +2,12 @@
 
 import asyncio
 import tkinter as tk
+import sys #Veronica
+sys.path.append('../widgets') #Veronica
 import time
 import serial
-import src.widgets.MCDisplay as mcd
-import src.widgets.RPiPicoDisplay as rpp
+import MCDisplay as mcd #Veronica
+import RPiPicoDisplay as rpp #Veronica
 
 
 #Wire up a button to pin 9

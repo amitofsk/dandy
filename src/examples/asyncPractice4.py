@@ -14,6 +14,8 @@ import asyncio
 import tkinter as tk
 import itertools as it
 import time
+import sys # Veronica
+sys.path.append ('../widgets') #Veronica
 import serial
 import serial.tools.list_ports as port_list
 
@@ -30,8 +32,8 @@ class DigDisplay(tk.Tk):
         self.tasks.append(loop.create_task(self.updater(interval)))
         self.digBit=1
         self.buttonQuit=tk.Button(self, text="Quit", command=self.close)
-        self.smileOn=tk.PhotoImage(file='pics/smileOn.png')
-        self.smileOff=tk.PhotoImage(file='pics/smileOff.png')
+        self.smileOn=tk.PhotoImage(file='./smileOn.png')
+        self.smileOff=tk.PhotoImage(file='./smileOff.png')
         self.label1=tk.Label(self, image=self.smileOn)
         self.label1.pack()
         self.buttonQuit.pack()

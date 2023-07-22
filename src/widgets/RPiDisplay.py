@@ -4,7 +4,9 @@
 #Dimensions are 56x85mm
 
 import tkinter as tk
-import src.widgets.MCDisplay as mcd
+import sys # Veronica 
+sys.path.append ('../widgets') #Veronica
+import MCDisplay as mcd #Veronica
 
 class RPiDisplay(mcd.MCDisplay):
     def __init__(self, windowP):
