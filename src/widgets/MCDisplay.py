@@ -11,8 +11,10 @@
 #Arduinos Uno, MKR1010, and Nano Every?
 
 import tkinter as tk
-import src.widgets.LEDDisplay as ld
-import src.widgets.SymbolDisplay as sd
+import sys
+sys.path.append ('../widgets') #Veronica
+#import src.widgets.LEDDisplay as ld #Veronica
+#import src.widgets.SymbolDisplay as sd #Veronica
 
 class MCDisplay:
     def __init__(self, windowMC):
