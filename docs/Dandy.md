@@ -155,15 +155,15 @@ When executing the code of above, you will two button & an LED and when you pres
 #### 3.4.1 Solder headers on Micrpcontroller (if needed)
 (TODO Andy, put pictures) If there are not headers on the RPi then they can be soldered.
 
-#### 3.4.2 Build the circuit
+
+#### 3.4.2 Option A: Micropython and RPiPico
+##### 3.4.2.1 Build the circuit
 Connect a button and a resistor between GP16 & 5V (pin 39) <br>
 Connect a resistor and LED between GP19 & GND
 
 Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf <br>
 ![](docPics/PiAndButton3.png)
-
-#### 3.4.3 Option A: Micropython and RPiPico
-##### 3.4.3.1 Installation
+##### 3.4.2.2 Installation
 
 **Steps**
 1. Download the latest release from https://micropython.org/download/rp2-pico/
@@ -173,7 +173,7 @@ Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-
 5. Unplug the USB cable, without plugging the button in (BOOTSEL)
 6. In this example we are using MU Integrated Development Environment (IDE), download it from this website codewith.mu/en/download . Thonny could also be used instead of MU.
 7. Open the MU editor, select Micropython and the Raspberry PiPico (it may ask for this option or select the Mode button)
-##### 3.4.3.2 Blinky lights
+##### 3.4.2.3 Blinky lights
 
 **Steps**
 1. In the python file in the MU editor, print hello
@@ -209,23 +209,48 @@ The Pin.PULL_DOWN option connects the pin to an internal resistor so that when n
 
 ![](./docPics/Section3.4.3.2_step4.png)
 
-#### 3.4.3 Option B: Circuitpython and RPiPico
-##### 3.4.3.1 Installation
+#### 3.4.2 Option B: Circuitpython and RPiPico
+##### 3.4.2.1 Build the circuit
+##### 3.4.2.2 Installation
 1. Download the latest release from https://circuitpython.org/board/raspberry_pi_pico/
 2. Hold the botton down and plug in the Rpi by using the USB cable
 3. In windows explorer should see now the Rpi Drive available 
 4. In windows explorer drag the file you just downloaded to that drive
-##### 3.4.3.2 Blinky lights
-#### 3.4.3 Option C: Micropython& CY8CPROTO
-##### 3.4.3.1 Installation
-##### 3.4.3.2 Blinky lights
-#### 3.4.3 Option D: Arduino
-##### 3.4.3.1 Installation
-##### 3.4.3.2 Blinky lights
+##### 3.4.2.3 Blinky lights
+#### 3.4.2 Option C: Micropython& CY8CPROTO
+#### 3.4.2.1 Build the circuit
+##### 3.4.2.2 Installation
+##### 3.4.2.3 Blinky lights
+#### 3.4.2 Option D: Arduino
+#### 3.4.2.1 Build the circuit
+##### 3.4.2.2 Installation
+##### 3.4.2.3 Blinky lights
 
 Follow the instructions provided by Thonny link thru the Use digital inputs and outputs.
 
-### 3.5 Hardware & Dandy Widgets
+### 3.5 Sending data serially from the microcontroller to the computer.
+1. Close the MU editor. 
+2. Open IDLE or your favourite text editor.
+3. Copy or type the following example. 
+```python
+import serial
+import serial.tools.list_ports as port_list
+
+print('Hello')
+ports=list(port_list.comports())
+port=(ports[0].device)
+print(ports[0].device)
+#If you are on Windows and get an error saying port not found, try the next line.
+#port='COM1'
+#If you are on Linux and get an error saying port not found, try the next line.
+#port='/dev/ttyACM0'
+baudrate=115200
+serialPort=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+while True:
+    serialString=serialPort.read()
+    print(serialString)
+serialPort.close()
+```
 ### 3.6 Hrdware, Dandy, Widgets & asyncio
 
 ## 2.0 Analog Sensors
