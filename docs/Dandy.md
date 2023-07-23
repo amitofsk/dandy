@@ -160,7 +160,7 @@ Connect a button and a resistor between GP16 & 5V (pin 39) <br>
 Connect a resistor and LED between GP19 & GND
 
 Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf <br>
-(TODO Andy, put pictures)
+![](docPics/PiAndButton1.png)
 
 #### 3.4.3 Option A: Micropython and RPiPico
 ##### 3.4.3.1 Installation
@@ -207,7 +207,7 @@ The fourth line tells the RPPico that we will call pin GP16, which is also calle
 The Pin.PULL_DOWN option connects the pin to an internal resistor so that when nothing is connected to it, the pin will be low.   
 4. Run the code of step 3, when you hold down the button it will print T otherwise it prints F.
 
-![Push button behavior](1.png)
+![](./docPics/Section3.4.3.2_step4.png)
 
 #### 3.4.3 Option B: Circuitpython and RPiPico
 ##### 3.4.3.1 Installation
