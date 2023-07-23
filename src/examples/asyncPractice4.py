@@ -1,35 +1,38 @@
-#Ok... goal of this one... Circuit python code will check a digital input, button.
-#If the input state is changed (with debounce?), it will send a message on
-#the serial bus.
-#This code, will use asyncio and tkinter and a queue. If it receives a change
-#of state, it will change the smiley between yellow and gray.
 
-#Reference used to get tkinter and asyncio to work together
-#https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui
+#Read the instructions in Dandy.md. 
+#Before running this program, upload the serialRead.py to your microcontroller.
+#When this runs, you will see a small icon and a quit button.
+#When you press the pushbutton on the circuit connected to the microcontroller, 
+#the small icon will change.
 
-#Notice the use of update here...
+#Information on asyncIO came from:
+#https://realpython.com/async-io-python
+#Information on getting tkinter and asyncio to work together came from:
+#https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the
 
 
 import asyncio
 import tkinter as tk
 import itertools as it
 import time
-import sys # Veronica
-sys.path.append ('../widgets') #Veronica
 import serial
 import serial.tools.list_ports as port_list
 
 class DigDisplay(tk.Tk):
+    #Here's the constructor for the class DigDisplay.
+    #This is a child of tk.Tk which opens a window.
     def __init__(self, loop, interval=1/40):
         super().__init__()
-        #self.widget=tk.Tk()
         self.loop=loop
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.q=asyncio.Queue()
         self.tasks=[]
+        #We'll have three async tasks, named checkdigin, consumeQueue, and updater.
+        #Each of these are detailed in their own function.
         self.tasks.append(loop.create_task(self.checkdigin(1/20,self.q)))
         self.tasks.append(loop.create_task(self.consumeQueue(1/20, self.q)))
         self.tasks.append(loop.create_task(self.updater(interval)))
+        #Set up the widgets and pack them into the window.
         self.digBit=1
         self.buttonQuit=tk.Button(self, text="Quit", command=self.close)
         self.smileOn=tk.PhotoImage(file='./smileOn.png')
@@ -41,26 +44,21 @@ class DigDisplay(tk.Tk):
 
     async def checkdigin(self, interval, qIn:asyncio.Queue):
         #This asyncio function reads from the serial port and writes to the queue if it finds T or F.
-        print("Yo")
-        #Change the next line depending on your setup.
-        #On a windows machine it might be something like.
-        #port='COM1'
-        #You should be able to figure it out using something like ...
-        #ports=list(port_list.comports())
-        #print(ports[0].device)
-        #port=ports[0].device
-        port='/dev/ttyACM0'
+        ports=list(port_list.comports())
+        print(ports[0].device)
+        port=ports[0].device
+        #If you are on windows and you get an error saying it can't find the port, try the line below.
+        #port='COM6'
+        #If you are on linux and you get an error saying it can't find the port, try the line below.
+        #port='/dev/ttyACM0'
         baudrate=115200
         serialPort=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
         imax=10000
         for ii in range(imax):
             await asyncio.sleep(interval)
-            #serialByte=await serialPort.read()
             serialByte=serialPort.read()
-            #print(serialByte)
             serialInt=int.from_bytes(serialByte, "big")
             if serialInt != 0:
-                #t=time.perf_counter()
                 await qIn.put(serialByte)
                 print(serialByte)
         serialPort.close()
@@ -68,10 +66,12 @@ class DigDisplay(tk.Tk):
 
     async def consumeQueue(self, interval, qIn: asyncio.Queue):
         #This asyncio function reads from the queue and sets the appropriate picture if necessary
-        print("hi")
         while True:
             await asyncio.sleep(interval)
             i=await qIn.get()
+            #The character T has ascii value 84. The character F has 
+            #ascii value 70. We're actually reading in individual bytes.
+            #The next line converts bytes to integers.
             intval=int.from_bytes(i, "big")
             print(intval)
             if intval==84:
@@ -84,6 +84,7 @@ class DigDisplay(tk.Tk):
 
 
     async def updater(self, interval):
+        #This async function manually updates the tkinter GUI.
         while True:
             self.update()
             await asyncio.sleep(interval)

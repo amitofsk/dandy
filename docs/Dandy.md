@@ -173,6 +173,7 @@ Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-
 5. Unplug the USB cable, without plugging the button in (BOOTSEL)
 6. In this example we are using MU Integrated Development Environment (IDE), download it from this website codewith.mu/en/download . Thonny could also be used instead of MU.
 7. Open the MU editor, select Micropython and the Raspberry PiPico (it may ask for this option or select the Mode button)
+
 ##### 3.4.2.3 Blinky lights
 
 **Steps**
@@ -212,11 +213,57 @@ The Pin.PULL_DOWN option connects the pin to an internal resistor so that when n
 #### 3.4.2 Option B: Circuitpython and RPiPico
 ##### 3.4.2.1 Build the circuit
 ##### 3.4.2.2 Installation
+
+**Steps**
 1. Download the latest release from https://circuitpython.org/board/raspberry_pi_pico/
 2. Hold the botton down and plug in the Rpi by using the USB cable
 3. In windows explorer should see now the Rpi Drive available 
 4. In windows explorer drag the file you just downloaded to that drive
+5. Unplug the USB cable, without plugging the button in (BOOTSEL)
+6. In this example we are using MU Integrated Development Environment (IDE), download it from this website codewith.mu/en/download . Thonny could also be used instead of MU.
+7. Open the MU editor, select Circuitpython and the Raspberry PiPico (it may ask for this option or select the Mode button)
+
 ##### 3.4.2.3 Blinky lights
+
+**Steps**
+1. In the python file in the MU editor, print hello
+
+```python
+print ("Hello")
+```
+
+2. Run the file to make sure it works
+3. We are ready to use the push button you wired earlier
+
+
+```python
+import time
+import board
+import digitalio
+
+print ("hello")
+led=DigitalInOut(board.LED)
+led.direction=digitalio.Direction.OUTPUT
+button=DigitalInOut(board.GP16)
+button.direction=digitalio.Direction.INPUT
+while True:
+    if button.value():
+        print("T")
+        led.value(True)
+    else:
+        print("F")
+        led.value(False)
+    time.sleep(1)
+```
+The fifth line tells the RPPico that we will call pin GP25, the built in LED, the name led. This line also says GP25 will be a digital output.  <br><br>
+The fourth line tells the RPPico that we will call pin GP16, which is also called pin 21 in the pinout diagram, button. This line also say as GP16 will be a digital input. 
+The Pin.PULL_DOWN option connects the pin to an internal resistor so that when nothing is connected to it, the pin will be low.  
+Reference: https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/traffic-light-and-pedestrian-crossing  
+4. Run the code of step 3, when you hold down the button it will print T otherwise it prints F.
+
+![](./docPics/Section3.4.3.2_step4.png)
+
+
 #### 3.4.2 Option C: Micropython& CY8CPROTO
 #### 3.4.2.1 Build the circuit
 ##### 3.4.2.2 Installation
@@ -231,7 +278,7 @@ Follow the instructions provided by Thonny link thru the Use digital inputs and 
 ### 3.5 Sending data serially from the microcontroller to the computer.
 1. Close the MU editor. 
 2. Open IDLE or your favourite text editor.
-3. Copy or type the following example. 
+3. Copy or type the following example. We will run this code on the computer, not the microcontroller.
 ```python
 import serial
 import serial.tools.list_ports as port_list
@@ -251,6 +298,133 @@ while True:
     print(serialString)
 serialPort.close()
 ```
-### 3.6 Hrdware, Dandy, Widgets & asyncio
+4. Run this code. You should see output that contains the characters T and F.
+### 3.6 Sending data, now with widgets and asyncio
+#### 3.6.1 What is asyncio and why do we need it here.
+Tkinter is the graphics library. Typically, tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serially.
+The problem is we want both loops to run continuously in parallel. One possible solution would be to put each of these tasks in different threads. 
+We are not quite doing this, but we are doing something quite similar. 
+<br><br>
+We will be using the asyncio python library. This library isn't quite multithreadding, but it accomplishes the same task. 
+Also, instead of telling tkinter to loop continually, we will tell it to manually update inside a loop. 
+The asyncIO library is new to python, so make sure you are at least using version 3.7 of python.
+<br><br> 
+More info on asyncIO can be found at https://realpython.com/async-io-python.
+Information on using asyncIO with tkinter came from https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui 
+
+#### 3.6.2 A first example using tkinter widgets
+
+Make sure the microcontroller is plugged in and still running the previous example.
+<br><br>
+Run this example. You will see a small icon and a quit button.
+When you press the pushbutton on the circuit connected to the microcontroller, the small icon will change.
+
+```python
+#Read the instructions in Dandy.md. 
+#Before running this program, upload the serialRead.py to your microcontroller.
+#When this runs, you will see a small icon and a quit button.
+#When you press the pushbutton on the circuit connected to the microcontroller, 
+#the small icon will change.
+
+#Information on asyncIO came from:
+#https://realpython.com/async-io-python
+#Information on getting tkinter and asyncio to work together came from:
+#https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the
+
+
+import asyncio
+import tkinter as tk
+import itertools as it
+import time
+import serial
+import serial.tools.list_ports as port_list
+
+class DigDisplay(tk.Tk):
+    #Here's the constructor for the class DigDisplay.
+    #This is a child of tk.Tk which opens a window.
+    def __init__(self, loop, interval=1/40):
+        super().__init__()
+        self.loop=loop
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        self.q=asyncio.Queue()
+        self.tasks=[]
+        #We'll have three async tasks, named checkdigin, consumeQueue, and updater.
+        #Each of these are detailed in their own function.
+        self.tasks.append(loop.create_task(self.checkdigin(1/20,self.q)))
+        self.tasks.append(loop.create_task(self.consumeQueue(1/20, self.q)))
+        self.tasks.append(loop.create_task(self.updater(interval)))
+        #Set up the widgets and pack them into the window.
+        self.digBit=1
+        self.buttonQuit=tk.Button(self, text="Quit", command=self.close)
+        self.smileOn=tk.PhotoImage(file='./smileOn.png')
+        self.smileOff=tk.PhotoImage(file='./smileOff.png')
+        self.label1=tk.Label(self, image=self.smileOn)
+        self.label1.pack()
+        self.buttonQuit.pack()
+
+
+    async def checkdigin(self, interval, qIn:asyncio.Queue):
+        #This asyncio function reads from the serial port and writes to the queue if it finds T or F.
+        ports=list(port_list.comports())
+        print(ports[0].device)
+        port=ports[0].device
+        #If you are on windows and you get an error saying it can't find the port, try the line below.
+        #port='COM6'
+        #If you are on linux and you get an error saying it can't find the port, try the line below.
+        #port='/dev/ttyACM0'
+        baudrate=115200
+        serialPort=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+        imax=10000
+        for ii in range(imax):
+            await asyncio.sleep(interval)
+            serialByte=serialPort.read()
+            serialInt=int.from_bytes(serialByte, "big")
+            if serialInt != 0:
+                await qIn.put(serialByte)
+                print(serialByte)
+        serialPort.close()
+        
+
+    async def consumeQueue(self, interval, qIn: asyncio.Queue):
+        #This asyncio function reads from the queue and sets the appropriate picture if necessary
+        while True:
+            await asyncio.sleep(interval)
+            i=await qIn.get()
+            #The character T has ascii value 84. The character F has 
+            #ascii value 70. We're actually reading in individual bytes.
+            #The next line converts bytes to integers.
+            intval=int.from_bytes(i, "big")
+            print(intval)
+            if intval==84:
+                print("Found T")
+                self.label1.configure(image=self.smileOn)
+            if intval==70:
+                print("Found F")
+                self.label1.configure(image=self.smileOff)
+                
+
+
+    async def updater(self, interval):
+        #This async function manually updates the tkinter GUI.
+        while True:
+            self.update()
+            await asyncio.sleep(interval)
+
+    def close(self):
+        for task in self.tasks:
+            task.cancel()
+        self.loop.stop()
+        self.destroy()
+        
+        
+if __name__=="__main__":
+    loop=asyncio.get_event_loop()
+    app=DigDisplay(loop)
+    loop.run_forever()
+    loop.close()
+```
+
+#### 3.6.3 A second example using tkinter and Dandy widgets
+
 
 ## 2.0 Analog Sensors
