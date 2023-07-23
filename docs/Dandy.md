@@ -14,14 +14,15 @@ This guide is intended for,
 ### 1.2 What is Dandy?
 I plan to write a set of reusable python examples or a library of python functions to help display sensor data in a graphical user interface (GUI).
 
-What am I building?
+#### 1.2.1 What am I building?
 Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a laptop either over USB or Bluetooth. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, or on a chart plot. 
 
 All of these steps can be implemented using existing open software, but some steps are easier than others. For example, Arduino makes writing the microcontroller software easy, and Tkinter and Qt are user-friendly libraries for writing GUIs. Where are the challenges in writing the software? First, the code for the microcontroller and the code for the GUI on the laptop are typically written in different languages. Multiple languages are not a problem for an experienced coder, but they are an obstacle for a novice or a hobbyist. Second, libraries for writing GUI software typically have reusable widgets like buttons and sliders, but they don't have ones made specifically for handling inputs from analog sensors. Third, the software on the laptop has to both continually read from the sensors and continually update the GUI. These should appear to the user to happen simultaneously, without either task blocking the other. 
 
-The goal of this project is not to show a new application of sensors. Instead, it is to make writing software for this typical setup easier. More specifically, I plan to write a set of reusable examples that show how to solve the problems described above. These examples will use MicroPython for the microcontroller code and Python for laptop code. The GUI will be written using Tkinter and will show example reusable widgets for displaying the analog sensor data. 
+#### 1.2.2 The goal 
+Of this project is not to show a new application of sensors. Instead, it is to make writing software for this typical setup easier. More specifically, I plan to write a set of reusable examples that show how to solve the problems described above. These examples will use MicroPython for the microcontroller code and Python for laptop code. The GUI will be written using Tkinter and will show example reusable widgets for displaying the analog sensor data. 
 
-Who is this project for?
+#### 1.2.3 Who is this project for?
 This project has tutorials and widgets to help you connect sensors, a microcontroller, and a computer. It aims to simplify the step of writing Python code for displaying the sensor data.
 
 Here's who this project is not for ... This library is intended to be used by Python programmers. If you haven't programmed before or haven't programmed in Python, this library isn't for you. This library is intended to help you connect your hardware and your computer quickly but in an unpolished way. It doesn't involve real time operating systems. Also, it isn't for highly customizable and polished products. You'll want more developed tools for that task.
@@ -54,7 +55,10 @@ pip install pyserial
 
 ## 3.0 Displaying Didital Inputs
 
-### 3.1 Tkinter widgets 
+### 3.1 What Tkinter is?
+Tkinter is a set of libraries for making graphical user interfaces that comes with python.
+
+### 3.2 Tkinter widgets 
 
 ```python
 import tkinter as tk
@@ -107,7 +111,7 @@ if __name__=="__main__":
 
 Run the code of above and you will see two button in a window, when you press the Toggle button you will see the message Comming Soon in the command line.
 
-### 3.2 Dandy Widgets
+### 3.3 Dandy Widgets
 Until, we have only using python with the tkinter library, now we are using the widgets of the Dandy library
 
 ```python
@@ -146,21 +150,55 @@ When executing the code of above, you will two button & an LED and when you pres
 
 (TODO Andy, put pictures)
 
-### 3.3 Hardware: LED, button, RPiPico
+### 3.4 Hardware: LED, button, Microcontroller
 
-#### 3.3.1 Solder headers on RPiPico
+#### 3.4.1 Solder headers on Micrpcontroller (if needed)
 (TODO Andy, put pictures) If there are not headers on the RPi then they can be soldered.
 
-#### 3.3.2 Build the circuit
+#### 3.4.2 Build the circuit
 Connect a button and a resistor between GP16 & 5V (pin 39) <br>
 Connect a resistor and LED between GP19 & GND
 
+Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf
 (TODO Andy, put pictures)
 
-#### 3.3.3 Install Micropython on the RPiPico
+#### 3.4.3 Option A: Micropython and RPiPico
+##### 3.4.3.1 Installation
+
+**Steps**
+1. Download the latest release from https://micropython.org/download/rp2-pico/
+2. Hold the botton down and plug in the Rpi by using the USB cable
+3. In windows explorer should see now the Rpi Drive available 
+4. In windows explorer drag the file you just downloaded to that drive
+5. Unplug the USB cable, hold the button (BOOTSEL) and plug it back in 
+6. Using your favourite text editor or python IDE, create a python file. Save the file on the RPiPico and name it code.py
+
+##### 3.4.3.2 Blinky lights
+1. In the python file code.py, print hello
+
+```python
+print ("Hello")
+```
+
+2. Run the file to make sure it works
+
+#### 3.4.3 Option B: Circuitpython and RPiPico
+##### 3.4.3.1 Installation
+1. Download the latest release from https://circuitpython.org/board/raspberry_pi_pico/
+2. Hold the botton down and plug in the Rpi by using the USB cable
+3. In windows explorer should see now the Rpi Drive available 
+4. In windows explorer drag the file you just downloaded to that drive
+##### 3.4.3.2 Blinky lights
+#### 3.4.3 Option C: Micropython& CY8CPROTO
+##### 3.4.3.1 Installation
+##### 3.4.3.2 Blinky lights
+#### 3.4.3 Option D: Arduino
+##### 3.4.3.1 Installation
+##### 3.4.3.2 Blinky lights
+
 Follow the instructions provided by Thonny link thru the Use digital inputs and outputs.
 
-### 3.4 Hardware & Dandy Widgets
-### 3.5 Hrdware, Dandy, Widgets & asyncio
+### 3.5 Hardware & Dandy Widgets
+### 3.6 Hrdware, Dandy, Widgets & asyncio
 
 ## 2.0 Analog Sensors
