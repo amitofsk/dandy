@@ -159,7 +159,7 @@ When executing the code of above, you will two button & an LED and when you pres
 Connect a button and a resistor between GP16 & 5V (pin 39) <br>
 Connect a resistor and LED between GP19 & GND
 
-Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf
+Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf <br>
 (TODO Andy, put pictures)
 
 #### 3.4.3 Option A: Micropython and RPiPico
@@ -170,17 +170,44 @@ Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-
 2. Hold the botton down and plug in the Rpi by using the USB cable
 3. In windows explorer should see now the Rpi Drive available 
 4. In windows explorer drag the file you just downloaded to that drive
-5. Unplug the USB cable, hold the button (BOOTSEL) and plug it back in 
-6. Using your favourite text editor or python IDE, create a python file. Save the file on the RPiPico and name it code.py
-
+5. Unplug the USB cable, without plugging the button in (BOOTSEL)
+6. In this example we are using MU Integrated Development Environment (IDE), download it from this website codewith.mu/en/download . Thonny could also be used instead of MU.
+7. Open the MU editor, select Micropython and the Raspberry PiPico (it may ask for this option or select the Mode button)
 ##### 3.4.3.2 Blinky lights
-1. In the python file code.py, print hello
+
+**Steps**
+1. In the python file in the MU editor, print hello
 
 ```python
 print ("Hello")
 ```
 
 2. Run the file to make sure it works
+3. We are ready to use the push button you wired earlier
+
+
+```python
+from machine import Pin
+import time
+print ("hello")
+
+button = Pin(16, Pin.IN, Pin.PULL_DOWN)
+led=Pin(25, Pin.OUT)
+while True:
+    if button.value():
+        print("T")
+        led.value(True)
+    else:
+        print("F")
+        led.value(False)
+    time.sleep(1)
+```
+The fifth line tells the RPPico that we will call pin GP25, the built in LED, the name led. This line also says GP25 will be a digital output.  <br><br>
+The fourth line tells the RPPico that we will call pin GP16, which is also called pin 21 in the pinout diagram, button. This line also say as GP16 will be a digital input. 
+The Pin.PULL_DOWN option connects the pin to an internal resistor so that when nothing is connected to it, the pin will be low.   
+4. Run the code of step 3, when you hold down the button it will print T otherwise it prints F.
+
+![Push button behavior](1.png)
 
 #### 3.4.3 Option B: Circuitpython and RPiPico
 ##### 3.4.3.1 Installation
