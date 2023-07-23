@@ -160,7 +160,7 @@ Connect a button and a resistor between GP16 & 5V (pin 39) <br>
 Connect a resistor and LED between GP19 & GND
 
 Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf <br>
-![](docPics/PiAndButton1.png)
+![](docPics/PiAndButton2.png)
 
 #### 3.4.3 Option A: Micropython and RPiPico
 ##### 3.4.3.1 Installation
