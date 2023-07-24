@@ -1,59 +1,69 @@
 # Data Acquisition aNd DisplaY
 
 ## 1.0 Introduction
+### 1.1 What is DANDY?
+DANDY is a set of reuseable python examples and a library of python functions to help display sensor data in a graphical user interface (GUI).
 
-### 1.1 Audience 
-This guide is intended for,
- - New Engineering students with python background
- - Engineers willing to learn new way to perform data acquisition using python language
- - People no prior experiece with python
- - People with python in their computer at version 3.7. 
- 
+### 1.2 What are we building?
+Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a computer either over USB or wirelessly. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, using a slider, or on a chart plot.
+<br><br>
+All of these steps can be implemented using existing open software, but some steps are easier than others. For example, Arduino makes writing the microcontroller software easy, and Tkinter and Qt are user-friendly libraries for writing GUIs. Where are the challenges in writing the software? First, the code for the microcontroller and the code for the GUI on the laptop are typically written in different languages. Multiple languages are not a problem for an experienced coder, but they are an obstacle for a novice or a hobbyist. Second, libraries for writing GUI software typically have reusable widgets like buttons and sliders, but they don't have ones made specifically for handling inputs from analog sensors. Third, the software on the laptop has to both continually read from the sensors and continually update the GUI. These should appear to the user to happen simultaneously, without either task blocking the other.
+<br><br> 
+This project addresses all of these challenges. The goal of this project is not to show a new application of a sensor. Instead, it is to make writing software for this typical setup easier. 
 
 
-### 1.2 What is Dandy?
-I plan to write a set of reusable python examples or a library of python functions to help display sensor data in a graphical user interface (GUI).
+### 1.3 Who is this tutorial for?
 
-#### 1.2.1 What am I building?
-Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a laptop either over USB or Bluetooth. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, or on a chart plot. 
+This guide is intended for:
+ - Students interested in learning about sensor hardware, microcontroller programming,  and writing GUI software.
+ - Engineers who want to learn a new way to perform data acquisition using the Python language. 
+ - People with at least a little Python coding experience. For example, you should know how to write functions in Python, and you should know what classes and objects are. 
+This guide is NOT for you if:
+ - You have not programmed before.
+ - You want to acquire sensor data with precise timing. In this project, data collection happens with an inexpensive microcontroller without a real time operating system.
+ - You want to collect data using elaborate equipment. This project involves small discte sensors.  
 
-All of these steps can be implemented using existing open software, but some steps are easier than others. For example, Arduino makes writing the microcontroller software easy, and Tkinter and Qt are user-friendly libraries for writing GUIs. Where are the challenges in writing the software? First, the code for the microcontroller and the code for the GUI on the laptop are typically written in different languages. Multiple languages are not a problem for an experienced coder, but they are an obstacle for a novice or a hobbyist. Second, libraries for writing GUI software typically have reusable widgets like buttons and sliders, but they don't have ones made specifically for handling inputs from analog sensors. Third, the software on the laptop has to both continually read from the sensors and continually update the GUI. These should appear to the user to happen simultaneously, without either task blocking the other. 
 
-#### 1.2.2 The goal 
-Of this project is not to show a new application of sensors. Instead, it is to make writing software for this typical setup easier. More specifically, I plan to write a set of reusable examples that show how to solve the problems described above. These examples will use MicroPython for the microcontroller code and Python for laptop code. The GUI will be written using Tkinter and will show example reusable widgets for displaying the analog sensor data. 
 
-#### 1.2.3 Who is this project for?
-This project has tutorials and widgets to help you connect sensors, a microcontroller, and a computer. It aims to simplify the step of writing Python code for displaying the sensor data.
+## 2.0 Instal software and gather supplies
 
-Here's who this project is not for ... This library is intended to be used by Python programmers. If you haven't programmed before or haven't programmed in Python, this library isn't for you. This library is intended to help you connect your hardware and your computer quickly but in an unpolished way. It doesn't involve real time operating systems. Also, it isn't for highly customizable and polished products. You'll want more developed tools for that task.
+### 2.1 Check your Python installation
 
-## 2.0 Installation
-
-### 2.1 Check python version
-
-If you do not know what verison you have, you can execute the below command in the cmd line
+This tutorial requires at least Python version 3.7. If you do not know what verison you have, use the following command on the command line.
 
  ```python
  py --version
  ```
+Python comes with a minimalist Integrated Developement Environment (IDE) named IDLE. This tutorial assumes you will use IDLE to write Python code that will be run on the computer. However, you can use another IDE such as Pycharm or Thonny if you prefer, or you can use your favorite text editor.    
  
-### 2.2 GitHub Dandy
- 
- Download Dandy repository, open the command prompt and execute the command of below.
- 
- ```python
- git clone https://github.com/amitofsk/dandy.git
- ```
- 
-### 2.3 Install the pyserial library
+### 2.2 Install the pyserial library 
 
-In the command line execute
+In the command line, execute
 ```python
 pip install pyserial
 ```
 
 
-## 3.0 Displaying Didital Inputs
+### 2.3 Download the DANDY library.
+
+Change to the directory that you want work in. Then, use the following command in the command line to download the DANDY repository from github. 
+ 
+ ```python
+ git clone https://github.com/amitofsk/dandy.git
+ ```
+ 
+### 2.4 Download and install the MU IDE
+This tutorial will involve both writing Python code for a computer as well as writing Micropython, Circuitpython, or Arduino code for a microcontroller. We'll write Python code for the computer using the IDLE IDE. We'll write Micropython or Circuitpyton code for the microcontroller using the MU IDE. However, you can use other IDE's for the microcontroller programming, such as Thonny, if you prefer. If you are using an Arduino microcontroller, Arduino has its own IDE.
+<br><br>
+One advantage of using a different IDE for the computer code and the microcontroller code is that the IDE will remind you which hardware you are programming for. 
+<br><br>
+Download the MU IDE from https://codewith.mu/en/download. Install it. 
+
+### 2.4 Supplies needed
+Coming soon ...
+
+
+## 3.0 Displaying Digital Inputs
 
 ### 3.1 What Tkinter is?
 Tkinter is a set of libraries for making graphical user interfaces that comes with python.
@@ -111,7 +121,7 @@ if __name__=="__main__":
 
 Run the code of above and you will see two button in a window, when you press the Toggle button you will see the message Comming Soon in the command line.
 
-### 3.3 Dandy Widgets
+### 3.3 DANDY widgets for digital inputs
 Until, we have only using python with the tkinter library, now we are using the widgets of the Dandy library
 
 ```python
@@ -275,7 +285,7 @@ Reference: https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-cir
 
 Follow the instructions provided by Thonny link thru the Use digital inputs and outputs.
 
-### 3.5 Sending data serially from the microcontroller to the computer.
+### 3.5 Displaying digital data from the microcontroller on the computer
 1. Close the MU editor. 
 2. Open IDLE or your favourite text editor.
 3. Copy or type the following example. We will run this code on the computer, not the microcontroller.
@@ -424,7 +434,26 @@ if __name__=="__main__":
     loop.close()
 ```
 
-#### 3.6.3 A second example using tkinter and Dandy widgets
+#### 3.6.3 A second example using tkinter and DANDY widgets
 
 
-## 2.0 Analog Sensors
+## 4.0 Displaying analog inputs
+
+### 4.1 DANDY widgets for analog inputs
+
+### 4.2 Hardware: Potentiometers, sensors, and a Microcontroller
+
+#### 4.2.1 Option A: Micropython and RPiPico
+##### 4.2.1.1 Build the circuit
+##### 4.2.2.2 Write the microcontroller code
+
+#### 4.2.1 Option B: Circuitpython and the RPiPico
+#### 4.2.1 Option C: Micropython and the CY8CPROTO
+#### 4.2.1 Option D: Arduino
+
+#### 4.3 Displaying analog data from the microcontroller on the computer
+#### 4.4 Displaying analog data, now with widgets and asyncio
+#### 4.5 Displaying vector data
+## 5.0 Additional DANDY widgets
+
+### 5.1 Examples with the microcontroller-like widgets...
