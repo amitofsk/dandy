@@ -130,6 +130,11 @@ class LEDDisplay():
     def pack_forget(self):
         self.d_in_canvas.pack_forget()
 
+
+    def get_color(self):
+        return self.__color
+
+    
 if __name__=="__main__":
     d_in_example=tk.Tk()
     d_in_widget=LEDDisplay(d_in_example, LED_orientation="west")

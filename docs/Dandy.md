@@ -18,6 +18,7 @@ This guide is intended for:
  - Students interested in learning about sensor hardware, microcontroller programming,  and writing GUI software.
  - Engineers who want to learn a new way to perform data acquisition using the Python language. 
  - People with at least a little Python coding experience. For example, you should know how to write functions in Python, and you should know what classes and objects are. 
+<br><br>
 This guide is NOT for you if:
  - You have not programmed before.
  - You want to acquire sensor data with precise timing. In this project, data collection happens with an inexpensive microcontroller without a real time operating system.
@@ -66,99 +67,124 @@ Coming soon ...
 ## 3.0 Displaying Digital Inputs
 
 ### 3.1 What Tkinter is?
-Tkinter is a set of libraries for making graphical user interfaces that comes with python.
+Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs). Tkinter is a python's version of the library for making GUIs, and it comes preinstalled with python. 
+<br><br>
+Tkinter has lots of built in widgets including labels, buttons, scales, and spinboxes. For a nice list along with the API reference, see https://tkdocs.com/pyref/. 
 
 ### 3.2 Tkinter widgets 
+Let's write our first GUI program using Python and Tkinter. In this example, we use two Tkinter widgets: Label and Button. The pack function puts the widget into the window. 
+<br><br>
+Try out the example below. You should see a window with a label and a working quit button. If you downloaded the DANDY library, these examples are in the src/examples directory.
 
 ```python
 import tkinter as tk
 
-# We re defining a class named DigitalNoHW here.
-class DigitalNoHW:
-
-# The function __init__ is the constructor for the class.
+#Define the ButtonGUI class
+class ButtonGUI:
+    # The function __init__ is the constructor for the class.
     def __init__(self):
         self.main_window=tk.Tk()
+        self.label1=tk.Label(self.main_window, text="Welcome")
         self.button_quit=tk.Button(self.main_window, text="Quit", \
                             command=self.main_window.destroy)
+        #We pack widgets to put them in the window.
+        self.label1.pack()
         self.button_quit.pack()
         tk.mainloop()
 
-# Here is our main function which creates an object of class DigitalNoHW.
+# Here is our main function which creates an object of class ButtonGUI.
 if __name__=="__main__":
-    mygui=DigitalNoHW()
-
+    mygui=ButtonGUI()
 ```
-Run the code of above, you will see a window with a working quick button.
-
-(TODO Andy, put pictures)
-
+![ButtonGUI output](docPics/buttongui.png)
+<br><br><br>
+Let's try another example to get more familiar with Tkinter. This example will have a label which shows an image, a quit button, and a second button. If you press that button, the label toggles between two images. Here we write our own function, named toggle_me, that is executed when the button is pressed. 
+<br><br> Try out this example too.
 ```python
 import tkinter as tk
 
-# We re defining a class named DigitalNoHW here.
-class DigitalNoHW:
-
-# The function __init__ is the constructor for the class.
+class ButtonPicGUI:
     def __init__(self):
         self.main_window=tk.Tk()
+        self.smileOn=tk.PhotoImage(file='./smileOn.png')
+        self.smileOff=tk.PhotoImage(file='./smileOff.png')
+        self.image_number=0
+
+        #This label contains a PhotoImage instead of text.
+        self.label1=tk.Label(self.main_window, image=self.smileOn)
+        #When button1 is pressed, the instructions in the function
+        #toggle_me are followed. We define this function below.
+        self.button1=tk.Button(self.main_window, text="Press Me", \
+                               command=self.toggle_me)
         self.button_quit=tk.Button(self.main_window, text="Quit", \
-                            command=self.main_window.destroy)
-        self.button2=tk.Button(self.main_window, text="Toggle", \
-                            command=self.main_window.getValue)
+                                   command=self.main_window.destroy)
+
+        self.label1.pack()
+        self.button1.pack()
         self.button_quit.pack()
-        self.button2.pack()
+
         tk.mainloop()
-    def getValue(self):
-        print ("Comming soon")
+
         
-# Here is our main function which creates an object of class DigitalNoHW.
+    #Here we define the toggle_me function
+    def toggle_me(self):
+        if self.image_number==0:
+            self.label1.configure(image=self.smileOff)
+            self.image_number=1
+        else:
+            self.label1.configure(image=self.smileOn)
+            self.image_number=0
+
+
 if __name__=="__main__":
-    mygui=DigitalNoHW()
+    mygui=ButtonPicGUI()
 ```
+![Buttonpicgui example output](docPics/buttonpicgui.png)
 
-(TODO Andy, put pictures)
-
-Run the code of above and you will see two button in a window, when you press the Toggle button you will see the message Comming Soon in the command line.
 
 ### 3.3 DANDY widgets for digital inputs
-Until, we have only using python with the tkinter library, now we are using the widgets of the Dandy library
+Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The DANDY library, which you just installed, has additional widgets. These widgets are related to data acquisition. The next example uses the DANDY widget LEDDisplay. When you run it, you will see two buttons and an image of an LED. When you press the button, the LED color changes. Try it out.
+<br><br>
+You may need to change the third line to point to the location of the widgets folder of the DANDY library that you downloaded. This example is also available in the examples folder of the DANDY library. If you open that version, Python should find the widgets folder correctly.
+
 
 ```python
 import tkinter as tk
 import sys
-sys.path.append ('../widgets') 
+#We need to import the file for the LEDDisplay widget
+sys.path.append('../widgets')
 import LEDDisplay as ld
 
-# We re defining a class named DigitalNoHW here.
 class DigitalNoHW:
-
-# The function __init__ is the constructor for the class.
     def __init__(self):
         self.main_window=tk.Tk()
+        #The class LEDDisplay is defined in the file ../widgets/LEDDisplay.py
+        self.led1=ld.LEDDisplay(self.main_window)
+        self.button1=tk.Button(self.main_window, text="Press Me", \
+                               command=self.toggle_me)
         self.button_quit=tk.Button(self.main_window, text="Quit", \
-                            command=self.main_window.destroy)
-        self.button2=tk.Button(self.main_window, text="Toggle", \
-                            command=self.main_window.getValue)
-        self.led1.LEDDisplay(self.main_window)
-        self.button_quit.pack()
-        self.button2.pack()
+                                   command=self.main_window.destroy)
+
         self.led1.pack()
+        self.button1.pack()
+        self.button_quit.pack()
+
         tk.mainloop()
+
         
-    def getValue(self):
-        if (self.led1.get_color()=='yellow'):
-             self.led1.change_LED_color ("blue")
-        elif (self.led1.get_color()=='blue'):
-             self.led1.change_LED_color ("yellow")
-# Here is our main function which creates an object of class DigitalNoHW.
+    #Here we define the toggle_me function
+    def toggle_me(self):
+        if(self.led1.get_color()=="yellow"):
+            self.led1.change_LED_color("blue")
+        elif (self.led1.get_color()=="blue"):
+            self.led1.change_LED_color("yellow")
+
+
 if __name__=="__main__":
     mygui=DigitalNoHW()
 ```
 
-When executing the code of above, you will two button & an LED and when you press the Toggle button the LED color changes.
-
-(TODO Andy, put pictures)
+![LEDDisplay widget picture](docPics/ledwidget.png)
 
 ### 3.4 Hardware: LED, button, Microcontroller
 
