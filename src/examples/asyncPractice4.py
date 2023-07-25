@@ -1,3 +1,5 @@
+##THIS FILE IS DEPRECATED AND REPLACED BY DIGITALWITHHW
+
 
 #Read the instructions in Dandy.md. 
 #Before running this program, upload the serialRead.py to your microcontroller.

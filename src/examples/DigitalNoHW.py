@@ -29,7 +29,7 @@ class DigitalNoHW:
     def toggle_me(self):
         if(self.led1.get_color()=="yellow"):
             self.led1.change_LED_color("blue")
-        elif (self.led1.get_color()=="blue"):
+        else:  
             self.led1.change_LED_color("yellow")
 
 

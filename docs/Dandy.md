@@ -176,7 +176,7 @@ class DigitalNoHW:
     def toggle_me(self):
         if(self.led1.get_color()=="yellow"):
             self.led1.change_LED_color("blue")
-        elif (self.led1.get_color()=="blue"):
+        else:
             self.led1.change_LED_color("yellow")
 
 
@@ -185,6 +185,8 @@ if __name__=="__main__":
 ```
 
 ![LEDDisplay widget picture](docPics/ledwidget.png)
+
+(TODO: Another example, with the LEDBar widget?)
 
 ### 3.4 Hardware: LED, button, Microcontroller
 
@@ -348,120 +350,183 @@ The asyncIO library is new to python, so make sure you are at least using versio
 More info on asyncIO can be found at https://realpython.com/async-io-python.
 Information on using asyncIO with tkinter came from https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui 
 
-#### 3.6.2 A first example using tkinter widgets
-
-Make sure the microcontroller is plugged in and still running the previous example.
-<br><br>
-Run this example. You will see a small icon and a quit button.
-When you press the pushbutton on the circuit connected to the microcontroller, the small icon will change.
+#### 3.6.2 Tkinter and Widgets, the short (and recommended) way
+Let's repeat the example above. However, instead of writing it ourselves, we'll rely on the class SerialAndGui. We'll make a child class of SerialAndGui. The child class has access to all of the functions of its parent. The SerialAndGui class is found in the file ../utilities/SerialAndGui.py.
 
 ```python
-#Read the instructions in Dandy.md. 
-#Before running this program, upload the serialRead.py to your microcontroller.
-#When this runs, you will see a small icon and a quit button.
-#When you press the pushbutton on the circuit connected to the microcontroller, 
-#the small icon will change.
-
-#Information on asyncIO came from:
-#https://realpython.com/async-io-python
-#Information on getting tkinter and asyncio to work together came from:
-#https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the
-
-
 import asyncio
 import tkinter as tk
-import itertools as it
 import time
 import serial
 import serial.tools.list_ports as port_list
+import sys
+sys.path.append('../widgets')
+sys.path.append('../utilities')
+import LEDDisplay as ld
+import SerialAndGui as sg
 
-class DigDisplay(tk.Tk):
-    #Here's the constructor for the class DigDisplay.
-    #This is a child of tk.Tk which opens a window.
-    def __init__(self, loop, interval=1/40):
+class DigitalHWShort(sg.SerialAndGui):
+    #Here's the constructor.
+    def __init__(self, loop, interval=1/20):
+        super().__init__(loop)
+        #The line above says run the parent's constructor.
+        #The parent's constructor starts the three async tasks:
+        #check_serial_data, use_serial_data, and updater.
+        #Below, we set up the widgets for a simple GUI
+        #and pack them in the window.
+        self.led1=ld.LEDDisplay(self)
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.close)
+        self.led1.pack()
+        self.button_quit.pack()
+
+  
+    #This async function reads from the queue and uses the data it finds.
+    #We're overloading the parent's version of this function.
+    async def use_serial_data(self, interval, qIn: asyncio.Queue):
+        while True:
+            await asyncio.sleep(interval)
+            in_string=await qIn.get()
+
+            if in_string=="T":
+                print("T")
+                self.led1.change_LED_color("yellow")
+            if in_string=="F":
+               print("F")
+               self.led1.change_LED_color("blue")
+
+
+    #We need to overload the parent's version of the close function too.
+    #Really, this just says to use the parent's version.
+    def close(self):
+        sg.SerialAndGui.close(self)
+
+
+if __name__=="__main__":
+    loop=asyncio.get_event_loop()
+    example=DigitalHWShort(loop)
+    loop.run_forever()
+    loop.close()
+```
+
+
+#### 3.6.3 Tkinter and Widgets, the long way
+
+Make sure the microcontroller is plugged in and still running the previous example.
+<br><br>
+Run the example below. When you run it, you will see a window with an LEDDisplay widget and a quit button. When the pushbutton connected to your microcontroller is held down, the LEDDisplay widget will be yellow. Otherwise it will be blue. 
+<br><br>
+I'm including this example here to show you the details of how to use tkinter and asyncio together. You don't need to understand every line. In the next example we'll see a better strategy that uses a child class of a class very similar to this one. 
+<br><br>
+Notice that this example involves three asynchronous tasks, named check_serial_data, use_serial_data, and updater.
+```python
+
+import asyncio
+import tkinter as tk
+import time
+import serial
+import serial.tools.list_ports as port_list
+import sys
+sys.path.append('../widgets')
+import LEDDisplay as ld
+
+class DigitalWithHW(tk.Tk):
+    #Here's the constructor for the DigitalWithHW class.
+    #DigitalWithHW is a child of class tk.Tk, which opens a window.
+    def __init__(self, loop, interval=1/20):
         super().__init__()
         self.loop=loop
         self.protocol("WM_DELETE_WINDOW", self.close)
+
+        #We have three async tasks: check_serial_data, use_serial_data
+        #and updater. Each are detailed in their own function.
         self.q=asyncio.Queue()
         self.tasks=[]
-        #We'll have three async tasks, named checkdigin, consumeQueue, and updater.
-        #Each of these are detailed in their own function.
-        self.tasks.append(loop.create_task(self.checkdigin(1/20,self.q)))
-        self.tasks.append(loop.create_task(self.consumeQueue(1/20, self.q)))
+        self.tasks.append(loop.create_task \
+                          (self.check_serial_data(interval, self.q)))
+        self.tasks.append(loop.create_task \
+                          (self.use_serial_data(interval, self.q)))
         self.tasks.append(loop.create_task(self.updater(interval)))
-        #Set up the widgets and pack them into the window.
-        self.digBit=1
-        self.buttonQuit=tk.Button(self, text="Quit", command=self.close)
-        self.smileOn=tk.PhotoImage(file='./smileOn.png')
-        self.smileOff=tk.PhotoImage(file='./smileOff.png')
-        self.label1=tk.Label(self, image=self.smileOn)
-        self.label1.pack()
-        self.buttonQuit.pack()
 
+        #Set up the widgets for a simple GUI and pack them in the window.
+        self.led1=ld.LEDDisplay(self)
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.close)
+        self.led1.pack()
+        self.button_quit.pack()
 
-    async def checkdigin(self, interval, qIn:asyncio.Queue):
-        #This asyncio function reads from the serial port and writes to the queue if it finds T or F.
+        #Notice that we don't start Tkinter's main loop here. Instead
+        #the function updater will update the GUI.
+
+        
+    async def check_serial_data(self, interval, qIn: asyncio.Queue):
+        #This async function reads data from the serial port and puts the
+        #data in the queue.
+
+        #Set up to read from the serial port.
         ports=list(port_list.comports())
         print(ports[0].device)
         port=ports[0].device
         #If you are on windows and you get an error saying it can't find the port, try the line below.
-        #port='COM6'
+        #port='COM1'
         #If you are on linux and you get an error saying it can't find the port, try the line below.
-        #port='/dev/ttyACM0'
+        port='/dev/ttyACM0'
         baudrate=115200
-        serialPort=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
-        imax=10000
-        for ii in range(imax):
-            await asyncio.sleep(interval)
-            serialByte=serialPort.read()
-            serialInt=int.from_bytes(serialByte, "big")
-            if serialInt != 0:
-                await qIn.put(serialByte)
-                print(serialByte)
-        serialPort.close()
+        serial_port=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
         
-
-    async def consumeQueue(self, interval, qIn: asyncio.Queue):
-        #This asyncio function reads from the queue and sets the appropriate picture if necessary
+        #Read a byte at a time from the serial port.
+        #Convert the byte to a string, and put the string in the queue.
+        
+        #TODO: Move setting port to very top...That step is needed.
+        #In linux, I had to set port manually here.
         while True:
             await asyncio.sleep(interval)
-            i=await qIn.get()
-            #The character T has ascii value 84. The character F has 
-            #ascii value 70. We're actually reading in individual bytes.
-            #The next line converts bytes to integers.
-            intval=int.from_bytes(i, "big")
-            print(intval)
-            if intval==84:
-                print("Found T")
-                self.label1.configure(image=self.smileOn)
-            if intval==70:
-                print("Found F")
-                self.label1.configure(image=self.smileOff)
-                
+            serial_byte=serial_port.read()
+            serial_string=serial_byte.decode()
+            if serial_string != "":
+                await qIn.put(serial_string)
+                #Uncomment the next line to see what the serial port is getting.
+                #print(serial_byte)
+        serial_port.close()
+        
 
+    async def use_serial_data(self, interval, qIn: asyncio.Queue):
+        #This async function reads from the queue and uses the data it finds.
+        while True:
+            await asyncio.sleep(interval)
+            in_string=await qIn.get()
+            if in_string=="T":
+                print("T")
+                self.led1.change_LED_color("yellow")
+            if in_string=="F":
+                print("F")
+                self.led1.change_LED_color("blue")
+        
 
     async def updater(self, interval):
-        #This async function manually updates the tkinter GUI.
+        #This async function manually updates the Tkinter GUI.
         while True:
             self.update()
             await asyncio.sleep(interval)
+
 
     def close(self):
         for task in self.tasks:
             task.cancel()
         self.loop.stop()
         self.destroy()
-        
-        
+
+
 if __name__=="__main__":
     loop=asyncio.get_event_loop()
-    app=DigDisplay(loop)
+    example=DigitalWithHW(loop)
     loop.run_forever()
     loop.close()
+
 ```
+![Digital With Hardware Picture](/docPics/digwithHW.png)
 
-#### 3.6.3 A second example using tkinter and DANDY widgets
-
+(TODO: separate the serial setup into its own function... the port should be an input)
 
 ## 4.0 Displaying analog inputs
 
