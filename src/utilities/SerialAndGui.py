@@ -42,7 +42,6 @@ class SerialAndGui(tk.Tk):
 
             
     async def check_serial_data(self, interval, qIn: asyncio.Queue):
-        print("Started check_serial_data")
         #This async function reads data from the serial port and puts the
         #data in the queue.
 
@@ -62,6 +61,7 @@ class SerialAndGui(tk.Tk):
         
         #TODO: Move setting port to very top...That step is needed.
         #In linux, I had to set port manually here.
+         
         while True:
             await asyncio.sleep(interval)
             serial_byte=serial_port.read()
@@ -71,31 +71,26 @@ class SerialAndGui(tk.Tk):
             if serial_string != "":
                 await qIn.put(serial_string)
                 #Uncomment the next line to see what the serial port is getting.
-                print(serial_byte)
+                #print(serial_byte)
         serial_port.close()
         
 
     async def use_serial_data(self, interval, qIn: asyncio.Queue):
-        print("started use_serial_data")
         #This async function reads from the queue and uses the data it finds.
+        #You  should really write your own version in the child class.
+         
         while True:
-            await asyncio.sleep(interval)
+            await asyncio.sleep(interval*10)
             in_string=await qIn.get()
-            #You should write your own version of use_data in the child class.
-            ##TODO: I want late binding on the next line. How do I do that?
-            await self.use_data()
             print(in_string)
-        
+           
 
     async def updater(self, interval):
-        print("Started updater")
         #This async function manually updates the Tkinter GUI.
+        
         while True:
             self.update()
             await asyncio.sleep(interval)
-    #You should write your own version of use_data in the child class.
-    async def use_data(self):
-        print("Use data")
 
 
     def close(self):

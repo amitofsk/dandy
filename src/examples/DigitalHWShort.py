@@ -17,6 +17,8 @@ class DigitalHWShort(sg.SerialAndGui):
     def __init__(self, loop, interval=1/20):
         super().__init__(loop)
         #The line above says run the parent's constructor.
+        #The parent's constructor starts the three async tasks:
+        #check_serial_data, use_serial_data, and updater.
         #Below, we set up the widgets for a simple GUI
         #and pack them in the window.
         self.led1=ld.LEDDisplay(self)
@@ -25,7 +27,6 @@ class DigitalHWShort(sg.SerialAndGui):
         self.led1.pack()
         self.button_quit.pack()
 
-
   
     #This async function reads from the queue and uses the data it finds.
     #We're overloading the parent's version of this function.
@@ -33,18 +34,13 @@ class DigitalHWShort(sg.SerialAndGui):
         while True:
             await asyncio.sleep(interval)
             in_string=await qIn.get()
-
+    
             if in_string=="T":
                 print("T")
                 self.led1.change_LED_color("yellow")
             if in_string=="F":
-               print("F")
-               self.led1.change_LED_color("blue")
-
-    #We need to overload the parent's version of the close function too.
-    #Really, this just says to use the parent's version.
-    def close(self):
-        sg.SerialAndGui.close(self)
+                print("F")
+                self.led1.change_LED_color("blue")
 
 
 if __name__=="__main__":

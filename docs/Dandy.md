@@ -65,7 +65,7 @@ Coming soon ...
 
 
 ## 3.0 Displaying Digital Inputs
-
+(TODO: List hardware and list files needed for section 3?)
 ### 3.1 What Tkinter is?
 Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs). Tkinter is a python's version of the library for making GUIs, and it comes preinstalled with python. 
 <br><br>
@@ -340,18 +340,28 @@ serialPort.close()
 ### 3.6 Sending data, now with widgets and asyncio
 #### 3.6.1 What is asyncio and why do we need it here.
 Tkinter is the graphics library. Typically, tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serially.
-The problem is we want both loops to run continuously in parallel. One possible solution would be to put each of these tasks in different threads. 
+The problem is that we want both loops to run continuously and simultaneously. One possible solution would be to put each of these tasks in different threads. 
 We are not quite doing this, but we are doing something quite similar. 
 <br><br>
-We will be using the asyncio python library. This library isn't quite multithreadding, but it accomplishes the same task. 
+We will be using the asyncIO python library. This library isn't quite multithreadding, but it accomplishes the same task. 
 Also, instead of telling tkinter to loop continually, we will tell it to manually update inside a loop. 
-The asyncIO library is new to python, so make sure you are at least using version 3.7 of python.
+The asyncIO library is new to python, so make sure you are at least using Python version 3.7.
 <br><br> 
 More info on asyncIO can be found at https://realpython.com/async-io-python.
 Information on using asyncIO with tkinter came from https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui 
 
 #### 3.6.2 Tkinter and Widgets, the short (and recommended) way
-Let's repeat the example above. However, instead of writing it ourselves, we'll rely on the class SerialAndGui. We'll make a child class of SerialAndGui. The child class has access to all of the functions of its parent. The SerialAndGui class is found in the file ../utilities/SerialAndGui.py.
+
+Make sure the microcontroller is plugged in and still running the previous example.
+<br><br>
+Run the example below. When you run it, you will see a window with an LEDDisplay widget and a quit button. When the pushbutton connected to your microcontroller is held down, the LEDDisplay widget will be yellow. Otherwise it will be blue.
+<br><br>
+Even though this example is short, it has a lot going on. The DigitalHWShort class defined in this example is a child of class SerialAndGui which is a child of Tk. The class SerialAndGui comes with the DANDY library, and it is detailed in ../utilities/SerialAndGui.py. 
+The class SerialAndGui is an abstract class. If you run it by itself, you see an empty window which is not useful. Instead, as shown below, you should define a child class and overload the constructor and the use_serial_data function.
+<br><br>
+The SerialAndGui class involves three asynchronous tasks: check_serial_data, use_serial_data, and updater. Each is defined in its own function. The check_serial_data task reads from the serial port and writes the result to a queue. The use_serial_data task reads from the queue and does something with the data it finds. The updater task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
+<br><br>
+You don't have to write all the code for these tasks every time you want to use them. Instead, you can just define a child class of SerialAndGui as shown below.   
 
 ```python
 import asyncio
@@ -396,29 +406,23 @@ class DigitalHWShort(sg.SerialAndGui):
                self.led1.change_LED_color("blue")
 
 
-    #We need to overload the parent's version of the close function too.
-    #Really, this just says to use the parent's version.
-    def close(self):
-        sg.SerialAndGui.close(self)
-
-
 if __name__=="__main__":
     loop=asyncio.get_event_loop()
     example=DigitalHWShort(loop)
     loop.run_forever()
     loop.close()
 ```
-
+![Digital With Hardware Picture](/docPics/digwithHW.png)
+<br><br>
+(TODO: Fix the whole port naming issue... It should be an input here somewhere)
 
 #### 3.6.3 Tkinter and Widgets, the long way
+The previous example relied on the SerialAndGui class. A lot of the details were swept up into that class. What if you want to write all the instructions yourself? 
+<br><br>
+This example accomplishes the same task as the previous example. Before you run it, make sure your microcontroller is still plugged in and running its code. When you run this example, you will see a window with an LEDDisplay widget. When the pushbutton connected to the microcontroller is pressed, the LEDDisplay is yellow, and otherwise it is blue. 
+<br><br>
+In this example, you can see the details of how to use asyncIO to both read from the serial port and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions check_serial_data, use_serial_data, and updater. The DigitalWithHW class defined below is a child only of Tk, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
 
-Make sure the microcontroller is plugged in and still running the previous example.
-<br><br>
-Run the example below. When you run it, you will see a window with an LEDDisplay widget and a quit button. When the pushbutton connected to your microcontroller is held down, the LEDDisplay widget will be yellow. Otherwise it will be blue. 
-<br><br>
-I'm including this example here to show you the details of how to use tkinter and asyncio together. You don't need to understand every line. In the next example we'll see a better strategy that uses a child class of a class very similar to this one. 
-<br><br>
-Notice that this example involves three asynchronous tasks, named check_serial_data, use_serial_data, and updater.
 ```python
 
 import asyncio
@@ -527,6 +531,8 @@ if __name__=="__main__":
 ![Digital With Hardware Picture](/docPics/digwithHW.png)
 
 (TODO: separate the serial setup into its own function... the port should be an input)
+#### 3.6.4 An example with the LEDBarDisplay widget
+Add another digital example here that involves three buttons, the LEDDisplay widget, and making a class that is a child of SerialAndGui...
 
 ## 4.0 Displaying analog inputs
 
