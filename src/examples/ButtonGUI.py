@@ -4,14 +4,14 @@
 
 import tkinter as tk
 
-#Define the ButtonGUI class
-class ButtonGUI:
+#Define the ButtonGUI class, which is a child of Tk.
+class ButtonGUI(tk.Tk):
     # The function __init__ is the constructor for the class.
     def __init__(self):
-        self.main_window=tk.Tk()
-        self.label1=tk.Label(self.main_window, text="Welcome")
-        self.button_quit=tk.Button(self.main_window, text="Quit", \
-                            command=self.main_window.destroy)
+        super().__init__()
+        self.label1=tk.Label(self, text="Welcome")
+        self.button_quit=tk.Button(self, text="Quit", \
+                            command=self.destroy)
         #We pack widgets to put them in the window.
         self.label1.pack()
         self.button_quit.pack()

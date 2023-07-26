@@ -5,18 +5,19 @@
 import tkinter as tk
 import sys
 #We need to import the file for the LEDDisplay widget
+#You may need to change the next line so it points to the correct directory.
 sys.path.append('../widgets')
 import LEDDisplay as ld
 
-class DigitalNoHW:
+class DigitalNoHW(tk.Tk):
     def __init__(self):
-        self.main_window=tk.Tk()
+        super().__init__()
         #The class LEDDisplay is defined in the file ../widgets/LEDDisplay.py
-        self.led1=ld.LEDDisplay(self.main_window)
-        self.button1=tk.Button(self.main_window, text="Press Me", \
+        self.led1=ld.LEDDisplay(self)
+        self.button1=tk.Button(self, text="Press Me", \
                                command=self.toggle_me)
-        self.button_quit=tk.Button(self.main_window, text="Quit", \
-                                   command=self.main_window.destroy)
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.destroy)
 
         self.led1.pack()
         self.button1.pack()

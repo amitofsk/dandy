@@ -65,7 +65,27 @@ Coming soon ...
 
 
 ## 3.0 Displaying Digital Inputs
-(TODO: List hardware and list files needed for section 3?)
+Hardware used in section 3:
+- Small Protoboard
+- Three buttons
+- Wire, resistors
+- USB cable to connect your microcontroller
+- Microcontroller
+  - Options A and B: Raspberry Pi Pico
+  - Option C: CY8CProto
+  - Option D: Arduino
+<br><br>
+
+Files used in section 3:
+- widgets/LEDDisplay.py
+- widgets/LEDBarDisplay.py
+- widgets/SymbolDisplay.py (maybe?)
+- utilities/SerialAndGui.py
+- examples/DigitalNoHW.py
+- examples/DigitalHWShort.py
+- examples/DigitalWithHW
+- examples/ButtonGUI.py
+- examples/ButtonPicGUI.py
 ### 3.1 What Tkinter is?
 Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs). Tkinter is a python's version of the library for making GUIs, and it comes preinstalled with python. 
 <br><br>
@@ -79,14 +99,14 @@ Try out the example below. You should see a window with a label and a working qu
 ```python
 import tkinter as tk
 
-#Define the ButtonGUI class
-class ButtonGUI:
+#Define the ButtonGUI class, which is a child of Tk.
+class ButtonGUI(tk.Tk):
     # The function __init__ is the constructor for the class.
     def __init__(self):
-        self.main_window=tk.Tk()
-        self.label1=tk.Label(self.main_window, text="Welcome")
-        self.button_quit=tk.Button(self.main_window, text="Quit", \
-                            command=self.main_window.destroy)
+        super().__init__()
+        self.label1=tk.Label(self, text="Welcome")
+        self.button_quit=tk.Button(self, text="Quit", \
+                            command=self.destroy)
         #We pack widgets to put them in the window.
         self.label1.pack()
         self.button_quit.pack()
@@ -103,21 +123,21 @@ Let's try another example to get more familiar with Tkinter. This example will h
 ```python
 import tkinter as tk
 
-class ButtonPicGUI:
+class ButtonPicGUI(tk.Tk):
     def __init__(self):
-        self.main_window=tk.Tk()
+        super().__init__()
         self.smileOn=tk.PhotoImage(file='./smileOn.png')
         self.smileOff=tk.PhotoImage(file='./smileOff.png')
         self.image_number=0
 
         #This label contains a PhotoImage instead of text.
-        self.label1=tk.Label(self.main_window, image=self.smileOn)
+        self.label1=tk.Label(self, image=self.smileOn)
         #When button1 is pressed, the instructions in the function
         #toggle_me are followed. We define this function below.
-        self.button1=tk.Button(self.main_window, text="Press Me", \
+        self.button1=tk.Button(self, text="Press Me", \
                                command=self.toggle_me)
-        self.button_quit=tk.Button(self.main_window, text="Quit", \
-                                   command=self.main_window.destroy)
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.destroy)
 
         self.label1.pack()
         self.button1.pack()
@@ -149,21 +169,23 @@ You may need to change the third line to point to the location of the widgets fo
 
 
 ```python
+
 import tkinter as tk
 import sys
 #We need to import the file for the LEDDisplay widget
+#You may need to change the next line so it points to the correct directory.
 sys.path.append('../widgets')
 import LEDDisplay as ld
 
-class DigitalNoHW:
+class DigitalNoHW(tk.Tk):
     def __init__(self):
-        self.main_window=tk.Tk()
+        super().__init__()
         #The class LEDDisplay is defined in the file ../widgets/LEDDisplay.py
-        self.led1=ld.LEDDisplay(self.main_window)
-        self.button1=tk.Button(self.main_window, text="Press Me", \
+        self.led1=ld.LEDDisplay(self)
+        self.button1=tk.Button(self, text="Press Me", \
                                command=self.toggle_me)
-        self.button_quit=tk.Button(self.main_window, text="Quit", \
-                                   command=self.main_window.destroy)
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.destroy)
 
         self.led1.pack()
         self.button1.pack()
@@ -176,7 +198,7 @@ class DigitalNoHW:
     def toggle_me(self):
         if(self.led1.get_color()=="yellow"):
             self.led1.change_LED_color("blue")
-        else:
+        else:  
             self.led1.change_LED_color("yellow")
 
 
@@ -186,7 +208,6 @@ if __name__=="__main__":
 
 ![LEDDisplay widget picture](docPics/ledwidget.png)
 
-(TODO: Another example, with the LEDBar widget?)
 
 ### 3.4 Hardware: LED, button, Microcontroller
 
