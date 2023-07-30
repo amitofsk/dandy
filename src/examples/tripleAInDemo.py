@@ -1,11 +1,10 @@
-#This example demonstrates GUI widgets used to display three naalog inputs.
+#This example demonstrates GUI widgets used to display three analog inputs.
 
 
 import tkinter as tk
 import sys
 sys.path.append('../widgets')
-import VectorDisplay as vd #Veronica
-#import src.widgets.DialDisplay as dd
+import VectorDisplay as vd 
 
 class TripleAInDemo:
     def __init__(self):

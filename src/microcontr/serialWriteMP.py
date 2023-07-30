@@ -1,3 +1,4 @@
+#This goes with the DigitalOutDisplay.py example.
 from machine import Pin
 import time
 import select

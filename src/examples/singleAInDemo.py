@@ -1,24 +1,19 @@
-#This example just demonstrates GUI widgets that can be used to display
-#analog input values. Here I'm not actually integrate with any analog input.
-#Instead, I just use a slider. I demonstrate a numerical readout,
-#a needle on a dial and a chart plot. All of this uses tkinter
-
-
+#This example demonstrates GUI widgets that can be used to display
+#analog input values. It does not involve any hardware.
+#When you run this example, you see a slider widget and four widgets for
+#displaying analog values. The slider widget comes from tk while the
+#other widgets are part of Dandy.
+#The slider widget is
 
 import tkinter as tk
-#FIXME: I should properly set up a package, not use the next two lines.
-import sys #Veronica
-sys.path.append('../widgets') #Veronica
-#import DialDisplay
-#import src.widgets.AnalogInDisplay
-import DialDisplay as dd #Veronica
-import SlideDisplay as sd #Veronica
-import TricolorDisplay as td #Veronica
-import SimplePlotDisplay as spd #Veronica
+import sys 
+sys.path.append('../widgets') 
+import DialDisplay as dd 
+import SlideDisplay as sd 
+import TricolorDisplay as td
+import SimplePlotDisplay as spd 
 
  
-
-
 class SingleAInDemo:
     def __init__(self):
         self.main_window=tk.Tk()
