@@ -2,7 +2,7 @@
 
 ## 1.0 Introduction
 ### 1.1 What is DANDY?
-DANDY is a set of reuseable python examples and a library of python functions to help display sensor data in a graphical user interface (GUI).
+[`DANDY`](https://github.com/amitofsk/dandy) is a set of reuseable python examples and a library of python functions to help display sensor data in a graphical user interface (GUI).
 
 ### 1.2 What are we building?
 Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a computer either over USB or wirelessly. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, using a slider, or on a chart plot.
@@ -19,6 +19,7 @@ This guide is intended for:
  - Engineers who want to learn a new way to perform data acquisition using the Python language. 
  - People with at least a little Python coding experience. For example, you should know how to write functions in Python, and you should know what classes and objects are. 
 <br><br>
+
 This guide is NOT for you if:
  - You have not programmed before.
  - You want to acquire sensor data with precise timing. In this project, data collection happens with an inexpensive microcontroller without a real time operating system.
@@ -26,18 +27,22 @@ This guide is NOT for you if:
 
 
 
-## 2.0 Instal software and gather supplies
+## 2.0 Install software and gather supplies
 
 ### 2.1 Check your Python installation
 
-This tutorial requires at least Python version 3.7. If you do not know what verison you have, use the following command on the command line.
+This tutorial requires at least Python version 3.7. If you do not know what version you have, for Windows Operating System use the following command in the command line `Windows PowerShell` or `Command Prompt` or `Git Bash`.
 
  ```python
  py --version
  ```
-Python comes with a minimalist Integrated Developement Environment (IDE) named IDLE. This tutorial assumes you will use IDLE to write Python code that will be run on the computer. However, you can use another IDE such as Pycharm or Thonny if you prefer, or you can use your favorite text editor.    
+
+Python comes with a minimalist Integrated Developement Environment (IDE) named IDLE. This tutorial assumes you will use IDLE to write Python code that will be run on the computer. However, you can use another IDE such as Pycharm or Thonny if you prefer, or you can use your favorite text editor.
+
+### 2.2 Install python
+If python needs to be installed then download latest python version available in python [`website`](https://www.python.org/downloads/)
  
-### 2.2 Install the pyserial library 
+### 2.3 Install the pyserial library 
 
 In the command line, execute
 ```python
@@ -45,22 +50,22 @@ pip install pyserial
 ```
 
 
-### 2.3 Download the DANDY library.
+### 2.4 Download the DANDY library.
 
-Change to the directory that you want work in. Then, use the following command in the command line to download the DANDY repository from github. 
+Change to the directory that you want work in. Then, use the following command in the command line to download the `DANDY` repository from github. 
  
  ```python
  git clone https://github.com/amitofsk/dandy.git
  ```
  
-### 2.4 Download and install the MU IDE
+### 2.5 Download and install the MU IDE
 This tutorial will involve both writing Python code for a computer as well as writing Micropython, Circuitpython, or Arduino code for a microcontroller. We'll write Python code for the computer using the IDLE IDE. We'll write Micropython or Circuitpyton code for the microcontroller using the MU IDE. However, you can use other IDE's for the microcontroller programming, such as Thonny, if you prefer. If you are using an Arduino microcontroller, Arduino has its own IDE.
 <br><br>
 One advantage of using a different IDE for the computer code and the microcontroller code is that the IDE will remind you which hardware you are programming for. 
 <br><br>
-Download the MU IDE from https://codewith.mu/en/download. Install it. 
+Download the MU IDE from [`CodeWithMU`](https://codewith.mu/en/download). Install it. 
 
-### 2.4 Supplies needed
+### 2.6 Supplies needed
 Coming soon ...
 
 
@@ -89,12 +94,12 @@ Files used in section 3:
 ### 3.1 What Tkinter is?
 Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs). Tkinter is a python's version of the library for making GUIs, and it comes preinstalled with python. 
 <br><br>
-Tkinter has lots of built in widgets including labels, buttons, scales, and spinboxes. For a nice list along with the API reference, see https://tkdocs.com/pyref/. 
+Tkinter has lots of built in widgets including labels, buttons, scales, and spinboxes. For a nice list along with the API reference, see [`tkdocs`](https://tkdocs.com/pyref/). 
 
 ### 3.2 Tkinter widgets 
-Let's write our first GUI program using Python and Tkinter. In this example, we use two Tkinter widgets: Label and Button. The pack function puts the widget into the window. 
+Let's write our first GUI program using `Python` and `Tkinter`. In this example, we use two Tkinter widgets: Label and Button. The pack function puts the widget into the window. 
 <br><br>
-Try out the example below. You should see a window with a label and a working quit button. If you downloaded the DANDY library, these examples are in the src/examples directory.
+Try out the example below. You should see a window with a label and a working quit button. If you downloaded the `DANDY` library, these examples are in the src/examples directory.
 
 ```python
 import tkinter as tk
@@ -163,9 +168,9 @@ if __name__=="__main__":
 
 
 ### 3.3 DANDY widgets for digital inputs
-Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The DANDY library, which you just installed, has additional widgets. These widgets are related to data acquisition. The next example uses the DANDY widget LEDDisplay. When you run it, you will see two buttons and an image of an LED. When you press the button, the LED color changes. Try it out.
+Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The `DANDY` library, which you just installed, has additional widgets. These widgets are related to data acquisition. The next example uses the `DANDY` widget LEDDisplay. When you run it, you will see two buttons and an image of an LED. When you press the button, the LED color changes. Try it out.
 <br><br>
-You may need to change the third line to point to the location of the widgets folder of the DANDY library that you downloaded. This example is also available in the examples folder of the DANDY library. If you open that version, Python should find the widgets folder correctly.
+You may need to change the third line to point to the location of the widgets folder of the `DANDY` library that you downloaded. This example is also available in the examples folder of the `DANDY` library. If you open that version, Python should find the widgets folder correctly.
 
 
 ```python
@@ -220,12 +225,12 @@ if __name__=="__main__":
 Connect a button and a resistor between GP16 & 5V (pin 39) <br>
 Connect a resistor and LED between GP19 & GND
 
-Here is the link of the circuit https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf <br>
+Here is the [link](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) of the circuit  <br>
 ![](docPics/PiAndButton3.png)
 ##### 3.4.2.2 Installation
 
 **Steps**
-1. Download the latest release from https://micropython.org/download/rp2-pico/
+1. Download the latest release from [micropython](https://micropython.org/download/rp2-pico/)
 2. Hold the botton down and plug in the Rpi by using the USB cable
 3. In windows explorer should see now the Rpi Drive available 
 4. In windows explorer drag the file you just downloaded to that drive
@@ -317,7 +322,8 @@ while True:
 The fifth line tells the RPPico that we will call pin GP25, the built in LED, the name led. This line also says GP25 will be a digital output.  <br><br>
 The fourth line tells the RPPico that we will call pin GP16, which is also called pin 21 in the pinout diagram, button. This line also say as GP16 will be a digital input. 
 The Pin.PULL_DOWN option connects the pin to an internal resistor so that when nothing is connected to it, the pin will be low.  
-Reference: https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/traffic-light-and-pedestrian-crossing  
+Reference: [RPi Pico CircuitPython](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/traffic-light-and-pedestrian-crossing)
+
 4. Run the code of step 3, when you hold down the button it will print T otherwise it prints F.
 
 ![](./docPics/Section3.4.3.2_step4.png)
@@ -368,8 +374,8 @@ We will be using the asyncIO python library. This library isn't quite multithrea
 Also, instead of telling tkinter to loop continually, we will tell it to manually update inside a loop. 
 The asyncIO library is new to python, so make sure you are at least using Python version 3.7.
 <br><br> 
-More info on asyncIO can be found at https://realpython.com/async-io-python.
-Information on using asyncIO with tkinter came from https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui 
+More info on asyncIO can be found at [async-io-python](https://realpython.com/async-io-python).
+Information on using asyncIO with tkinter came from [asyncio-and-tkinter](https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui) 
 
 #### 3.6.2 Tkinter and Widgets, the short (and recommended) way
 
@@ -377,7 +383,7 @@ Make sure the microcontroller is plugged in and still running the previous examp
 <br><br>
 Run the example below. When you run it, you will see a window with an LEDDisplay widget and a quit button. When the pushbutton connected to your microcontroller is held down, the LEDDisplay widget will be yellow. Otherwise it will be blue.
 <br><br>
-Even though this example is short, it has a lot going on. The DigitalHWShort class defined in this example is a child of class SerialAndGui which is a child of Tk. The class SerialAndGui comes with the DANDY library, and it is detailed in ../utilities/SerialAndGui.py. 
+Even though this example is short, it has a lot going on. The DigitalHWShort class defined in this example is a child of class SerialAndGui which is a child of Tk. The class SerialAndGui comes with the `DANDY` library, and it is detailed in ../utilities/SerialAndGui.py. 
 The class SerialAndGui is an abstract class. If you run it by itself, you see an empty window which is not useful. Instead, as shown below, you should define a child class and overload the constructor and the use_serial_data function.
 <br><br>
 The SerialAndGui class involves three asynchronous tasks: check_serial_data, use_serial_data, and updater. Each is defined in its own function. The check_serial_data task reads from the serial port and writes the result to a queue. The use_serial_data task reads from the queue and does something with the data it finds. The updater task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
@@ -433,7 +439,7 @@ if __name__=="__main__":
     loop.run_forever()
     loop.close()
 ```
-![Digital With Hardware Picture](/docPics/digwithHW.png)
+![Digital With Hardware Picture](./docPics/digwithHW.png)
 <br><br>
 (TODO: Fix the whole port naming issue... It should be an input here somewhere)
 
@@ -549,7 +555,7 @@ if __name__=="__main__":
     loop.close()
 
 ```
-![Digital With Hardware Picture](/docPics/digwithHW.png)
+![Digital With Hardware Picture](./docPics/digwithHW.png)
 
 (TODO: separate the serial setup into its own function... the port should be an input)
 #### 3.6.4 An example with the LEDBarDisplay widget
