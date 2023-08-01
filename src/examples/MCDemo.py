@@ -1,8 +1,8 @@
-#This example is used to test MCDisplay and all its children.
-#Maybe make this a child of RPiPicoDisplay?
-
-#This class turned out to be more complicated than I hoped for.
-#Can I simplify it?
+#This example is used to test the RPiPicoDisplay class. 
+#When you run this example, you will see a RPiPicoDisplay widget.
+#Pin 6 is set to an LED and pin 26 is set to a button.
+#If you press either the button at pin 26 or the toggle button at
+#the bottom, the color of the LED at pin 6 changes.
 
 
 import tkinter as tk
@@ -26,51 +26,29 @@ class MCDemo(tk.Tk):
 
         #Let's add an LED at pin 6
         self.pico1.set_led(6)
-        
-        #Set up a button at location 2
-        button_loc=6
 
-        #We want the button to be 19x19 pixels. So, pixel is a
-        #PhotoImage of size 1x1 pixels. We'll resize it to 19x19 for the button
-        pixel=tk.PhotoImage(width=1, height=1)
-
-        #TODO: Maybe write a getter for left_bar_frame and right_bar_frame?
+        #Let's add a button at pin 26
+        self.button3=self.pico1.set_button(26)
+        self.button3.bind('<ButtonPress>',self.go_button2)
         
-        #If the button is on the left, loop through all 20 objects in left_bar
-        if button_loc<=20:
-            for ii in range(1,20):
-                temploc=self.pico1.get_pin_loc(ii)
-                #Alt syntax is shown below
-                #temploc=self.pico1._RPiPicoDisplay__left_bar[ii]
-                #Unpack them
-                temploc.pack_forget()
-                #Insert the button in the correct location
-                if(ii==button_loc-1):
-                    temploc=tk.Button(\
-                        self.pico1._RPiPicoDisplay__left_bar_frame, \
-                        image=pixel, height=19, width=19, command=self.go_button)
-                temploc.pack_forget()
-                #Repack them.
-                temploc.pack()
-        #Otherwise, loop through objects in right_bar and do the same thing.
-        else:
-            for ii in range(21,40):
-                temploc=self.pico1.get_pin_loc(ii)
-                temploc.pack_forget()
-                if(ii==60-button_loc):
-                    temploc=tk.Button(\
-                        self.pico1._RPiPicoDisplay__right_bar_frame, \
-                        image=pixel, height=19, width=19, command=self.go_button)
-                temploc.pack_forget()
-                temploc.pack()
-        
+        #Run tkinter's main loop
         tk.mainloop()
 
+    #When the toggle button is pressed, we follow the instructions in go_button.
     def go_button(self):
         if(self.pico1.get_led_color(6)=="yellow"):
             self.pico1.set_led_color(6, "blue")
         else:
             self.pico1.set_led_color(6, "yellow")
+
+    #When the button at pin 26 is pressed, we follow instructions in go_button2.
+    #I need an extra input here for some reason.
+    def go_button2(self, x):
+        if(self.pico1.get_led_color(6)=="yellow"):
+            self.pico1.set_led_color(6, "blue")
+        else:
+            self.pico1.set_led_color(6, "yellow")
+        
         
 if __name__=="__main__":
     mygui=MCDemo()

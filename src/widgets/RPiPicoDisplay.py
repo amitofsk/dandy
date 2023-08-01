@@ -95,34 +95,32 @@ class RPiPicoDisplay(mcd.MCDisplay):
                 if ii.pin_number==pin_no:
                     return ii.get_color()
 
-#Eventually, add buttons in a location.
+ 
 #This just sets up the button. It doesn't have the button do anything.
-#When you want to use the button, look at self.__lefbar[ii] and use isinstance
-#to check if it is a button. Maybe write a button getter?
-#    def set_button(self, pin_no):
+#To have it do something, you need to bind it. 
+    def set_button(self, pin_no):
         #The button has a PhotoImage of size 1x1 pixels scaled to 19x19 pixels.
-#        pixel=tk.PhotoImage(width=1, height=1)
-        #print('looking for button')
-#        if (pin_no<=self.__left_pins):
-#            for ii in range(self.__left_pins):
-#                self.__left_bar[ii].pack_forget()
-#                if self.__left_bar[ii].pin_number==pin_no:
-#         #           print('found it')
-#                    self.__left_bar[ii]=tk.Button(self.__left_bar_frame,\
-#                        image=pixel, height=19, width=19, command=self.go_button)
-#                self.__left_bar[ii].pack()
-#            return self.__left_bar[pin_no-1]
-#        else:
-##            for ii in range(self.__right_pins):
- #               self.__right_bar[ii].pack_forget()
- #               if self.__right_bar[ii].pin_number==pin_no:
- #                   self.__right_bar[ii]=tk.Button(self.__right_bar_frame,\
- #                               image=pixel, height=19, width=19)
- #               self.__right_bar[ii].pack()
- #           return self.__right_bar[pin_no-1]
+        pixel=tk.PhotoImage(width=1, height=1)
+        if (pin_no<=self.__left_pins):
+            for ii in range(self.__left_pins):
+                self.__left_bar[ii].pack_forget()
+                if self.__left_bar[ii].pin_number==pin_no:
+                    self.__left_bar[ii]=tk.Button(self.__left_bar_frame,\
+                        image=pixel, height=19, width=19)
+                      
+                self.__left_bar[ii].pack()
+            return self.__left_bar[pin_no-1]
+        else:
+            for ii in range(self.__right_pins):
+                self.__right_bar[ii].pack_forget()
+                if self.__right_bar[ii].pin_number==pin_no:
+                    self.__right_bar[ii]=tk.Button(self.__right_bar_frame,\
+                                image=pixel, height=19, width=19)
+                self.__right_bar[ii].pack()
+            return self.__right_bar[self.__left_pins+self.__right_pins-pin_no]
 
-    #The next function is untested. Try it out...
-     #Check for one off errors here...
+
+  #The next function might not be needed. 
     def get_pin_loc(self, pin_no):
         if (pin_no<=self.__left_pins):
             for ii in range(pin_no):
@@ -132,7 +130,6 @@ class RPiPicoDisplay(mcd.MCDisplay):
         else:
             for ii in range(pin_no):
                 pass
-            #print(ii)
             return self.__right_bar[ii-self.__left_pins+1] 
                 
 
