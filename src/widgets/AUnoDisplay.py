@@ -2,8 +2,6 @@
 #Reference on the pinout https://docs.arduino.cc/hardware/uno-rev3
 #Dimensions are 53.4mmx 68.6mm
 
-
-#Add a function to go from pin location to pin number in another way.
 import tkinter as tk
 import sys 
 sys.path.append ('../widgets')  
@@ -13,26 +11,17 @@ import SymbolDisplay as sd
 
 class AUnoDisplay(mcd.MCDisplay):
     def __init__(self, windowP):
-        super().__init__(windowP)
-        self.redraw_body()
+        super().__init__(windowP, leftPins=14, rightPins=18, widgetSize=20)
+        self.draw_pwr_gnd()
+        #We don't run tkinter in a loop. Instead, we just updat it once.
         windowP.update
-        self.right_frame=tk.Frame(windowP)
-        self.bar=[]
-        count=1
-        for jj in range (18):
-            self.bar=self.bar+[ld.LEDDisplay(self.right_frame, \
-                        height=15, width=15)]
-        for ii in self.bar:
-            ii.pin_number=count
-            count=count+1
-            ii.pack(bar_orientation="vertical")
-        self.mc_canvas.create_window(470,180, window=self.right_frame, anchor="nw")
-            
 
 
     def redraw_body(self):
-        self.mc_canvas.delete(self.rect1)
-        self.mc_canvas.delete(self.rect2)
+        self.mc_canvas.create_window(110, 190, window=self.get_left_bar_frame(),\
+                            anchor="nw")
+        self.mc_canvas.create_window(470, 105, window=self.get_right_bar_frame(),\
+                       anchor="nw")
         self.rect1=self.mc_canvas.create_rectangle(141, 94, 459, 506,\
                     fill="teal", outline="")
         self.rect2=self.mc_canvas.create_rectangle(340,70,410,160,\
@@ -40,8 +29,28 @@ class AUnoDisplay(mcd.MCDisplay):
 
 
     def draw_pwr_gnd(self):
-        print('coming soon')
-    
+        #The Arduino Uno pins 6, 7, and 29 are ground.
+        #Pin 4 is 3.3V power, pin 5 is 5V power, and pin 8 is VIN power.
+        counter=1
+        for ii in self.get_left_bar():
+            ii.pin_number=counter
+            if ((counter==6)or(counter==7)):
+                ii.draw_ground()
+            if(counter==4):
+                ii.draw_power(volts=3.3)
+            if(counter==5):
+                ii.draw_power(volts=5.0)
+            if(counter==8):
+                ii.draw_power(volts=0)               
+            counter=counter+1
+            ii.pack()
+        counter=32
+        for kk in self.get_right_bar():
+            kk.pin_number=counter
+            if ((counter==29)):
+                kk.draw_ground()
+            counter=counter-1
+            kk.pack()
 
 
 if __name__=="__main__":

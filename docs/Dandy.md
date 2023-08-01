@@ -789,6 +789,78 @@ if __name__=="__main__":
 ### 4.5 Displaying vector data
 ## 5.0 Additional DANDY widgets
 
-### 5.1 Examples with the microcontroller-like widgets...
+### 5.1 Files used
+Here are the files used in this section with the microcontrollers
+ - examples/MCDemo.py
+ - examples/MCDemo2.py (Needs cleaning... this is for HW)
+ - widgets/MCDisplay.py
+ - widgets/RPiPicoDisplay.py
+ - widgets/AUnoDisplay.py
+ - widgets/AMKRDisplay.py
+ - widgets/ANanoEveryDisplay.py
+ - widgets/Cyc8protoDisplay.py (Not yet written...)
+ - serial read files?
+#### 5.2 Example with no hardware
+This actually can draw four different microcontrollers. Uncomment the appropriate lines to see so.
+```python
 
 
+import tkinter as tk
+import sys  
+sys.path.append('../widgets') 
+import MCDisplay as mcd  
+import RPiPicoDisplay as rpp
+import SymbolDisplay as sd
+import AUnoDisplay as aud
+import ANanoEveryDisplay as aned
+import AMKRDisplay as amd
+
+class MCDemo(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.destroy) 
+        self.button2=tk.Button(self, text="Toggle",\
+                               command=self.go_button)
+        self.mc1=rpp.RPiPicoDisplay(self)
+        #self.mc1=aud.AUnoDisplay(self)
+        #self.mc1=aned.ANanoEveryDisplay(self)
+        #self.mc1=amd.AMKRDisplay(self)
+           
+        self.mc1.pack()
+        self.button2.pack()
+        self.button_quit.pack()
+
+        #Let's add an LED at pin 6
+        self.mc1.set_led(6)
+
+        #Let's add a button at pin 21
+        self.button3=self.mc1.set_button(21)
+        self.button3.bind('<ButtonPress>',self.go_button2)
+        
+        #Run tkinter's main loop
+        tk.mainloop()
+
+    #When the toggle button is pressed, we follow the instructions in go_button.
+    def go_button(self):
+        if(self.mc1.get_led_color(6)=="yellow"):
+            self.mc1.set_led_color(6, "blue")
+        else:
+            self.mc1.set_led_color(6, "yellow")
+
+    #When the button at pin 21 is pressed, we follow instructions in go_button2.
+    #I need an extra input here for some reason.
+    def go_button2(self, x):
+        if(self.mc1.get_led_color(6)=="yellow"):
+            self.mc1.set_led_color(6, "blue")
+        else:
+            self.mc1.set_led_color(6, "yellow")
+        
+        
+if __name__=="__main__":
+    mygui=MCDemo()
+```
+
+
+#### 5.3 Example with hardware, digital input, and RPPicoDisplay
+See the file examples/MCDemo2.py
