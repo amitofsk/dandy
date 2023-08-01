@@ -562,7 +562,12 @@ Add another digital example here that involves three buttons, the LEDDisplay wid
 
 ### 3.7 Digital Output to the Microcontroller
 (This section is not complete. Also, it should probably be moved earlier because it is simpler than digital in.)
+
 You don't need asyncio for this example.
+Files Used:
+ - microcontroller/serialWriteMP.py
+ - examples/serialwrite.py
+ - examples/DigitalOutDisplay.py
 ##### 3.7.1 Option A: Micropython and the RPiPico
 Here's the code I used 
 ```python
@@ -768,9 +773,6 @@ class TripleAInDemo:
 if __name__=="__main__":
     triple_demo=TripleAInDemo()
 ```
-## 4.0 Displaying analog inputs
-
-### 4.1 DANDY widgets for analog inputs
 
 ### 4.2 Hardware: Potentiometers, sensors, and a Microcontroller
 
@@ -782,9 +784,9 @@ if __name__=="__main__":
 #### 4.2.1 Option C: Micropython and the CY8CPROTO
 #### 4.2.1 Option D: Arduino
 
-#### 4.3 Displaying analog data from the microcontroller on the computer
-#### 4.4 Displaying analog data, now with widgets and asyncio
-#### 4.5 Displaying vector data
+### 4.3 Displaying analog data from the microcontroller on the computer
+### 4.4 Displaying analog data, now with widgets and asyncio
+### 4.5 Displaying vector data
 ## 5.0 Additional DANDY widgets
 
 ### 5.1 Examples with the microcontroller-like widgets...

@@ -1,3 +1,5 @@
+#THIS FILE WILL BE CUT SOON
+
 #This is a child of MCDisplay for drawing a RPi.
 #Reference on the pinout
 # https://randomnerdtutorials.com/raspberry-pi-pinout-gpios/

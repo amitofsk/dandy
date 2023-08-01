@@ -6,8 +6,9 @@
 import tkinter as tk
 
 
-class SymbolDisplay:
+class SymbolDisplay():
     def __init__(self, windowS, height=75, width=75):
+         
         self.__height=height
         self.__width=width
         self.__canvasS=tk.Canvas(windowS, height=self.__height, width=self.__width)
@@ -29,7 +30,8 @@ class SymbolDisplay:
         self.__canvasS.delete('all')
         self.__canvasS.create_oval(0.1*self.__width, 0.1*self.__height,\
                         0.9*self.__width, 0.9*self.__height, fill="red", outline="")
-        self.__canvasS.create_text(0.5*self.__width, 0.5*self.__height,\
+        if(volts>0):
+            self.__canvasS.create_text(0.5*self.__width, 0.5*self.__height,\
                         fill="white", text=volts)
        
 

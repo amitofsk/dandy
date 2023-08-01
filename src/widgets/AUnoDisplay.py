@@ -3,13 +3,13 @@
 #Dimensions are 53.4mmx 68.6mm
 
 
-
+#Add a function to go from pin location to pin number in another way.
 import tkinter as tk
-import sys # Veronica 
-sys.path.append ('../widgets') #Veronica
-import MCDisplay as mcd #Veronica
-import LEDDisplay as ld #Veronica
-import SymbolDisplay as sd #Veronica
+import sys 
+sys.path.append ('../widgets')  
+import MCDisplay as mcd  
+import LEDDisplay as ld  
+import SymbolDisplay as sd  
 
 class AUnoDisplay(mcd.MCDisplay):
     def __init__(self, windowP):
@@ -39,6 +39,8 @@ class AUnoDisplay(mcd.MCDisplay):
                     fill="gray", outline="")
 
 
+    def draw_pwr_gnd(self):
+        print('coming soon')
     
 
 

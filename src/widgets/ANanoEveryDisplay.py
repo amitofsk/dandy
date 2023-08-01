@@ -1,3 +1,5 @@
+#THIS FILE WILL BE CUT SOON. 
+
 #This is a child of MCDisplay for drawing an Arduino Nano Every.
 #Reference on the pinout:
 #https://store-usa.arduino.cc/products/arduino-nano-every

@@ -1,3 +1,5 @@
+#THIS FILE WILL BE CUT SOON
+
 #This is a child of MCDisplay for drawing an Arduino MKR1010.
 #Reference on the pinout
 #https://store-usa.arduino.cc/products/arduino-mkr-wifi-1010
