@@ -1,21 +1,14 @@
-#This goes with the DigitalOutDisplay.py example.
 from machine import Pin
 import time
-import select
-import sys
 print ("hello")
 
+button = Pin(16, Pin.IN, Pin.PULL_DOWN)
 led=Pin(25, Pin.OUT)
-led.value(True)
-# setup poll to read USB port
-poll_object = select.poll()
-poll_object.register(sys.stdin,1)
 while True:
-    if poll_object.poll(0):
-    #read as character
-        ch = sys.stdin.read(1)
-        print (ch)
+    if button.value():
+        print("T")
         led.value(True)
-        time.sleep(0.25)
+    else:
+        print("F")
         led.value(False)
     time.sleep(1)

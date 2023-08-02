@@ -4,6 +4,9 @@
 #If you press either the button at pin 26 or the toggle button at
 #the bottom, the color of the LED at pin 6 changes.
 
+#Reference on tkinter's bind command:
+#https://python-course.eu/tkinter/events-and-binds-in-tkinter.php
+
 import tkinter as tk
 import sys  
 sys.path.append('../widgets') 

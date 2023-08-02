@@ -1,4 +1,3 @@
-#This file replaces asyncPractice4.py
 
 #Read the instructions in Dandy.md. 
 #Before running this program, upload the serialRead.py to your microcontroller.

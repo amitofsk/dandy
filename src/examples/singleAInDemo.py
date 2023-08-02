@@ -5,6 +5,7 @@
 #other widgets are part of Dandy.
 #The slider widget is
 
+
 import tkinter as tk
 import sys 
 sys.path.append('../widgets') 
@@ -14,23 +15,24 @@ import TricolorDisplay as td
 import SimplePlotDisplay as spd 
 
  
-class SingleAInDemo:
+class SingleAInDemo(tk.Tk):
     def __init__(self):
-        self.main_window=tk.Tk()
-        self.button_quit=tk.Button(self.main_window, text="Quit", \
-                            command=self.main_window.destroy)
-        self.button2=tk.Button(self.main_window, text="Get value", \
+        super().__init__()
+        
+        self.button_quit=tk.Button(self, text="Quit", \
+                            command=self.destroy)
+        self.button2=tk.Button(self, text="Get value", \
                             command=self.get_value)
-        self.label1=tk.Label(self.main_window, text="Hello")
-        self.scale1=tk.Scale(self.main_window, from_=0, to=10, \
+        self.label1=tk.Label(self, text="Hello")
+        self.scale1=tk.Scale(self, from_=0, to=10, \
                             orient=tk.HORIZONTAL, length=200, resolution=0.1)   
-        self.dial1=dd.DialDisplay(self.main_window, \
+        self.dial1=dd.DialDisplay(self, \
                             height=100, width=100)
-        self.slide1=sd.SlideDisplay(self.main_window, width=100, \
+        self.slide1=sd.SlideDisplay(self, width=100, \
                             height=100)
-        self.tric1=td.TricolorDisplay(self.main_window, width=100, \
+        self.tric1=td.TricolorDisplay(self, width=100, \
                             height=100)
-        self.plot1=spd.SimplePlotDisplay(self.main_window)
+        self.plot1=spd.SimplePlotDisplay(self)
         self.label1.pack()
         self.scale1.pack()
         self.slide1.pack()

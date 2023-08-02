@@ -2,10 +2,9 @@
 #It is a child of AnalogInDisplay
 
 import tkinter as tk
-import sys # Veronica 
-sys.path.append ('../widgets') #Veronica
-#import AnalogInDisplay as ain
-import AnalogInDisplay as ain #Veronica
+import sys  
+sys.path.append ('../widgets')  
+import AnalogInDisplay as ain 
 
 xScaleFactor=0.75
 yScaleFactor=0.9

@@ -1,37 +1,22 @@
-#SerialAndGui is a child of tk.Tk. It is intended to be an abstract class.
-#You shouldn't create objects of it. Instead, create a child class of it.
-#If you do run this by itself, it opens an empty window.
-
-#This is very similar to DigitalWithHW.py. Essentially, I'm splitting that example
-#up into a parent and child class.
-
-
-#Information on asyncIO came from:
-#https://realpython.com/async-io-python
-#Information on getting tkinter and asyncio to work together came from:
-#https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the
-
-
+#Here's the long version.
 
 import asyncio
 import tkinter as tk
+import sys  
+sys.path.append('../widgets') 
 import time
 import serial
-import serial.tools.list_ports as port_list
-#import sys
-#sys.path.append('../widgets')
+import MCDisplay as mcd  
+import RPiPicoDisplay as rpp  
 
-class SerialAndGui(tk.Tk):
-    #Here's the constructor for the DigitalWithHW class.
-    #DigitalWithHW is a child of class tk.Tk, which opens a window.
-    def __init__(self, loop, interval=1/20):
+#Button is wired to pin 21
+BUTTON_NO=21
+
+class MCDemo2(tk.Tk):
+    def __init__(self, loop, interval=1/40):
         super().__init__()
         self.loop=loop
-        self.protocol("WM_DELETE_WINDOW", self.close)
-
-        
-        #We have three async tasks: check_serial_data, use_serial_data
-        #and updater. Each are detailed in their own function.
+        self.protocol=("WM_DELETE_WINDOW", self.close)
         self.q=asyncio.Queue()
         self.tasks=[]
         self.tasks.append(loop.create_task \
@@ -40,9 +25,15 @@ class SerialAndGui(tk.Tk):
                           (self.use_serial_data(interval, self.q)))
         self.tasks.append(loop.create_task(self.updater(interval)))
 
-            
+        self.button_quit=tk.Button(self, text="Quit", command=self.close)
+        self.mc1=rpp.RPiPicoDisplay(self)
+        self.mc1.set_led(BUTTON_NO)
+        self.mc1.pack()
+        self.button_quit.pack()
+
     async def check_serial_data(self, interval, qIn: asyncio.Queue):
-        #This async function reads data from the serial port and puts the
+        print('check_serial_data running')
+         #This async function reads data from the serial port and puts the
         #data in the queue.
 
         #Set up to read from the serial port.
@@ -61,33 +52,32 @@ class SerialAndGui(tk.Tk):
         
         #TODO: Move setting port to very top...That step is needed.
         #In linux, I had to set port manually here.
-         
         while True:
             await asyncio.sleep(interval)
-            #Read until you see the two end characters '\r\n'.
-            serial_byte=serial_port.read_until('\r\n')
-            #Convert the bytes read into a string
+            serial_byte=serial_port.read()
             serial_string=serial_byte.decode()
-            #Slice off the two end characters
-            serial_string=serial_string[:-2]
+            print(serial_byte)
             if serial_string != "":
                 await qIn.put(serial_string)
                 #Uncomment the next line to see what the serial port is getting.
                 #print(serial_byte)
         serial_port.close()
-        
+
 
     async def use_serial_data(self, interval, qIn: asyncio.Queue):
         #This async function reads from the queue and uses the data it finds.
-        #You  should really write your own version in the child class.
         while True:
-            await asyncio.sleep(interval*10)
+            await asyncio.sleep(interval)
             in_string=await qIn.get()
-            print(in_string)
-           
+            if in_string=="T":
+                print("T")
+                self.mc1.set_led_color(BUTTON_NO, "yellow")
+            if in_string=="F":
+                print("F")
+                self.mc1.set_led_color(BUTTON_NO, "blue")  
+ 
 
     async def updater(self, interval):
-        #This async function manually updates the Tkinter GUI.
         while True:
             self.update()
             await asyncio.sleep(interval)
@@ -96,15 +86,16 @@ class SerialAndGui(tk.Tk):
     def close(self):
         for task in self.tasks:
             task.cancel()
-        self.loop.stop()
-        self.destroy()
+            self.loop.stop()
+            self.destroy()
+                
+
 
 
 if __name__=="__main__":
     loop=asyncio.get_event_loop()
-    example=SerialAndGui(loop)
+    app=MCDemo2(loop)
     loop.run_forever()
     loop.close()
-
-
+        
         
