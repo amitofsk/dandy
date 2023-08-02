@@ -20,7 +20,7 @@ import sys
 sys.path.append('../widgets')
 import LEDDisplay as ld
 
-class DigitalWithHW(tk.Tk):
+class DigitalHWLong(tk.Tk):
     #Here's the constructor for the DigitalWithHW class.
     #DigitalWithHW is a child of class tk.Tk, which opens a window.
     def __init__(self, loop, interval=1/20):
@@ -110,6 +110,6 @@ class DigitalWithHW(tk.Tk):
 
 if __name__=="__main__":
     loop=asyncio.get_event_loop()
-    example=DigitalWithHW(loop)
+    example=DigitalHWLong(loop)
     loop.run_forever()
     loop.close()

@@ -11,7 +11,7 @@ poll_object = select.poll()
 poll_object.register(sys.stdin,1)
 while True:
     if poll_object.poll(0):
-    #read as character
+        #read as character
         ch = sys.stdin.read(1)
         print (ch)
         led.value(True)
