@@ -86,11 +86,14 @@ If you will be using MicroPython or CircuitPython for the microcontroller, downl
 ## 4.0 GUI Programming
 Files used in section 4:
 - widgets/LEDDisplay.py
-- widgets/LEDBarDisplay.py (maybe?)
-- widgets/SymbolDisplay.py (maybe?)
+- widgets/LEDBarDisplay.py (coming soon)
+- widgets/SymbolDisplay.py (coming soon)
 - examples/ButtonGUI.py
 - examples/ButtonPicGUI.py
 - examples/DigitalNoHW.py
+- examples/smileOn.png
+- examples/smileOff.png
+
 ### 4.1 What Tkinter is?
 Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs). Tkinter is Python's version of the library, and it comes preinstalled with Python. 
 <br><br>
@@ -219,13 +222,13 @@ if __name__=="__main__":
 (TODO: Add another example, this time using LEDBarDisplay.py as well as LEDDisplay.py and SymbolDisplay.py)
 
 ## 5.0 Programming the microcontroller
-Files used in this section:
-- microcontroller/serialReadMP.py 
-- microcontroller/serialReadCP.py
-- microcontroller/serialReadArd.py
-- microcontroller/serialWriteMP.py
-- microcontroller/serialWriteCP.py
-- microcontroller/serialWriteArd.py
+Files used in section 5:
+- microcontr/serialReadMP.py 
+- microcontr/serialReadCP.py
+- microcontr/serialReadArd.py
+- microcontr/serialWriteMP.py
+- microcontr/serialWriteCP.py
+- microcontr/serialWriteArd.py
 
 <br><br>
 In section 4, we wrote Python code for the computer, and we used the IDLE IDE. In this section, we will instead write code for the microcontroller. This tutorial has four options:
@@ -494,15 +497,23 @@ if __name__=="__main__":
 
 ### 7.0 Displaying DIGITAL data INPUT from the microcontroller on the computer
 
-Files used in 7.0:
+Files used in section 7:
+- microcontr/serialWriteMP.py
+- microcontr/serialWriteCP.py
+- microcontr/serialWriteArd.py
+- examples/DigitalIn.py
+- examples/DigitalHWShort.py
+- examples/DigitalHWLong.py
+- widgets/LEDDisplay.py
+- utilities/SerialAndGui.py
 
 <br><br>
-What this example will do...
+In this section, we will send data from the microcontroller to the computer. More specifically, you should have a pushbutton wired to a microcontroller, and your microcontroller should be connected to the computer by a USB cable. If you aren't pressing the pushbutton, the microcontroller sends the character `F` to the computer. If you are pressing the pushbutton, it sends `T`. We'll go through this example multiple ways. 
 <br><br>
 ### 7.1 Set up the microcontroller
 
 You should still have the pushbutton wired to the microcontroller. We'll need it for this example.
-On the microcontroller, re-open the blinky lights example from section 5.1.3. We'll use this program once again in this section. Run it, and then close the IDE for your microcontroller. 
+On the microcontroller, re-open the blinky lights example from section 5.1.3. We'll use this program once again in this section. Run it, and then close the IDE for your microcontroller. Leave the microcontroller connected to your computer with the USB cable. 
 <br><br>
 If you're following Option A, with MicroPython and the RPi, you will do this by opening the Mu IDE, running the code below, and then closing the Mu IDE. The code is slightly different in CircuitPython and Arduino. 
 
@@ -527,57 +538,53 @@ while True:
 
 In the previous section, we wrote code for the microcontroller using the Mu IDE. In this section, we will be writing code for the computer using IDLE IDE. 
 <br><br> 
-Close the Mu editor and open IDLE. Next, copy the code below in to a new Python file. Alternatively, open the version from the `DANDY` examples directory.
+Copy the code below or open the example that came with the DANDY library. Make sure to set your port appropriately. 
 <br><br>
-Your microcontroller should still be plugged in to your computer and running the previous example, and the microcontroller should still have a pushbutton wired to it.
-<br><br>Run this code. When you press the pushbutton, the character `T` is printed. Otherwise, the character `F` is printed.  
+Run the code. When you are not pressing the pushbutton wired to the microcontroller, it will print `F`. When you are pressing the pushbutton, it will print `T`. 
+
 ```python
 import serial
 import serial.tools.list_ports as port_list
 
 print('Hello')
-ports=list(port_list.comports())
-port=(ports[0].device)
-print(ports[0].device)
-#If you are on Windows and get an error saying port not found, try the next line.
+#If you are on Windows, uncomment the next line and adjust as needed.
 #port='COM1'
-#If you are on Linux and get an error saying port not found, try the next line.
-#port='/dev/ttyACM0'
+#If you are on Linux, uncomment the next line and adjust as needed.
+port='/dev/ttyACM0'
 baudrate=115200
-serialPort=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+serialPort=serial.Serial(port=port, baudrate=baudrate, \
+            bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
 while True:
     serialString=serialPort.read()
     print(serialString)
 serialPort.close()
 ```
 
-(TODO: Clean up the port issue.)
-
-### 7.3 Digital input, now with widgets and asyncio
+### 7.3 Digital input, now with widgets and asyncIO
 #### 7.3.1 What is asyncio and why do we need it here.
-Tkinter is the graphics library. Typically, tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serially.
+Tkinter is the graphics library. Typically, tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serial data.
 The problem is that we want both loops to run continuously and simultaneously. One possible solution would be to put each of these tasks in different threads. 
 We are not quite doing this, but we are doing something quite similar. 
 <br><br>
-We will be using the asyncIO python library. This library isn't quite multithreadding, but it accomplishes the same task. 
+We will be using the asyncIO Python library. This library isn't quite multithreadding, but it accomplishes the same task. 
 Also, instead of telling tkinter to loop continually, we will tell it to manually update inside a loop. 
-The asyncIO library is new to python, so make sure you are at least using Python version 3.7.
+The asyncIO library is new to Python, so make sure you are at least using Python version 3.7.
 <br><br> 
 More info on asyncIO can be found at [async-io-python](https://realpython.com/async-io-python).
 Information on using asyncIO with tkinter came from [asyncio-and-tkinter](https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui) 
 
-#### 7.3.2 Tkinter and Widgets, the short (and recommended) way
+#### 7.3.2 Tkinter and widgets, the short way (recommended)
 
 Make sure the microcontroller is plugged in and still running the previous example.
 <br><br>
 Run the example below. When you run it, you will see a window with an LEDDisplay widget and a quit button. When the pushbutton connected to your microcontroller is held down, the LEDDisplay widget will be yellow. Otherwise it will be blue.
 <br><br>
-Even though this example is short, it has a lot going on. The DigitalHWShort class defined in this example is a child of class SerialAndGui which is a child of Tk. The class SerialAndGui comes with the `DANDY` library, and it is detailed in ../utilities/SerialAndGui.py. 
-The class SerialAndGui is an abstract class. If you run it by itself, you see an empty window which is not useful. Instead, as shown below, you should define a child class and overload the constructor and the use_serial_data function.
+Even though this example is short, it has a lot going on. The DigitalHWShort class defined in this example is a child of class SerialAndGui which is a child of Tk. The class SerialAndGui comes with the DANDY library, and it is detailed in ../utilities/SerialAndGui.py. 
+The class `SerialAndGui` is an abstract class. If you run it by itself, you see an empty window which is not useful. Instead, as shown below, you should define a child class and overload the constructor and the `use_serial_data` function.
 <br><br>
-The SerialAndGui class involves three asynchronous tasks: check_serial_data, use_serial_data, and updater. Each is defined in its own function. The check_serial_data task reads from the serial port and writes the result to a queue. The use_serial_data task reads from the queue and does something with the data it finds. The updater task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
+The `SerialAndGui` class involves three asynchronous tasks: `check_serial_data`, `use_serial_data`, and `updater`. Each is defined in its own function. The `check_serial_data` task reads from the serial port and writes the result to a queue. The `use_serial_data` task reads from the queue and does something with the data it finds. The `updater` task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
 <br><br>
-You don't have to write all the code for these tasks every time you want to use them. Instead, you can just define a child class of SerialAndGui as shown below.   
+You don't have to write all the code for these tasks every time you want to use them. Instead, you can just define a child class of `SerialAndGui` as shown below.   
 
 ```python
 import asyncio
@@ -633,11 +640,11 @@ if __name__=="__main__":
 (TODO: Fix the whole port naming issue... It should be an input here somewhere)
 
 #### 7.3.3 Tkinter and Widgets, the long way
-The previous example relied on the SerialAndGui class. A lot of the details were swept up into that class. What if you want to write all the instructions yourself? 
+The previous example relied on the `SerialAndGui` class. A lot of the details were swept up into that class. What actually  happened? What if you want to write all the instructions yourself without relying on any parent classes? 
 <br><br>
-This example accomplishes the same task as the previous example. Before you run it, make sure your microcontroller is still plugged in and running its code. When you run this example, you will see a window with an LEDDisplay widget. When the pushbutton connected to the microcontroller is pressed, the LEDDisplay is yellow, and otherwise it is blue. 
+This example accomplishes the same task as the previous example. Before you run it, make sure your microcontroller is still plugged in and running its code. As in the last section, when you run this example, you will see a window with an `LEDDisplay` widget. When the pushbutton connected to the microcontroller is pressed, the `LEDDisplay` is yellow, and otherwise it is blue. 
 <br><br>
-In this example, you can see the details of how to use asyncIO to both read from the serial port and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions check_serial_data, use_serial_data, and updater. The DigitalWithHW class defined below is a child only of Tk, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
+In this example, you can see the details of how to use asyncIO to both read from the serial port and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions `check_serial_data`, `use_serial_data`, and `updater`. The `DigitalWithHW` class defined below is a child only of Tk, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
 
 ```python
 
@@ -751,12 +758,35 @@ if __name__=="__main__":
 
 ## 8.0 Displaying ANALOG INPUT data from the microcontroller to the computer
 
-Files used in this section:
+Files used in section 8:
+- widgets/AnalogInDisplay.py
+- widgets/DialDisplay.py
+- widgets/SimplePlotDisplay.py
+- widgets/SlideDisplay.py
+- widgets/TricolorDisplay.py
+- widgets/VectorDisplay.py
+- examples/AnalogHWShort.py
+- examples/singleAInDemo.py
+- examples/tripleAInDemo.py
+- utilities/SerialAndGui.py
+- microcontr/analogToComputerMP.py
+- microcontr/analogToComputerCP.py
+- microcontr/analogToComputerArd.py
+
+In this section, we'll detail how to send analog data from a microcontroller to a computer and display the result in a GUI. In this section, the analog data will come from a potentiometer wired in to the microcontroller. However, you can directly replace that potentiometer with a thermistor, pressure sensor, accelerometer, or other type of analog sensor.
 
 ### 8.1 DANDY widgets for analog inputs, no HW
 
-#### 8.1.1 A first example, displaying one value
-This example does not use asyncio. 
+The DANDY library contains multiple widgets designed to display analog input data. In this section, we don't use any hardware. Instead, we just try out these widgets. 
+
+#### 8.1.1 A first example, displaying one analog value
+
+Try out the example below. When you run it, you see a number of widgets. The `Label`, `Button`, and `Scale` widgets are built into Tkinter. The `SlideDisplay`, `DialDisplay`, `TricolorDisplay`, and `SimplePlotDisplay` widgets are from the DANDY library. 
+<br><br>
+Adjust the `Scale` then press the `Get value` button. You will see the DANDY widgets change appropriately. The `TricolorDisplay` widget is one color below some cutoff value, a second color above another cutoff value, and a third color between those values. 
+<br><br>
+This example uses Tkinter as well as multiple widgets that come with the DANDY library. It does not use asyncIO because it only needs one loop, for the GUI. 
+
 ```python
 
 import tkinter as tk
@@ -811,9 +841,13 @@ if __name__=="__main__":
     mygui=SingleAInDemo()
 
 ```
+(TODO: Clean up the widgets a bit, and then add a picture of the GUI.)
+
 
 #### 8.1.2 A second example, displaying xyz values.
-Here's my example
+
+Some data, such as velocity, acceleration, and magnetic field at a point, is inherently three dimensional. The DANDY library contains the `VectorDisplay` widget for displaying vector data. Try out the example below.
+
 ```python
 
 import tkinter as tk
@@ -859,20 +893,175 @@ class TripleAInDemo:
 if __name__=="__main__":
     triple_demo=TripleAInDemo()
 ```
+(TODO: Clean up the widget and include a picture of the GUI).
 
 ### 8.2 Set up the hardware
 
 #### 8.2.1 Option A: Micropython and RPiPico
 ##### 8.2.1.1 Build the circuit
+
+Use a voltage divider circuit with a potentiometer. Connect the top of the potentiometer to pin 36, also known as GP26. This pin is internally connected to ADC0.
+
+(TODO: Pic needed.)
+
 ##### 8.2.2.2 Write the microcontroller code
+
+We could just print out the value that we read. Instead, here we're a bit smarter. We're printing a message in json format that contains the value we read in addition to other pieces of information. 
+<br><br>
+What is a json ...
+<br><br>
+Run this code. As you adjust the potentiometer, the value should change.
+
+```python
+from machine import Pin
+from machine import ADC
+import time
+print ("hello")
+
+adc=ADC(Pin(26 ))
+
+value=0
+while True:
+    value=adc.read_u16()
+    outstring='{\"boardName\":\"RPP1\", \"pinName\":\"ADC0\", \"value\":\"'+str(value)+'\"}'
+    print(outstring)
+    time.sleep(5)
+
+```
 
 #### 8.2.1 Option B: Circuitpython and the RPiPico
 #### 8.2.1 Option C: Micropython and the CY8CPROTO
 #### 8.2.1 Option D: Arduino
 
 ### 8.3 Displaying analog data from the microcontroller on the computer
+
+Back to writing code for the computer in Python using the IDLE IDE. 
+This example reads the data from the microcontroller. It also picks off the part of the json that we're interested in. This example does not use a GUI. We'll add a GUI in the next section.  
+
+```python
+import serial
+import serial.tools.list_ports as port_list
+import json
+
+print('Hello World')
+#For Windows, uncomment the next line and adjust as needed.
+#port='COM1'
+#For Linux, uncomment the next line and adjust as needed.
+port='/dev/ttyACM0'
+baudrate=115200
+serialPort=serial.Serial(port=port, baudrate=baudrate, \
+            bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+imax=100
+
+for ii in range(imax):
+    #Read until you see the two end characters '\r\n'
+    serial_string=serialPort.read_until('\r\n')
+    #Convert the bytes read into an actual string.
+    serial_string=serial_string.decode('utf-8')
+    if serial_string!="":
+        #Slice off the two end characters
+        serial_string=serial_string[:-2]
+        #Parse the json and save the result in serial_json
+        serial_json=json.loads(serial_string)
+        #Pick off the element named "value" of the json
+        val=serial_json["value"]
+        print(serial_string)
+        print(val)
+
+serialPort.close()
+
+```
 ### 8.4 Displaying analog data, now with widgets and asyncio
+
+Now let's put all the pieces together. The microcontroller reads analog data from the potentiometer and sends that analog data, in json format, to the computer. The code below runs on the computer. It reads that analog data and displays it using widgets from Tkinter and the DANDY library. The class `AnalogHWShort` defined below is a child of the class `SerialAndGui`. The asyncIO library is needed because we want to both update the GUI and read the serial data in loops, and these loops should appear to the user to happen at the same time. The details of using asyncIO are hidden in the parent's class `SerialAndGui`. 
+<br><br>
+You should still have the potentiometer wired to the microcontroller. The microcontroller should still be connected to your computer with the USB cable, and it should still be running the same example used in the last section.
+<br><br>
+Try out the example below. While this example is short, it is not simple. It has a lot going on.  
+
+```python
+
+import asyncio
+import tkinter as tk
+import time
+import json
+import serial
+import serial.tools.list_ports as port_list
+import sys
+sys.path.append('../widgets')
+sys.path.append('../utilities')
+import SerialAndGui as sg
+import DialDisplay as dd 
+import SlideDisplay as sd 
+import TricolorDisplay as td
+import SimplePlotDisplay as spd 
+
+
+class AnalogHWShort(sg.SerialAndGui):
+    #Here's the constructor.
+    def __init__(self, loop, interval=1/20):
+        super().__init__(loop)
+        #The line above says run the parent's constructor.
+        #The parent's constructor starts the three async tasks:
+        #check_serial_data, use_serial_data, and updater.
+        #Below, we set up the widgets for a simple GUI
+        #and pack them in the window.
+        
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.close)
+        self.label1=tk.Label(self, text="Hello")
+        self.slide1=sd.SlideDisplay(self)
+        self.dial1=dd.DialDisplay(self, \
+                            height=100, width=100)
+
+        self.tric1=td.TricolorDisplay(self, width=100, \
+                            height=100)
+        self.plot1=spd.SimplePlotDisplay(self)
+
+        self.label1.pack()
+        self.slide1.pack()
+        self.dial1.pack()
+        self.tric1.pack()
+        self.plot1.pack()
+        self.button_quit.pack()
+
+  
+    #This async function reads from the queue and uses the data it finds.
+    #We're overloading the parent's version of this function.
+    async def use_serial_data(self, interval, qIn: asyncio.Queue):
+        while True:
+            await asyncio.sleep(interval)
+            #get the string from the queue
+            in_string=await qIn.get()
+            print(in_string)
+            #Parse the json and pick off the element named "value"
+            in_json=json.loads(in_string)
+            val=in_json["value"]
+            val_float=float(val)
+            #print(val)
+            #Scale val so it is in a reasonable range for display
+            scaled_val=val_float/10000.0
+            slide_message="Value ="+str(scaled_val)
+            self.label1.config(text=slide_message)
+            self.dial1.set_to_value(scaled_val)
+            self.slide1.set_to_value(scaled_val)
+            self.tric1.set_to_value(scaled_val)
+            self.plot1.add_point(scaled_val)
+            
+
+if __name__=="__main__":
+    loop=asyncio.get_event_loop()
+    example=AnalogHWShort(loop)
+    loop.run_forever()
+    loop.close()
+``` 
+
+(TODO: Fix the whole port issue.... It should be an option that you set here, not in the parent SerialAndGui.py.)
+
+
 ### 8.5 Displaying vector data
+(TODO: Write an example which uses the magnetometer that comes in the hackster hardware kit, sends three analog input values from the microcontroller to the computer, and displays the result using the VectorDisplay widget.)
+
 ## 9.0 Widgets that look like microcontrollers
 
 Here are the files used in this section with the microcontrollers
@@ -885,6 +1074,7 @@ Here are the files used in this section with the microcontrollers
  - widgets/ANanoEveryDisplay.py
  - widgets/Cyc8protoDisplay.py 
  - serial read files?
+
 #### 9.1 Example with no hardware
 This actually can draw four different microcontrollers. Uncomment the appropriate lines to see so.
 ```python
