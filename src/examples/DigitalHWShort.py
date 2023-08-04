@@ -1,4 +1,10 @@
 #DigitalHWShort is a child of class SerialAndGui which is a child of class Tk.
+#See the tutorial for more details. Before you run this, you should connect
+#a pushbutton to your microcontroller, and you should run
+# microcontr/serialWriteMP.py on your microcontroller. When you run this,
+#you will see a LEDDisplay widget and a quit button. When you hold
+#down the pushbuntton wired to the microcontroller, the LEDDisplay widget's
+#color will change.
 
 
 import asyncio
@@ -12,10 +18,16 @@ sys.path.append('../utilities')
 import LEDDisplay as ld
 import SerialAndGui as sg
 
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+#PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+
 class DigitalHWShort(sg.SerialAndGui):
     #Here's the constructor.
-    def __init__(self, loop, interval=1/20):
-        super().__init__(loop)
+    def __init__(self, loop, interval=1/20, port=PORT):
+        super().__init__(loop, port=PORT)
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.

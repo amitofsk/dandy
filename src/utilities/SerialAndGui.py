@@ -11,7 +11,7 @@
 #Information on getting tkinter and asyncio to work together came from:
 #https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the
 
-
+#TODO:Clean up use of private (mangled) variables.
 
 import asyncio
 import tkinter as tk
@@ -21,12 +21,24 @@ import serial.tools.list_ports as port_list
 #import sys
 #sys.path.append('../widgets')
 
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+#PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+#The following lines may automatically set the port but aren't too reliable.
+#ports=list(port_list.comports())
+#print(ports[0].device)
+#PORT=ports[0].device
+
+
 class SerialAndGui(tk.Tk):
     #Here's the constructor for the DigitalWithHW class.
     #DigitalWithHW is a child of class tk.Tk, which opens a window.
-    def __init__(self, loop, interval=1/20):
+    def __init__(self, loop, interval=1/20, port=PORT):
         super().__init__()
-        self.loop=loop
+        self.__loop=loop
+        self.__port=PORT
         self.protocol("WM_DELETE_WINDOW", self.close)
 
         
@@ -45,22 +57,12 @@ class SerialAndGui(tk.Tk):
         #This async function reads data from the serial port and puts the
         #data in the queue.
 
-        #Set up to read from the serial port.
-        #ports=list(port_list.comports())
-        #print(ports[0].device)
-        #port=ports[0].device
-        #If you are on windows and you get an error saying it can't find the port, try the line below.
-        #port='COM6'
-        #If you are on linux and you get an error saying it can't find the port, try the line below.
-        port='/dev/ttyACM0'
         baudrate=115200
-        serial_port=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+        serial_port=serial.Serial(port=self.__port, baudrate=baudrate, \
+                        bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
         
         #Read a byte at a time from the serial port.
         #Convert the byte to a string, and put the string in the queue.
-        
-        #TODO: Move setting port to very top...That step is needed.
-        #In linux, I had to set port manually here.
          
         while True:
             await asyncio.sleep(interval)
@@ -96,7 +98,7 @@ class SerialAndGui(tk.Tk):
     def close(self):
         for task in self.tasks:
             task.cancel()
-        self.loop.stop()
+        self.__loop.stop()
         self.destroy()
 
 

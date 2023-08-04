@@ -16,11 +16,17 @@ import SlideDisplay as sd
 import TricolorDisplay as td
 import SimplePlotDisplay as spd 
 
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+#PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+
 
 class AnalogHWShort(sg.SerialAndGui):
     #Here's the constructor.
-    def __init__(self, loop, interval=1/20):
-        super().__init__(loop)
+    def __init__(self, loop, interval=1/20, port=PORT):
+        super().__init__(loop, port=PORT)
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -37,9 +43,9 @@ class AnalogHWShort(sg.SerialAndGui):
         self.tric1=td.TricolorDisplay(self, width=100, \
                             height=100)
         self.plot1=spd.SimplePlotDisplay(self)
+
         self.label1.pack()
         self.slide1.pack()
-       
         self.dial1.pack()
         self.tric1.pack()
         self.plot1.pack()
@@ -58,9 +64,8 @@ class AnalogHWShort(sg.SerialAndGui):
             in_json=json.loads(in_string)
             val=in_json["value"]
             val_float=float(val)
-            print(val)
+            #print(val)
             #Scale val so it is in a reasonable range for display
-            #WHY DOES THE NEXT LINE CAUSE PROBLEMS? It is just division.
             scaled_val=val_float/10000.0
             slide_message="Value ="+str(scaled_val)
             self.label1.config(text=slide_message)
@@ -69,9 +74,6 @@ class AnalogHWShort(sg.SerialAndGui):
             self.tric1.set_to_value(scaled_val)
             self.plot1.add_point(scaled_val)
             
-
-    
-
 
 if __name__=="__main__":
     loop=asyncio.get_event_loop()

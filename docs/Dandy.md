@@ -21,15 +21,17 @@ This guide is intended for:
  - Engineers who want to learn a new way to perform data acquisition using the Python language. 
  - People with at least a little Python coding experience. For example, you should know how to write functions in Python, and you should know what classes and objects are. 
 <br><br>
+
 This guide is NOT for you if:
  - You have not programmed before.
+ - You want a plug-and-play solution. This is a software library, so you will have to program.
  - You want to acquire sensor data with precise timing. In this project, data collection happens with an inexpensive microcontroller without a real time operating system.
  - You want to collect data using elaborate equipment. This project involves small discte sensors.  
 ## 2.0 Gather hardware supplies
 Hardware used:
-- Small Protoboard
-- Three buttons
-- Wire, resistors
+- Small Protoboard and wires
+- Buttons that fit in the protoboard
+- Resistors (300 $\Omega$ - 1k $\Omega$ ) 
 - Potentiometer
 - USB cable to connect your microcontroller
 - Microcontroller
@@ -68,7 +70,7 @@ pip install pyserial
 ### 3.4 Download the DANDY library.
 The next step is to download the DANDY library from github. Github is a website that hosts tons of open source software projects. 
 <br><br>
-This step requires git. Git comes with Linux operating systems. If you are on a Windows machine, you may have to install it. Git can be downloaded from [`Git's website`](https://git-scm.com). Once you download it, open a GitBash terminal.  
+This step requires git. Git comes with Linux operating systems. If you are on a Windows machine, you may have to install it. Git can be downloaded from [`Git's website`](https://git-scm.com). Once you install it, open a GitBash terminal.  
 <br><br>
 Change to the directory that you want work in. Then, use the following command in the terminal to download the DANDY repository from github. 
  ```python
@@ -79,7 +81,7 @@ This tutorial will involve both writing Python code for a computer as well as wr
 <br><br>
 One advantage of using a different IDE for the computer code and the microcontroller code is that the IDE will remind you which hardware you are programming for. 
 <br><br>
-If you will be using MicroPython or CircuitPython for the microcontroller, download and install the Mu IDE from [`CodeWithMU`](https://codewith.mu/en/download). If you will be using Arduino, download and install the [`Arduino IDE`](https://www.arduino.cc/en/software/) 
+If you will be using MicroPython or CircuitPython for the microcontroller, download and install the Mu IDE from [`CodeWithMU`](https://codewith.mu/en/download). If you will be using Arduino, download and install the [`Arduino IDE`](https://www.arduino.cc/en/software/). 
 
 
 
@@ -100,7 +102,7 @@ Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs)
 Tkinter contains many widgets including labels, buttons, scales, and spinboxes. For a nice list along with the API reference, see [`tkdocs`](https://tkdocs.com/pyref/). 
 
 ### 4.2 Tkinter widgets 
-Let's write our first GUI program using Python and Tkinter. We're writing code to run on the computer, not the microcontroller, in this section, so use the IDLE IDE. In this example, we use two Tkinter widgets: `Label` and `Button`. The pack function puts a widget into a window. 
+Let's write our first GUI program using Python and Tkinter. We're writing code to run on the computer, not the microcontroller, in this section, so use the IDLE IDE. In this example, we use two Tkinter widgets: `Label` and `Button`. The `pack` function puts a widget into a window. 
 <br><br>
 Try out the example below. You should see a window with a label and a working quit button. If you downloaded the `DANDY` library, examples are in the `src/examples` directory.
 
@@ -232,8 +234,8 @@ Files used in section 5:
 
 <br><br>
 In section 4, we wrote Python code for the computer, and we used the IDLE IDE. In this section, we will instead write code for the microcontroller. This tutorial has four options:
- - Option A: Raspberry Pi Pico and MicroPython 
- - Option B: Raspberry Pi Pico and CircuitPython
+ - Option A: Raspberry Pi Pico (RPi) and MicroPython 
+ - Option B: Raspberry Pi Pico (RPi) and CircuitPython
  - Option C: Cy8cproto and MicroPython
  - Option D: Arduino
 Follow the option of your choice for this section.
@@ -241,14 +243,15 @@ Follow the option of your choice for this section.
 ### 5.1 Option A: Micropython and RPi
 #### 5.1.1 Build the circuit
 Connect a button and a resistor between pin 21 (GP16) and pin 36 (3.3V power)<br>
-Use a resistor with a value between 300 and 1000 Ohms.
+Use a resistor with a value between 300$\Omega$ and 1000 $\Omega$.
 
 Here is the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) of the Raspberry Pi Pico (RPi). <br>
 ![](docPics/PiAndButton3.png)
 <br>
-(TODO: Fixme... The picture uses the wrong power pin... Also, maybe switch to use the internal LED?)
+(TODO: Fixme... The picture uses the wrong power pin...)
+
 #### 5.1.2 Install MicroPython on the RPi
-The RPi does not have a full operating system. Instead, we'll install MicroPython, which is a Python interpreter specifically for embedded devices. Think of MicroPython as a minimal operating system, that contains just enough instructions to run Python program. 
+The RPi does not have a full operating system. Instead, we'll install MicroPython, which is a Python interpreter specifically for embedded devices. Think of MicroPython as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program. 
 <br><br>
 Download the latest release of MicroPython from [here](https://micropython.org/download/rp2-pico/).
 <br><br>
@@ -287,7 +290,7 @@ while True:
         led.value(False)
     time.sleep(1)
 ```
-The fourth line tells the RPi that we will call GP16 (pin 21) the name `button`. This line also says `button` will be an input. The `Pin.PULL_DOWN` option connects this pin to an internal resistor so that when nothing is connected to it, the pin will be at zero volts. 
+The fourth line tells the RPi that we will call GP16 (pin 21) the name `button`. This line also says `button` will be an input. The `Pin.PULL_DOWN` option connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low. 
 <br><br>
 The fifth line tells the RPi that we will call GP25, the internal LED, the name `led`. This line also says `led` will be an output.
 <br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T`. Otherwise it prints `F`. 
@@ -325,31 +328,42 @@ while True:
 
 
 ### 5.1 Option B: CircuitPython and the RPi
-(TODO: Rewrite this section.)
-#### 5.1.1 Build the circuit
-##### 5.1.2 Install CircuitPython on the RPi
 
-**Steps**
-1. Download the latest release from https://circuitpython.org/board/raspberry_pi_pico/
-2. Hold the botton down and plug in the Rpi by using the USB cable
-3. In windows explorer should see now the Rpi Drive available 
-4. In windows explorer drag the file you just downloaded to that drive
-5. Unplug the USB cable, without plugging the button in (BOOTSEL)
-6. In this example we are using MU Integrated Development Environment (IDE), download it from this website codewith.mu/en/download . Thonny could also be used instead of MU.
-7. Open the MU editor, select Circuitpython and the Raspberry PiPico (it may ask for this option or select the Mode button)
+#### 5.1.1 Build the circuit
+
+Connect a button and a resistor between pin 21 (GP16) and pin 36 (3.3V power)<br>
+Use a resistor with a value between 300$\Omega$ and 1000 $\Omega$.
+
+Here is the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) of the Raspberry Pi Pico (RPi). <br>
+![](docPics/PiAndButton3.png)
+<br>
+(TODO: Fixme... The picture uses the wrong power pin...)
+
+
+##### 5.1.2 Install CircuitPython on the RPi
+The RPi does not have a full operating system. Instead, we'll install CircuitPython, which is a Python interpreter specifically for embedded devices. Think of CircuitPython as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program.
+<br><br>
+Download the latest release of CircuitPython from [here](https://circuitpython.org/board/raspberry_pi_pico/).
+<br><br>
+The RPi has a small button on it labeled `BOOTSEL`. Hold that button down, and use a USB cable to plug the RPi into the computer. Once it is plugged in, you can release the button.
+<br><br>
+You should now see the RPi drive available (for example, in Windows Explorer). Drag the file that you just downloaded to that drive.
+<br><br>
+Disconnect the RPi by unplugging the USB cable. Reconnect the RPi, this time without holding down the `BOOTSEL` button.
+
 
 #### 5.1.3 Blinky lights
 
-**Steps**
-1. In the python file in the MU editor, print hello
-
+Now we're ready to write our first CircuitPython program that will run on the RPi. We'll use the Mu IDE, so open it now. Adafruit has written a nice [CircuitPython tutorial.](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/overview)
+<br><br>
+This step requires some libraries for interacting with the hardware, so you can't use IDLE or a text editor unless you manually download those libraries. If you don't want to use Mu, Thonny is another IDE option that has the needed libraries. This tutorial, however, uses Mu.
+<br><br>
+Write the following instruction in the editor, and press the `Run` button. You should see the result on the bottom of the Mu window.
 ```python
 print ("Hello")
 ```
 
-2. Run the file to make sure it works
-3. We are ready to use the push button you wired earlier
-
+Now let's write a CircuitPython program that uses the pushbutton you wired to the RPi. Copy the program below into the editor, and run it.
 
 ```python
 import time
@@ -369,16 +383,51 @@ while True:
         print("F")
         led.value(False)
     time.sleep(1)
+
 ```
-The fifth line tells the RPPico that we will call pin GP25, the built in LED, the name led. This line also says GP25 will be a digital output.  <br><br>
-The fourth line tells the RPPico that we will call pin GP16, which is also called pin 21 in the pinout diagram, button. This line also say as GP16 will be a digital input. 
-The Pin.PULL_DOWN option connects the pin to an internal resistor so that when nothing is connected to it, the pin will be low.  
-Reference: [RPi Pico CircuitPython](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/traffic-light-and-pedestrian-crossing)
+Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, and it will be an output. Lines 8 and 9 tell the RPi that we will call GP16 (pin21) the name `button`, and it will be an input.
 
-4. Run the code of step 3, when you hold down the button it will print T otherwise it prints F.
-
+<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T`. Otherwise it prints `F`.
 ![](./docPics/Section3.4.3.2_step4.png)
+
+(TODO: Fixme, the figure above is for MicroPython, not CircuitPython)
+
 #### 5.1.4 Reading data from the computer
+
+In section 6.0, we will send data from the computer to the micrcontroller. To complete this example, we will need to write both Python code for the computer and CircuitPython code for the microcontroller. While we're programming the microcontroller, let's write this code.
+<br><br>
+Copy the code below into the Mu editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the micrcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
+<br><br>
+If you close the Mu IDE, the microcontroller continues to run this code. If you unplug the RPi and plug it back into your computer, the microcontroller continues to run this code.
+
+```python
+import time
+import board
+import digitalio
+import supervisor
+
+print ("hello")
+led=DigitalInOut(board.LED)
+led.direction=digitalio.Direction.OUTPUT
+
+while True:
+    if supervisor.runtime.serial_bytes_available:
+	#read in a character
+	ch=input().strip()
+        print(ch)
+        led.value(True)
+        time.sleep(0.25)
+        led.value(False)
+    time.sleep(1)
+
+
+
+```
+
+(TODO: Test this circuitpython code above... I got it from https://stackoverflow.com/questions/48922189/receive-data-from-host-computer-using-circuit-python-on-circuit-playground-expre )
+
+
+
 
 ### 5.1 Option C: Micropython and the CY8CPROTO
 #### 5.1.1 Build the circuit
@@ -406,11 +455,11 @@ In section 5.1.4, you wrote the necessary code for the microcontroller and ran i
 Close your Mu IDE or your Arduino IDE.
 
 ### 6.1 Digital output, without a GUI
-Let's write the Python code that will run on the computer for this example. Open the IDLE IDE, and copy the code below, and run it. Every second, this program sends the character `Z` to the serial port (USB connection to the microcontroller.)
+Let's write the Python code that will run on the computer for this example. Open the IDLE IDE, and copy the code below, and run it. Every second, this program sends the character `Z` from the computer, down the USB cable, to the microcontroller. 
 <br><br>
 This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0`. Alter the code below so that the correct port is used. 
 <br><br>
-We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baudrate and number of stopbits. For this example, you shouldn't need to alter these parameters, but in other cases, you might need to alter them.
+We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baudrate, bytesize, and number of stopbits. For this example, you shouldn't need to alter these parameters, but in other cases, you might.
 <br><br>
 ```python
 import serial
@@ -495,7 +544,7 @@ if __name__=="__main__":
 
 
 
-### 7.0 Displaying DIGITAL data INPUT from the microcontroller on the computer
+## 7.0 Displaying DIGITAL data INPUT from the microcontroller on the computer
 
 Files used in section 7:
 - microcontr/serialWriteMP.py
@@ -587,6 +636,7 @@ The `SerialAndGui` class involves three asynchronous tasks: `check_serial_data`,
 You don't have to write all the code for these tasks every time you want to use them. Instead, you can just define a child class of `SerialAndGui` as shown below.   
 
 ```python
+
 import asyncio
 import tkinter as tk
 import time
@@ -598,10 +648,16 @@ sys.path.append('../utilities')
 import LEDDisplay as ld
 import SerialAndGui as sg
 
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+#PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+
 class DigitalHWShort(sg.SerialAndGui):
     #Here's the constructor.
-    def __init__(self, loop, interval=1/20):
-        super().__init__(loop)
+    def __init__(self, loop, interval=1/20, port=PORT):
+        super().__init__(loop, port=PORT)
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -620,13 +676,13 @@ class DigitalHWShort(sg.SerialAndGui):
         while True:
             await asyncio.sleep(interval)
             in_string=await qIn.get()
-
+    
             if in_string=="T":
                 print("T")
                 self.led1.change_LED_color("yellow")
             if in_string=="F":
-               print("F")
-               self.led1.change_LED_color("blue")
+                print("F")
+                self.led1.change_LED_color("blue")
 
 
 if __name__=="__main__":
@@ -637,7 +693,6 @@ if __name__=="__main__":
 ```
 ![Digital With Hardware Picture](./docPics/digwithHW.png)
 <br><br>
-(TODO: Fix the whole port naming issue... It should be an input here somewhere)
 
 #### 7.3.3 Tkinter and Widgets, the long way
 The previous example relied on the `SerialAndGui` class. A lot of the details were swept up into that class. What actually  happened? What if you want to write all the instructions yourself without relying on any parent classes? 
@@ -648,6 +703,7 @@ In this example, you can see the details of how to use asyncIO to both read from
 
 ```python
 
+
 import asyncio
 import tkinter as tk
 import time
@@ -657,7 +713,17 @@ import sys
 sys.path.append('../widgets')
 import LEDDisplay as ld
 
-class DigitalWithHW(tk.Tk):
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+#PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+#The following lines may automatically set the port but aren't too reliable.
+#ports=list(port_list.comports())
+#print(ports[0].device)
+#PORT=ports[0].device
+
+class DigitalHWLong(tk.Tk):
     #Here's the constructor for the DigitalWithHW class.
     #DigitalWithHW is a child of class tk.Tk, which opens a window.
     def __init__(self, loop, interval=1/20):
@@ -691,21 +757,12 @@ class DigitalWithHW(tk.Tk):
         #data in the queue.
 
         #Set up to read from the serial port.
-        ports=list(port_list.comports())
-        print(ports[0].device)
-        port=ports[0].device
-        #If you are on windows and you get an error saying it can't find the port, try the line below.
-        #port='COM1'
-        #If you are on linux and you get an error saying it can't find the port, try the line below.
-        port='/dev/ttyACM0'
         baudrate=115200
-        serial_port=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+        serial_port=serial.Serial(port=PORT, baudrate=baudrate, \
+                        bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
         
         #Read a byte at a time from the serial port.
         #Convert the byte to a string, and put the string in the queue.
-        
-        #TODO: Move setting port to very top...That step is needed.
-        #In linux, I had to set port manually here.
         while True:
             await asyncio.sleep(interval)
             serial_byte=serial_port.read()
@@ -746,14 +803,13 @@ class DigitalWithHW(tk.Tk):
 
 if __name__=="__main__":
     loop=asyncio.get_event_loop()
-    example=DigitalWithHW(loop)
+    example=DigitalHWLong(loop)
     loop.run_forever()
     loop.close()
 
 ```
 ![Digital With Hardware Picture](./docPics/digwithHW.png)
 
-(TODO: separate the serial setup into its own function... the port should be an input)
 
 
 ## 8.0 Displaying ANALOG INPUT data from the microcontroller to the computer
@@ -981,6 +1037,7 @@ Try out the example below. While this example is short, it is not simple. It has
 
 ```python
 
+
 import asyncio
 import tkinter as tk
 import time
@@ -996,11 +1053,17 @@ import SlideDisplay as sd
 import TricolorDisplay as td
 import SimplePlotDisplay as spd 
 
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+#PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+
 
 class AnalogHWShort(sg.SerialAndGui):
     #Here's the constructor.
-    def __init__(self, loop, interval=1/20):
-        super().__init__(loop)
+    def __init__(self, loop, interval=1/20, port=PORT):
+        super().__init__(loop, port=PORT)
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -1054,9 +1117,9 @@ if __name__=="__main__":
     example=AnalogHWShort(loop)
     loop.run_forever()
     loop.close()
+
 ``` 
 
-(TODO: Fix the whole port issue.... It should be an option that you set here, not in the parent SerialAndGui.py.)
 
 
 ### 8.5 Displaying vector data

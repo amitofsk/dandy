@@ -1,9 +1,9 @@
-
-#Read the instructions in Dandy.md. 
-#Before running this program, upload the serialRead.py to your microcontroller.
-#When this runs, you will see a small icon and a quit button.
-#When you press the pushbutton on the circuit connected to the microcontroller, 
-#the small icon will change.
+#See the tutorial for more details. Before you run this, you should connect
+#a pushbutton to your microcontroller, and you should run
+# microcontr/serialWriteMP.py on your microcontroller. When you run this,
+#you will see a LEDDisplay widget and a quit button. When you hold
+#down the pushbuntton wired to the microcontroller, the LEDDisplay widget's
+#color will change.
 
 #Information on asyncIO came from:
 #https://realpython.com/async-io-python
@@ -19,6 +19,16 @@ import serial.tools.list_ports as port_list
 import sys
 sys.path.append('../widgets')
 import LEDDisplay as ld
+
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+#PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+#The following lines may automatically set the port but aren't too reliable.
+#ports=list(port_list.comports())
+#print(ports[0].device)
+#PORT=ports[0].device
 
 class DigitalHWLong(tk.Tk):
     #Here's the constructor for the DigitalWithHW class.
@@ -54,26 +64,16 @@ class DigitalHWLong(tk.Tk):
         #data in the queue.
 
         #Set up to read from the serial port.
-        ports=list(port_list.comports())
-        print(ports[0].device)
-        port=ports[0].device
-        #If you are on windows and you get an error saying it can't find the port, try the line below.
-        #port='COM6'
-        #If you are on linux and you get an error saying it can't find the port, try the line below.
-        port='/dev/ttyACM0'
         baudrate=115200
-        serial_port=serial.Serial(port=port, baudrate=baudrate, bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+        serial_port=serial.Serial(port=PORT, baudrate=baudrate, \
+                        bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
         
         #Read a byte at a time from the serial port.
         #Convert the byte to a string, and put the string in the queue.
-        
-        #TODO: Move setting port to very top...That step is needed.
-        #In linux, I had to set port manually here.
         while True:
             await asyncio.sleep(interval)
             serial_byte=serial_port.read()
             serial_string=serial_byte.decode()
-           # print(serial_byte)
             if serial_string != "":
                 await qIn.put(serial_string)
                 #Uncomment the next line to see what the serial port is getting.
