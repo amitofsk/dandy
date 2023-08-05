@@ -40,7 +40,8 @@ Hardware used:
   - Option D: Arduino
 
 You will need to plug your microcontroller into a protoboard. If your microcontroller did not come with headers pre-installed, solder them on now.
-(TO DO: Picture of RPiPico with and without headers.)
+
+![Digital With Hardware Picture](./docPics/headers2.png)
 
 
 ## 3.0 Install software
@@ -246,9 +247,7 @@ Connect a button and a resistor between pin 21 (GP16) and pin 36 (3.3V power)<br
 Use a resistor with a value between 300$\Omega$ and 1000 $\Omega$.
 
 Here is the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) of the Raspberry Pi Pico (RPi). <br>
-![](docPics/PiAndButton3.png)
-<br>
-(TODO: Fixme... The picture uses the wrong power pin...)
+![](docPics/PiAndButton5.png)
 
 #### 5.1.2 Install MicroPython on the RPi
 The RPi does not have a full operating system. Instead, we'll install MicroPython, which is a Python interpreter specifically for embedded devices. Think of MicroPython as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program. 
@@ -335,9 +334,7 @@ Connect a button and a resistor between pin 21 (GP16) and pin 36 (3.3V power)<br
 Use a resistor with a value between 300$\Omega$ and 1000 $\Omega$.
 
 Here is the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) of the Raspberry Pi Pico (RPi). <br>
-![](docPics/PiAndButton3.png)
-<br>
-(TODO: Fixme... The picture uses the wrong power pin...)
+![](docPics/PiAndButton5.png)
 
 
 ##### 5.1.2 Install CircuitPython on the RPi
@@ -1198,6 +1195,8 @@ class MCDemo(tk.Tk):
 if __name__=="__main__":
     mygui=MCDemo()
 ```
+
+![Microcontroller GUI pic](./docPics/mcgui.png)
 
 
 #### 9.2 Example with hardware, digital input, and RPPicoDisplay
