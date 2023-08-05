@@ -10,4 +10,4 @@ while True:
     value=adc.read_u16()
     outstring='{\"boardName\":\"RPP1\", \"pinName\":\"ADC0\", \"value\":\"'+str(value)+'\"}'
     print(outstring)
-    time.sleep(5)
+    time.sleep(1)

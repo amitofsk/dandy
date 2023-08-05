@@ -66,7 +66,8 @@ class AnalogHWShort(sg.SerialAndGui):
             val_float=float(val)
             #print(val)
             #Scale val so it is in a reasonable range for display
-            scaled_val=val_float/10000.0
+            #TODO: Get rid of magic number.
+            scaled_val=val_float/100.0
             slide_message="Value ="+str(scaled_val)
             self.label1.config(text=slide_message)
             self.dial1.set_to_value(scaled_val)

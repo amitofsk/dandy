@@ -6,30 +6,33 @@ import sys
 sys.path.append ('../widgets')  
 import AnalogInDisplay as ain 
 
+#These parameters set the fraction of the window used by the widget.
 xScaleFactor=0.75
 yScaleFactor=0.9
+
 
 class SlideDisplay(ain.AnalogInDisplay):
     def __init__(self, windowS, height=100, width=100):
         super().__init__(windowS, a_height=height, a_width=width)
-        self.xLeft=(1-xScaleFactor)*self.ain_width
-        self.xRight=xScaleFactor*self.ain_width
-        self.yTop=(1-yScaleFactor)*self.ain_height
-        self.yBottom=yScaleFactor*self.ain_height
-        self.slide_border=self.ain_canvas.create_rectangle(self.xLeft, \
-                        self.yTop, self.xRight, self.yBottom)
-        self.slide_fill=self.ain_canvas.create_rectangle(self.xLeft, \
-                        self.yTop+20, self.xRight, self.yBottom, fill="pink")
+        self.__xLeft=(1-xScaleFactor)*self.get_ain_width()
+        self.__xRight=xScaleFactor*self.get_ain_width()
+        self.__yTop=(1-yScaleFactor)*self.get_ain_height()
+        self.__yBottom=yScaleFactor*self.get_ain_height()
+        self.__slide_border=self.ain_canvas.create_rectangle(self.__xLeft, \
+                        self.__yTop, self.__xRight, self.__yBottom)
+        self.__slide_fill=self.ain_canvas.create_rectangle(self.__xLeft, \
+                        self.__yTop+20, self.__xRight, self.__yBottom, \
+                        fill="blue")
         windowS.update()
 
    
     def set_to_value(self, aValue):
-        self.ain_canvas.delete(self.slide_fill)
-        hval=((1-yScaleFactor)-(self.yBottom/self.maximum))*aValue \
-                    +self.yBottom
-        self.slide_fill=self.ain_canvas.create_rectangle(self.xLeft, hval, \
-                    self.xRight,self.yBottom, fill='pink')
-        #I don't think I need an update here, but I'm not sure.        
+        self.ain_canvas.delete(self.__slide_fill)
+        hval=((1-yScaleFactor)-(self.__yBottom/self.get_maximum()))*aValue \
+                    +self.__yBottom
+        self.__slide_fill=self.ain_canvas.create_rectangle(self.__xLeft, hval, \
+                    self.__xRight,self.__yBottom, fill='blue')
+               
     
 
 if __name__=="__main__":

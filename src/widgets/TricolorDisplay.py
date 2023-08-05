@@ -1,6 +1,6 @@
 #This class displays an analog input as if it were sent through a comparator
 #to a tricolor LED. It relies on LEDDisplay.
-#It is a child of LEDDisplay, not AnalogInDisplay... Not sure if this is right.
+#It is a child of LEDDisplay, not AnalogInDisplay.
 
 import tkinter as tk
 import sys   
@@ -11,23 +11,34 @@ class TricolorDisplay(LEDD.LEDDisplay):
     def __init__(self, windowT, height=100, width=100, low_level=3.0, \
                  high_level=8.0):
         super().__init__(windowT, height=height, width=width)
-        #self.triLED1=LEDDisplay.LEDDisplay(windowT)
-        self.low_cutoff=low_level
-        self.high_cutoff=high_level
-        #self.triLED1.pack()
+        self.__low_cutoff=low_level
+        self.__high_cutoff=high_level
         windowT.update()
 
+
     def set_to_value(self, valueA):
-        if valueA<self.low_cutoff:
+        if valueA<self.__low_cutoff:
             self.change_LED_color("green")
-        elif valueA>self.high_cutoff:
+        elif valueA>self.__high_cutoff:
             self.change_LED_color("red")
         else:
             self.change_LED_color("yellow")
 
 
-    #Setter for cutoffs needed...
-            
+    def set_low_cutoff(self, low_level):
+        self.__low_cutoff=low_level
+
+
+    def get_low_cutoff(self):
+        return self.__low_cutoff
+
+
+    def set_high_cutoff(self, high_level):
+        self.__high_cutoff=high_level
+
+
+    def get_high_cutoff(self):
+        return self.__high_cutoff
 
 
 if __name__=="__main__":

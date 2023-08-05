@@ -1,6 +1,5 @@
 
-#The purpose of this code is to read from the serial port...
-#pip install pyserial
+#The purpose of this code is to read from the serial port.
 #Reference https://gist.github.com/yptheangel/fcd62ad59a569ace75eb07025b8e9c4f
 
 import serial
@@ -15,9 +14,8 @@ port='/dev/ttyACM0'
 baudrate=115200
 serialPort=serial.Serial(port=port, baudrate=baudrate, \
             bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
-imax=100
 
-for ii in range(imax):
+while True:
     #Read until you see the two end characters '\r\n'
     serial_string=serialPort.read_until('\r\n')
     #Convert the bytes read into an actual string.
