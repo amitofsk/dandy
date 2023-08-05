@@ -16,8 +16,11 @@ class SymbolDisplay():
         self.__pin_number=0
         self.draw_box()
 
-    def pack(self):
-        self.__canvasS.pack()
+    def pack(self, bar_orientation="vertical"):
+        if bar_orientation=="horizontal":
+            self.__canvasS.pack(side="right")
+        else:
+            self.__canvasS.pack()
 
     def destroy(self):
         self.__canvasS.destroy()
