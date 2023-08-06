@@ -1463,20 +1463,82 @@ if __name__=="__main__":
     loop.close()
 ```
 
-## 10.0 Analog Output
-(Arduino and Cy8cproto only)
+## 10.0 Widgets for ANALOG or PWM OUTPUT
+In this section, we demonstrate a widget that is useful when sending analog or pulse width modulated (PWM) signals out of the computer.
+<br><br>
+Not all microcontrollers have this feature. The Arduino and Cy8cproto can send pulse width modulated (PWM) signals to specific pins. The RPPi does not. The Cy8cproto has an internal digital to analog converter on a particular pin. The Arduino and RPi do not have this feature. 
+<br><br>
+Therefore, the example in this section is only for option C, the Arduino.
+<br><br>
+### 10.1 KnobDisplay widget without hardware
+
+DANDY also includes a `KnobDisplay` widget. Try out the example below. It contains a `KnobDisplay` widget, a `SlideDisplay` widget, and a quit button. Put your cursor over the `KnobDisplay` widget and scroll the middle mouse button.
+You will see the `SlideDisplay` widget change.
+<br><br>
+Note that in this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
+
+```python
+import tkinter as tk
+import sys
+sys.path.append('../widgets') 
+import KnobDisplay as kd 
+import SlideDisplay as sd
+
+class KnobDemo(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.canvasK=tk.Canvas(self, height=300, width=300)
+        self.button_quit=tk.Button(self, text="Quit", \
+                            command=self.destroy)
+        self.slide1=sd.SlideDisplay(self, width=100, \
+                            height=100)
+        self.knob1=kd.KnobDisplay(self.canvasK, width=100, height=100)
+
+        self.value=5
+        self.canvasK.pack()
+        self.knob1.pack()
+        self.slide1.pack()
+        self.button_quit.pack()
+
+        #We don't run Tkinter's main loop. Instead, we run the function
+        #updater, which we define below. That function manually updates
+        #the Tkinter loop.
+        self.updater()
+
+
+    def updater(self):
+        while True:
+            print(self.value)
+            self.value=self.knob1.get_angle()
+            self.slide1.set_to_value(10*self.value)    
+            self.update()
+            
+
+if __name__=="__main__":
+    mygui=KnobDemo()
+
+```
+![KnobDisplay demo](./docPics/KnobDisplay.png)
+
+### 10.2 (Option D only) KnobDisplay widget and servo motor 
+
 
 ## 11.0 Glossary
 
+ 
+| Terms and Abbreviations| Definition |
+| ---  | ---        |
+| Ain | Abbreviation (in file names) for analog input |
+| Ard | Abbreviation (in file names) for Arduino |
+| CP  | Abbreviation (in file names) for CircuitPython |
+| Cy8cproto | The Infineon microcontroller CY8CPROTO-062-4343W kit | 
+| git | A version control tool |
+| GUI | Graphical user interface |
+| IDE | Integrated development environment |
+| JSON | JavaScript Object Notation, a format for sending data |
+| MP | Abbreviation (in file names) for MicroPython |
+| port | How an operating system keeps track of a hardware connection |
+| PWM | Pulse width modulation |
+| RPi | Raspberry Pi Pico microcontroller |
+| Tkinter | A Python library for making graphical user interfaces |
 
-MP
-CP
-Ard
-
-git
-RPi
-GUI
-Tkinter
-Cy8cproto
-port
-json
