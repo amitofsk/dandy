@@ -10,6 +10,7 @@ print('Hello')
 #If you are on Linux, uncomment the next line and adjust as needed.
 port='/dev/ttyACM0'
 baudrate=115200
+#baudrate=9600
 serialPort=serial.Serial(port=port, baudrate=baudrate, \
             bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
 while True:

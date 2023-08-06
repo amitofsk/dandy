@@ -299,10 +299,10 @@ if __name__=="__main__":
 Files used in section 5:
 - microcontr/serialReadMP.py 
 - microcontr/serialReadCP.py
-- microcontr/serialReadArd.py
+- microcontr/serialReadArd.ino
 - microcontr/serialWriteMP.py
 - microcontr/serialWriteCP.py
-- microcontr/serialWriteArd.py
+- microcontr/serialWriteArd.ino
 
 <br><br>
 In section 4, we wrote Python code for the computer, and we used the IDLE IDE. In this section, we will instead write code for the microcontroller. This tutorial has four options:
@@ -513,10 +513,95 @@ while True:
 
 ### 5.1 Option D: Arduino
 #### 5.1.1 Build the circuit
+Connect a button between the 3.3V pin and D8. Using the USB cable, plug the Arduino into the computer. 
 #### 5.1.2 Install Arduino
 Arduino hardware comes pre-installed with the instructions needed to run Arduino software.
 #### 5.1.3 Blinky lights
+Now we're ready to write our first Arduino program that will run on the Arduino hardware. We'll use the Arduino's IDE, so open it now.
+<br><br>
+Write the following instruction in the editor, and press the `Upload` button. Go to `Tools->SerialMonitor`, and you should see the message displayed.
+```arduino
+
+void setup()
+  {  
+  Serial.begin(9600);
+  Serial.println("hi");
+  }
+
+void loop()
+{
+  Serial.println("hey"); 
+}
+```
+
+Now let's write an Arduino program that uses the pushbutton you wired to the Arduino hardware. Copy the program below into the Arduino editor, and upload it.
+(See file src/mircrocontr/serialWriteArd.ino.)
+```arduino
+
+int button=8;
+int led=13;
+int buttonState=0;
+void setup() {  
+  Serial.begin(115200);
+  Serial.println("hi");  
+  pinMode(button, INPUT);
+  pinMode(led, OUTPUT);
+}
+
+void loop() {
+  buttonState=digitalRead(button);
+  if (buttonState == HIGH) {
+       digitalWrite(led, HIGH);
+       Serial.println("T");
+     } 
+   else {
+     digitalWrite(led, LOW);
+     Serial.println("F");
+   }
+   delay(1000);  
+}
+```
+Line 5 tells the Arduino that we will call pin 8 the name `button`. Line 6 tells the Arduino that we will call the internal LED, connected to pin 13, `led`. Line 11 tells the Arduino that `button` is an input, line 12 tells the Arduino that `led` is an output.
+
+<br><br>
+When you run this example and hold down the pushbutton wired to the RPi, the program prints `T`. Otherwise it prints `F`.
+
 #### 5.1.4 Reading data from the computer
+In section 6.0, we will send data from the computer to the micrcontroller. To complete this example, we will need to write both Python code for the computer and Arduino code for the Arduino hardware. While we're programming the microcontroller, let's write this code.
+<br><br>
+Copy the code below into the Arduino editor and upload. When you run it, nothing will happen until you send a character from the computer to the micrcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
+<br><br>
+If you close the Arduino IDE, the microcontroller continues to run this code. If you unplug the Arduino and plug it back into your computer, the microcontroller continues to run this code.
+
+(See file src/microcontr/serialReadArd.ino.)
+
+```python
+
+
+int led=13;
+char ch;
+
+void setup() {  
+  Serial.begin(115200);
+  Serial.println("hi");  
+  pinMode(led, OUTPUT);
+}
+
+void loop() {
+  ch=Serial.read();
+  if(ch=='Z')
+   {Serial.println(ch);
+    digitalWrite(led, HIGH);
+    delay(250);
+    digitalWrite(led,LOW);
+   }
+  
+   delay(1000);  
+}
+```
+
+(TODO: Somewhere say not to leave the serial monitor open.)
+Also, make sure the Arduino's SerialMonitor is at the right baudrate...
 
 ## 6.0 Sending DIGITAL OUTPUT data from the computer to the microcontroller
 
@@ -1378,8 +1463,10 @@ if __name__=="__main__":
     loop.close()
 ```
 
+## 10.0 Analog Output
+(Arduino and Cy8cproto only)
 
-## 10.0 Glossary
+## 11.0 Glossary
 
 
 MP

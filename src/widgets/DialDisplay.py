@@ -25,8 +25,12 @@ class DialDisplay(ain.AnalogInDisplay):
         self.__yStart=self.__yOrigin-self.__radius
         self.__yStop=self.__yOrigin+self.__radius
         self.__dial_top=self.ain_canvas.create_arc(self.__xStart, self.__yStart, \
-                            self.__xStop, self.__yStop, start=0, extent=180, \
+                             self.__xStop, self.__yStop, start=0, extent=180, \
                             fill="blue", style="pieslice")
+        #self.__dial_top=self.ain_canvas.create_arc(self.__xStart, self.__yStart, \
+        #                    self.__xStop, self.__yStop, start=90, extent=90, \
+        #                    fill="blue", style="pieslice")
+
         self.__lineA=self.ain_canvas.create_line(self.__xStart, self.__yOrigin, \
                             self.__xOrigin, self.__yOrigin, width=2)
         windowDD.update()
@@ -35,20 +39,25 @@ class DialDisplay(ain.AnalogInDisplay):
 
     def set_to_value(self, aValue):
         self.ain_canvas.delete(self.__lineA)
- #       self.__dial_top=self.ain_canvas.create_arc(self.__xStart, self.__yStart, \
- #                           self.__xStop, self.__yStop, start=0, extent=180, \
- #                           fill="gray", style="pieslice")
+        self.ain_canvas.delete(self.__dial_top)
         xpos=self.__xOrigin-self.__radius*math.cos(math.pi*aValue \
                                     /(self.get_maximum()-self.get_minimum()))
         ypos=self.__yOrigin-self.__radius*math.sin(math.pi*aValue \
                                     /(self.get_maximum()-self.get_minimum()))
         self.__lineA=self.ain_canvas.create_line(xpos, ypos, self.__xOrigin, \
                                     self.__yOrigin, width=2)
-  #      dial_angle=math.atan((ypos-self.__yStart)/(self.__xStart-xpos))*\
-  #                          (180/math.pi) 
-   #     self.__dial_top=self.ain_canvas.create_arc(self.__xStart, self.__yStart, \
-  #                          xpos, ypos, start=0, extent=180, \
-   #                         fill="blue", style="pieslice")
+        dial_angle=90+(math.atan((ypos-self.__yStart)/(self.__xStart-xpos))*\
+                            (180/math.pi))
+        print(dial_angle)
+        print(self.__yOrigin)
+        print(self.__xOrigin-self.__radius)
+        print(xpos)
+        self.__dial_top=self.ain_canvas.create_arc(self.__xOrigin-self.__radius, \
+                            self.__yOrigin-self.__radius, \
+                            self.__xOrigin+self.__radius, \
+                            self.__yOrigin+self.__radius, \
+                            start=180, extent=-dial_angle, \
+                            fill="pink", style="pieslice")
        
         #To do here... Change it so that you only fill color to the needle?
 
