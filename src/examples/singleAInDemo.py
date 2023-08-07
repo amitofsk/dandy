@@ -12,7 +12,7 @@ sys.path.append('../widgets')
 import DialDisplay as dd 
 import SlideDisplay as sd 
 import TricolorDisplay as td
-import SimplePlotDisplay as spd 
+import SimplePlotDisplay as spd
 
  
 class SingleAInDemo(tk.Tk):

@@ -17,7 +17,9 @@ serialPort=serial.Serial(port=port, baudrate=baudrate, bytesize=8, \
 while True:
     #serialString=serialPort.read()
     #print(serialString)
-    serialPort.write(bytes('80', 'utf-8'))
-    print('I wrote Z')
-    time.sleep(10) 
+    #json1="{\"timeLength\":\"1\",\"speed\":\"5\"}"
+    msg="8"
+    serialPort.write(bytes(msg, 'utf-8'))
+    print('I wrote 8')
+    time.sleep(1)
 serialPort.close()

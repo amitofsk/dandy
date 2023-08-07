@@ -5,7 +5,12 @@ import tkinter as tk
 import math
 import sys  
 sys.path.append ('../widgets') 
-import AnalogInDisplay as ain  
+import AnalogInDisplay as ain
+
+COLOR1='#007DC8'
+COLOR2='#4B0000'
+COLOR3='#98D2D2'
+
 
 #This factor sets the fraction of the window used by the display
 radiusScaleFactor=0.9
@@ -19,22 +24,16 @@ class DialDisplay(ain.AnalogInDisplay):
             self.__radius=0.5*radiusScaleFactor*self.get_ain_height()
         else:
             self.__radius=0.5*radiusScaleFactor*self.get_ain_width()
-        
         self.__xStart=self.__xOrigin-self.__radius
         self.__xStop=self.__xOrigin+self.__radius
         self.__yStart=self.__yOrigin-self.__radius
         self.__yStop=self.__yOrigin+self.__radius
         self.__dial_top=self.ain_canvas.create_arc(self.__xStart, self.__yStart, \
                              self.__xStop, self.__yStop, start=0, extent=180, \
-                            fill="blue", style="pieslice")
-        #self.__dial_top=self.ain_canvas.create_arc(self.__xStart, self.__yStart, \
-        #                    self.__xStop, self.__yStop, start=90, extent=90, \
-        #                    fill="blue", style="pieslice")
-
+                            fill=COLOR1, style="pieslice")
         self.__lineA=self.ain_canvas.create_line(self.__xStart, self.__yOrigin, \
-                            self.__xOrigin, self.__yOrigin, width=2)
+                            self.__xOrigin, self.__yOrigin, width=2 )
         windowDD.update()
-
 
 
     def set_to_value(self, aValue):
@@ -45,22 +44,20 @@ class DialDisplay(ain.AnalogInDisplay):
         ypos=self.__yOrigin-self.__radius*math.sin(math.pi*aValue \
                                     /(self.get_maximum()-self.get_minimum()))
         self.__lineA=self.ain_canvas.create_line(xpos, ypos, self.__xOrigin, \
-                                    self.__yOrigin, width=2)
-        dial_angle=90+(math.atan((ypos-self.__yStart)/(self.__xStart-xpos))*\
+                                    self.__yOrigin, width=2 )
+        dial_angle=(math.atan((self.__yOrigin-ypos)/(xpos-self.__xOrigin))*\
                             (180/math.pi))
-        print(dial_angle)
-        print(self.__yOrigin)
-        print(self.__xOrigin-self.__radius)
-        print(xpos)
+        if(aValue>(0.5*self.get_maximum())):
+           dial_angle=180-dial_angle
+        else:
+            dial_angle=-dial_angle
         self.__dial_top=self.ain_canvas.create_arc(self.__xOrigin-self.__radius, \
                             self.__yOrigin-self.__radius, \
                             self.__xOrigin+self.__radius, \
                             self.__yOrigin+self.__radius, \
                             start=180, extent=-dial_angle, \
-                            fill="pink", style="pieslice")
+                            fill=COLOR1, style="pieslice")
        
-        #To do here... Change it so that you only fill color to the needle?
-
 
 if __name__=="__main__":
     dial_example=tk.Tk()

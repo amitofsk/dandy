@@ -136,7 +136,7 @@ if __name__=="__main__":
 ```
 ![ButtonGUI output](docPics/buttongui.png)
 <br><br><br>
-####4.2.2 Example with two buttons
+#### 4.2.2 Example with two buttons
 
 Let's try another example to get more familiar with Tkinter. This example will have two `Buttons` and a `Label` which shows a `PhotoImage`. If you press one of the buttons, the label toggles between two images. Here we write our own function, named `toggle_me`, that is executed when the button is pressed. 
 <br><br> 
@@ -717,7 +717,7 @@ if __name__=="__main__":
 Files used in section 7:
 - microcontr/serialWriteMP.py
 - microcontr/serialWriteCP.py
-- microcontr/serialWriteArd.py
+- microcontr/serialWriteArd.ino
 - examples/DigitalIn.py
 - examples/DigitalHWShort.py
 - examples/DigitalHWLong.py
@@ -980,7 +980,7 @@ Files used in section 8:
 - utilities/SerialAndGui.py
 - microcontr/analogToComputerMP.py
 - microcontr/analogToComputerCP.py
-- microcontr/analogToComputerArd.py
+- microcontr/analogToComputerArd.ino
 
 In this section, we'll detail how to send analog data from a microcontroller to a computer and display the result in a GUI. In this section, the analog data will come from a potentiometer wired in to the microcontroller. However, you can directly replace that potentiometer with a thermistor, pressure sensor, accelerometer, or other type of analog sensor.
 
@@ -1116,9 +1116,14 @@ For section 8.2, follow the option for the hardware of your choice.
 #### 8.2.1 Option A: Micropython and RPiPico
 ##### 8.2.1.1 Build the circuit
 
-Connect a resistor and a potentiometer in series between pin 36 (3.3V power) and pin 38 (GND). Also, add a wire from the node between the resistor adn potentiometer to pin 31. Pin 31 is also known as GP26, and it is connected to the internal analog to digital converter ADC0.
+Connect a resistor and a potentiometer in series between pin 36 (3.3V power) and pin 38 (GND). Also, add a wire from the node between the resistor and potentiometer to pin 31. Pin 31 is also known as GP26, and it is connected to the internal analog to digital converter ADC0.
 
-(TODO: Pic needed and circuit diagram.)
+If your potentiometer has three pins, make sure to use the middle pin and one of the outer ones
+.
+
+
+
+![Circuit with potentiometer](./docPics/potCircuit1.png)
 
 ##### 8.2.2.2 Write the microcontroller code
 
@@ -1152,8 +1157,34 @@ while True:
 ```
 
 #### 8.2.1 Option B: Circuitpython and the RPiPico
-#### 8.2.1 Option C: Micropython and the CY8CPROTO
+
+##### 8.2.1.1 Build the circuit
+
+Connect a resistor and a potentiometer in series between pin 36 (3.3V power) and pin 38 (GND). Also, add a wire from the node between the resistor and potentiometer to pin 31. Pin 31 is also known as GP26, and it is connected to the internal analog to digital converter ADC0.
+
+If your potentiometer has three pins, make sure to use the middle pin and one of the outer ones.
+ 
+![Circuit with potentiometer](./docPics/potCircuit1.png)
+
+
+##### 8.2.2.2 Write the microcontroller code
+
+The microcontroller code below reads an analog value from pin 31, also known as GP26 and ADC0. This value is then written serially to the computer.
+
+We could just print out the value itself. Instead, here we're a bit smarter. We're printing a message in JSON format that contains the value we read in addition to other pieces of information.
+<br><br>
+A JSON is just a format for variables names and their values. For more information, see [wikipedia](https://en.wikipedia.org/wiki/JSON).
+
+<br><br>
+Open the Mu IDE. Copy and run this code. As you adjust the potentiometer, values displayed in the bottom window of the MU IDE should change.
+
+
+(See file src/microcontr/analogToComputerCP.py.)
+
+#### 8.2.1 Option C: MicroPython and the Cy8cproto
+
 #### 8.2.1 Option D: Arduino
+
 
 ### 8.3 Displaying analog data from the microcontroller on the computer
 
@@ -1465,10 +1496,11 @@ if __name__=="__main__":
 
 ## 10.0 Widgets for ANALOG or PWM OUTPUT
 In this section, we demonstrate a widget that is useful when sending analog or pulse width modulated (PWM) signals out of the computer.
+This will allow us to control motors or other actuators that accept an analog voltage.
 <br><br>
 Not all microcontrollers have this feature. The Arduino and Cy8cproto can send pulse width modulated (PWM) signals to specific pins. The RPPi does not. The Cy8cproto has an internal digital to analog converter on a particular pin. The Arduino and RPi do not have this feature. 
 <br><br>
-Therefore, the example in this section is only for option C, the Arduino.
+Therefore, the example section 10.2 is only for option D, the Arduino.
 <br><br>
 ### 10.1 KnobDisplay widget without hardware
 

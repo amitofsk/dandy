@@ -9,6 +9,10 @@ import sys
 sys.path.append ('../widgets') 
 import AnalogInDisplay as ain 
 
+COLOR1='#007DC8'
+COLOR2='#4B0000'
+COLOR3='#98D2D2'
+
 #This sets the points shown horizontally.
 max_points=25
 
@@ -16,9 +20,9 @@ class SimplePlotDisplay(ain.AnalogInDisplay):
     def __init__(self, windowP, height=100, width=100):
         super().__init__(windowP, a_height=height, a_width=width)
         self.__axisX=self.ain_canvas.create_line(0.1*width, 0.9*height, \
-                        0.9*width,0.9*height, fill="blue", arrow=tk.LAST)
+                        0.9*width,0.9*height, fill=COLOR1, arrow=tk.LAST)
         self.__axisY=self.ain_canvas.create_line(0.1*width, 0.9*height,\
-                        0.1*width,0.1*height, fill="blue",arrow=tk.LAST)
+                        0.1*width,0.1*height, fill=COLOR1,arrow=tk.LAST)
         self.__labelX=self.ain_canvas.create_text(0.95*width, 0.95*height, \
                         text="t")
         self.__curr_point=0
@@ -29,7 +33,7 @@ class SimplePlotDisplay(ain.AnalogInDisplay):
             self.__data_points[jj]=self.ain_canvas.create_oval((0.1*width+jj*3),
                     0.9*height-10*self.__data_values[jj], \
                     ((0.1*width+jj*3))+2, (0.9*height-\
-                    10*self.__data_values[jj])+2, fill="green")
+                    10*self.__data_values[jj])+2, fill=COLOR2)
         
         windowP.update()
 

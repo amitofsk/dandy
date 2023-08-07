@@ -42,6 +42,7 @@ class KnobDisplay():
         self.__dot=self.__canvasK.create_oval((centerX-0.05*self.__width), \
                     (centerY-0.05*self.__height), (centerX+0.05*self.__width), \
                     (centerY+0.05*self.__height), outline="blue", width=3)
+        return self.__angle
 
 
     def turn_counterwise(self,event):
@@ -52,7 +53,7 @@ class KnobDisplay():
         self.__dot=self.__canvasK.create_oval((centerX-0.05*self.__width), \
                     (centerY-0.05*self.__height), (centerX+0.05*self.__width), \
                     (centerY+0.05*self.__height), outline="blue", width=3)
-
+        return self.__angle
 
 if __name__=="__main__":
     example=tk.Tk()

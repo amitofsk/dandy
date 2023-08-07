@@ -4,9 +4,9 @@
 int led=13;
 char ch;
 
-void setup() {  
+void setup() {
   Serial.begin(115200);
-  Serial.println("hi");  
+  Serial.println("hi");
   pinMode(led, OUTPUT);
 }
 
@@ -18,6 +18,7 @@ void loop() {
     delay(250);
     digitalWrite(led,LOW);
    }
-  
-   delay(1000);  
+
+   delay(1000);
 }
+

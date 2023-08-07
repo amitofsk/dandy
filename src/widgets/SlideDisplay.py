@@ -4,7 +4,11 @@
 import tkinter as tk
 import sys  
 sys.path.append ('../widgets')  
-import AnalogInDisplay as ain 
+import AnalogInDisplay as ain
+
+COLOR1='#007DC8'
+COLOR2='#4B0000'
+COLOR3='#98D2D2'
 
 #These parameters set the fraction of the window used by the widget.
 xScaleFactor=0.75
@@ -19,10 +23,10 @@ class SlideDisplay(ain.AnalogInDisplay):
         self.__yTop=(1-yScaleFactor)*self.get_ain_height()
         self.__yBottom=yScaleFactor*self.get_ain_height()
         self.__slide_border=self.ain_canvas.create_rectangle(self.__xLeft, \
-                        self.__yTop, self.__xRight, self.__yBottom)
+                        self.__yTop, self.__xRight, self.__yBottom )
         self.__slide_fill=self.ain_canvas.create_rectangle(self.__xLeft, \
                         self.__yTop+20, self.__xRight, self.__yBottom, \
-                        fill="blue")
+                        fill=COLOR1)
         windowS.update()
 
    
@@ -31,7 +35,7 @@ class SlideDisplay(ain.AnalogInDisplay):
         hval=((1-yScaleFactor)-(self.__yBottom/self.get_maximum()))*aValue \
                     +self.__yBottom
         self.__slide_fill=self.ain_canvas.create_rectangle(self.__xLeft, hval, \
-                    self.__xRight,self.__yBottom, fill='blue')
+                    self.__xRight,self.__yBottom, fill=COLOR1)
                
     
 
