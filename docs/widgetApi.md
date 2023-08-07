@@ -1,5 +1,7 @@
 # API for the Widgets Directory of the  Dandy project
 
+Class diagram for the widgets folder:
+![widget classes](./docPics/widgetClasses.png)
 
 ## AMKRDisplay Class
 ### Description

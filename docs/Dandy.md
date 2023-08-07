@@ -1053,7 +1053,7 @@ if __name__=="__main__":
 
 ```
 
-![](./docPics/SingleAIN.png)
+![](./docPics/SingleAIN2.png)
 
 #### 8.1.2 A second example, displaying xyz values.
 
@@ -1184,6 +1184,10 @@ Open the Mu IDE. Copy and run this code. As you adjust the potentiometer, values
 #### 8.2.1 Option C: MicroPython and the Cy8cproto
 
 #### 8.2.1 Option D: Arduino
+
+Coming soon 
+
+![Arduino circuit with potentiometer](./docPics/potCircuit2.png)
 
 
 ### 8.3 Displaying analog data from the microcontroller on the computer
