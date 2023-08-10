@@ -29,21 +29,29 @@ This guide is NOT for you if:
  - You want to collect data using elaborate equipment. This project involves small discrete sensors.  
 ## 2.0 Gather hardware supplies
 Hardware used:
-- Small Protoboard and wires
+- Small [protoboard](https://www.digikey.com/en/products/detail/bud-industries/BB-32656/8602381) and wires
 - Buttons that fit in the protoboard
 - Resistors (300 $\Omega$ - 1k $\Omega$ ) 
-- Potentiometer
+- [Potentiometer](https://www.digikey.com/en/products/detail/bourns-inc/PTV09A-4025U-B103/3781137) that fits in the protoboard
+- The TLE493DW2B6-A0 [magnetic field sensor](https://www.digikey.com/en/products/detail/infineon-technologies/S2GO3DTLE493DW2B6A0TOBO1/10667589?s=N4IgTCBcDaICoBkCiAWAnAZgCIHUwCEA2AWgEEAGEAXQF8g) (Section 8.5 only)
 - USB cable to connect your microcontroller
 - Microcontroller
-  - Options A and B: Raspberry Pi Pico
-  - Option C: CY8CProto
-  - Option D: Arduino
+  - Options A and B: [Raspberry Pi Pico](https://www.digikey.com/en/products/detail/raspberry-pi/SC0915/13624793) (RPi)
+  - Option C: The [CY8CPROTO-062-4343W](https://www.digikey.com/en/products/detail/infineon-technologies/CY8CPROTO-062-4343W/9739908?0=%2Frf-evaluation-and-development-kits-boards&s=N4IgjCBcoCwOxVAYygMwIYBsDOBTANCAPZQDaIAzBQGxwUAMIAuoQA4AuUIAyuwE4BLAHYBzEAF9xhAExkQSAJ4AOJKz5F2JJuKA) (PSoC6)
+  - Option D: [Arduino](https://www.digikey.com/en/products/detail/arduino/A000073/3476357)
 
-You will need to plug your microcontroller into a protoboard. If your microcontroller did not come with headers pre-installed, solder them on now.
+We will be using the button as a simple digital input sensor, and we will be using the potentiometer as a simple analog sensor.
 
-The picture below shoes a Raspberry Pi Pico (RPi) without and with headers.
+This tutorial has four options, depending on your choice of language and microcontroller. Option A is the Raspberry Pi Pico (RPi) and MicroPyton, option B is the RPi and CircuitPython, option C is the Cy8cproto a nd MicroPython, and option D is the Arduino.  Some steps have different versions for the different options.
+
+If you are using the RPi and your microcontroller didn't come with headers pre-installed, solder them on now, Then, plug your RPi into the protoboard. The picture below shows a RPi without and with headers. 
 
 ![Digital With Hardware Picture](./docPics/headers2.png)
+
+If you are using the Arduino, you can use any version. However, these instructions show pin numbers and details for the Uno.
+
+This tutorial will be entered into the hackster.io [Connect Things With Code](https://www.hackster.io/contests/connectthingswithcode) contest, and the CY8CPROTO (PSoC6) was chosen since it is part of that contest. If you are using the PSoC6, you do not need the button, potentiometer, and other components because the microcontroller has these components built into it. The magnetic field sensor is also part of that contest.
+
 
 
 ## 3.0 Install software
@@ -73,38 +81,42 @@ pip install pyserial
 ### 3.4 Download the DANDY library.
 The next step is to download the DANDY library from github. Github is a website that hosts tons of open source software projects. 
 <br><br>
-This step requires git. Git comes with Linux operating systems. If you are on a Windows machine, you may have to install it. Git can be downloaded from [`Git's website`](https://git-scm.com). Once you install it, open a GitBash terminal.  
+This step requires git. Git comes with Linux operating systems. If you are on a Windows machine, you may have to install it. Git can be downloaded from [Git's website](https://git-scm.com). Once you install it, open a GitBash terminal.  
 <br><br>
 Change to the directory that you want work in. Then, use the following command in the terminal to download the DANDY repository from github. 
  ```python
  git clone https://github.com/amitofsk/dandy.git
  ```
 ### 3.5 Install the Mu IDE or the Arduino IDE
-This tutorial will involve both writing Python code for a computer as well as writing Micropython, Circuitpython, or Arduino code for a microcontroller. We'll write Python code for the computer using the IDLE Integrated Development Environment (IDE). We'll write Micropython or Circuitpyton code for the microcontroller using the Mu IDE. However, you can use other IDE's for the microcontroller programming, such as Thonny, if you prefer. If you are using an Arduino microcontroller, Arduino has its own IDE.
-<br><br>
+This tutorial will involve both writing Python code for a computer as well as writing Micropython, Circuitpython, or Arduino code for a microcontroller. We'll write Python code for the computer using the IDLE Integrated Development Environment (IDE). We'll use a different IDE for the microcontroller. 
+
 One advantage of using a different IDE for the computer code and the microcontroller code is that the IDE will remind you which hardware you are programming for. 
+
+If you will be using MicroPython or CircuitPython with the RPi, download and install the [Mu IDE](https://codewith.mu/en/download). 
 <br><br>
-If you will be using MicroPython or CircuitPython for the microcontroller, download and install the Mu IDE from [`CodeWithMU`](https://codewith.mu/en/download). If you will be using Arduino, download and install the [`Arduino IDE`](https://www.arduino.cc/en/software/). 
+If you will be using Arduino, download and install the [Arduino IDE](https://www.arduino.cc/en/software/). 
 <br><br>
-If you are using the Cy8cproto, follow the instructions at [](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) to download MicroPython for the Cy8cproto as well as the Arduino Lab for MicroPython IDE.
-(TODO: Add instructions for infineon ide.)
+If you are using the PSoC6, download and install the Arduino Lab for MicroPython IDE by following the instructions [here](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) or [here](https://ifx-micropython.readthedocs.io/en/latest/psoc6/intro.html). 
 
 
 ## 4.0 GUI Programming
 Files used in section 4:
 - widgets/LEDDisplay.py
-- widgets/LEDBarDisplay.py (coming soon)
-- widgets/SymbolDisplay.py (coming soon)
+- widgets/LEDBarDisplay.py
+- widgets/SymbolDisplay.py
 - examples/ButtonGUI.py
 - examples/ButtonPicGUI.py
 - examples/DigitalNoHW.py
 - examples/smileOn.png
 - examples/smileOff.png
 
+DANDY contains a set of widgets useful for displaying input data and other functions. In this section, we'll learn how to program GUIs with Tkinter as well as use the DANDY widgets. 
+   
+
 ### 4.1 What Tkinter is?
 Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs). Tkinter is Python's version of the library, and it comes preinstalled with Python. 
 <br><br>
-Tkinter contains many widgets including labels, buttons, scales, and spinboxes. For a nice list along with the API reference, see [`tkdocs`](https://tkdocs.com/pyref/). 
+Tkinter contains many widgets including labels, buttons, scales, and spinboxes. For a nice list along with the API reference, see [tkdocs](https://tkdocs.com/pyref/). 
 
 ### 4.2 Tkinter widgets
 
@@ -113,7 +125,9 @@ Let's write our first GUI program using Python and Tkinter. We're writing code t
 <br><br>
 Try out the example below. You should see a window with a label and a working quit button. 
 
-If you downloaded the `DANDY` library, examples are in the `src/examples` directory. (See file src/examples/ButtonGUI.py.)
+If you downloaded the `DANDY` library, examples are in the `src/examples` directory. 
+
+(See file src/examples/ButtonGUI.py.)
 
 ```python
 import tkinter as tk
@@ -188,13 +202,19 @@ if __name__=="__main__":
 ![Buttonpicgui example output](docPics/buttonpicgui.png)
 
 
-### 4.3 DANDY widgets for digital inputs
+### 4.3 DANDY widgets 
 
 #### 4.3.1 The LEDDisplay widget
 
-Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The `DANDY` library, which you just installed, has additional widgets. These widgets are related to data acquisition. The next example uses the `DANDY` widget `LEDDisplay`. When you run it, you will see two buttons and an image of an LED. When you press the button, the LED color changes. Try it out.
+Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The `DANDY` library, which you just installed, has additional widgets. 
+
+If you are writing data acquisition applications, these widgets may be useful. They are summarized in the figure below. 
+
+(TODO: Add figure summarizing DANDY widgets.)
+
+The next example uses the DANDY widget `LEDDisplay`. When you run it, you will see two buttons and an image of an LED. When you press the button, the LED color changes. Try it out.
 <br><br>
-You may need to change the third line to point to the location of the widgets folder of the `DANDY` library that you downloaded. This example is also available in the examples folder of the `DANDY` library. If you open that version, Python should find the widgets folder correctly.
+You may need to change the third line to point to the location of the widgets folder of the DANDY library. This example is also available in the examples folder of the DANDY library. If you open that version, Python should find the widgets folder correctly.
 
 (See file src/examples/DigitalNoHW.py.)
 
@@ -239,7 +259,7 @@ if __name__=="__main__":
 ![LEDDisplay widget picture](docPics/ledwidget.png)
 
 #### 4.3.2 The LEDBarDisplay Widget
-The DANDY library also contains the class `SymbolDisplay` for displaying ground and power symbols. It also contains the class `LEDBarDisplay` for displaying bars of LEDs. 
+The DANDY library contains the class `SymbolDisplay` for displaying ground and power symbols. It also contains the class `LEDBarDisplay` for displaying bars of LEDs. 
 <br><br>
 Try out the example below. When you run it, you will see a bar of 5 `LEDDisplay` widgets as well as three additional buttons. The first button toggles the LED color, the second button toggles the LED orientation, and the third button is a quit button.
 
@@ -309,7 +329,7 @@ Files used in section 5:
 In section 4, we wrote Python code for the computer, and we used the IDLE IDE. In this section, we will instead write code for the microcontroller. This tutorial has four options:
  - Option A: Raspberry Pi Pico (RPi) and MicroPython 
  - Option B: Raspberry Pi Pico (RPi) and CircuitPython
- - Option C: Cy8cproto and MicroPython
+ - Option C: PSoC6 and MicroPython
  - Option D: Arduino
 Follow the option of your choice for this section.
 
@@ -319,7 +339,7 @@ All of the examples in this section have three versions. The one with MP in its 
 #### 5.1.1 Build the circuit
 Connect a button between pin 21 (GP16) and pin 36 (3.3V power)<br>
 
-Here is the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) of the Raspberry Pi Pico (RPi). <br>
+Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) for the Raspberry Pi Pico (RPi). <br>
 ![](docPics/PiAndButton5.png)
 
 #### 5.1.2 Install MicroPython on the RPi
@@ -345,6 +365,7 @@ print ("Hello")
 ```
 
 Now let's write a MicroPython program that uses the pushbutton you wired to the RPi. Copy the program below into the editor, and run it. 
+
 (See file src/mircrocontr/serialWriteMP.py.)
 
 
@@ -367,7 +388,7 @@ while True:
 The fourth line tells the RPi that we will call GP16 (pin 21) the name `button`. This line also says `button` will be an input. The `Pin.PULL_DOWN` option connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low. 
 <br><br>
 The fifth line tells the RPi that we will call GP25, the internal LED, the name `led`. This line also says `led` will be an output.
-<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T`. Otherwise it prints `F`. 
+<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED. 
 ![](./docPics/Section3.4.3.2_step4.png)
 
 #### 5.1.4 Reading data from the computer
@@ -409,7 +430,7 @@ while True:
 
 Connect a button between pin 21 (GP16) and pin 36 (3.3V power).<br>
 
-Here is the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) of the Raspberry Pi Pico (RPi). <br>
+Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) for the Raspberry Pi Pico (RPi). <br>
 ![](docPics/PiAndButton5.png)
 
 
@@ -450,6 +471,7 @@ led=DigitalInOut(board.LED)
 led.direction=digitalio.Direction.OUTPUT
 button=DigitalInOut(board.GP16)
 button.direction=digitalio.Direction.INPUT
+button.PULL.DOWN
 while True:
     if button.value():
         print("T")
@@ -462,10 +484,15 @@ while True:
 ```
 Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, and it will be an output. Lines 8 and 9 tell the RPi that we will call GP16 (pin21) the name `button`, and it will be an input.
 
-<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T`. Otherwise it prints `F`.
+The `button.PULL.DOWN` line connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
+
+
+<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the LED. Otherwise it prints `F` and turns off the LED.
 ![](./docPics/Section3.4.3.2_step4.png)
 
 (TODO: Fixme, the figure above is for MicroPython, not CircuitPython)
+(TODO: Write this code and put it in the microcontr folder.)
+(TODO: Test the code above, I just added the pulldown line without testing it.)
 
 #### 5.1.4 Reading data from the computer
 
@@ -501,27 +528,41 @@ while True:
 
 ```
 
-(TODO: Test this circuitpython code above... I got it from https://stackoverflow.com/questions/48922189/receive-data-from-host-computer-using-circuit-python-on-circuit-playground-expre )
+(TODO: Test this circuitpython code above... I got it from https://stackoverflow.com/questions/48922189/receive-data-from-host-computer-using-circuit-python-on-circuit-playground-expre . It is untested. )
 
 
 
 
-### 5.1 Option C: Micropython and the CY8CPROTO
+### 5.1 Option C: Micropython and the PSoC6
 #### 5.1.1 Build the circuit
+
+The PSoC6 has an internal button and LED, so we don't need to wire any external components. We'll use the button labeled `SW2 USER` in this section. 
+
 #### 5.1.2 Install MicroPython
+
+If you followed the instructions at  [here](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) or [here](https://ifx-micropython.readthedocs.io/en/latest/psoc6/intro.html), you've already installed MicroPython on the PSoC6 as well as installed the Arduino Lab IDE on your computer. 
+
+Connect a USB cable between the USB port on the PSoC6 labeled `KITPROG3` and computer. Next, open the Arduino Lab IDE.
+
 #### 5.1.3 Blinky lights
 #### 5.1.4 Reading data from the computer
 
 ### 5.1 Option D: Arduino
 #### 5.1.1 Build the circuit
 Connect a button between the 3.3V pin and D8. Using the USB cable, plug the Arduino into the computer. 
-#### 5.1.2 Install Arduino
-Arduino hardware comes pre-installed with the instructions needed to run Arduino software.
+
+(TODO: Pic needed)
+
+#### 5.1.2 Install Arduino firmware
+Arduino hardware comes pre-installed with the instructions needed to run Arduino software. So, we don't need to do anything here.
+
 #### 5.1.3 Blinky lights
 Now we're ready to write our first Arduino program that will run on the Arduino hardware. We'll use the Arduino's IDE, so open it now.
 <br><br>
 Write the following instruction in the editor, and press the `Upload` button. Go to `Tools->SerialMonitor`, and you should see the message displayed.
-```arduino
+
+
+```c++
 
 void setup()
   {  
@@ -531,13 +572,15 @@ void setup()
 
 void loop()
 {
-  Serial.println("hey"); 
+  Serial.println("hello"); 
 }
 ```
 
 Now let's write an Arduino program that uses the pushbutton you wired to the Arduino hardware. Copy the program below into the Arduino editor, and upload it.
+
 (See file src/mircrocontr/serialWriteArd.ino.)
-```arduino
+
+```c++
 
 int button=8;
 int led=13;
@@ -565,7 +608,9 @@ void loop() {
 Line 5 tells the Arduino that we will call pin 8 the name `button`. Line 6 tells the Arduino that we will call the internal LED, connected to pin 13, `led`. Line 11 tells the Arduino that `button` is an input, line 12 tells the Arduino that `led` is an output.
 
 <br><br>
-When you run this example and hold down the pushbutton wired to the RPi, the program prints `T`. Otherwise it prints `F`.
+When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the LED. Otherwise it prints `F` and turns off the LED.
+
+(TODO: Explain Arduino's serial monitor here...)
 
 #### 5.1.4 Reading data from the computer
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and Arduino code for the Arduino hardware. While we're programming the microcontroller, let's write this code.
@@ -576,9 +621,7 @@ If you close the Arduino IDE, the microcontroller continues to run this code. If
 
 (See file src/microcontr/serialReadArd.ino.)
 
-```python
-
-
+```c++
 int led=13;
 char ch;
 
@@ -1574,6 +1617,7 @@ if __name__=="__main__":
 | GUI | Graphical user interface |
 | IDE | Integrated development environment |
 | JSON | JavaScript Object Notation, a format for sending data |
+| LED | Light emitting diode |
 | MP | Abbreviation (in file names) for MicroPython |
 | pip | The Python Package Index, a repository for Python libraries |
 | port | How an operating system keeps track of a hardware connection |

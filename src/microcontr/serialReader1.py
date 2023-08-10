@@ -1,3 +1,5 @@
+#CUT ME ... THIS CODE IS TEMPORARY AND SHOULDN"T BE IN THE FINAL DANDY PACKAGE.
+
 #The purpose of this code is to read from the serial port...
 #pip install pyserial
 #Reference https://gist.github.com/yptheangel/fcd62ad59a569ace75eb07025b8e9c4f

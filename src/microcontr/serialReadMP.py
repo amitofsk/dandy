@@ -1,3 +1,7 @@
+#Run this code on a Raspberry Pi Pico with MicroPython.
+#This program reads a character from the computer into the microcontroller.
+#When a character is received, the LED blinks.
+
 from machine import Pin
 import time
 import select
