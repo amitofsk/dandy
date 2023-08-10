@@ -8,6 +8,6 @@ adc=ADC(Pin(26 ))
 value=0
 while True:
     value=adc.read_u16()
-    outstring='{\"boardName\":\"RPP1\", \"pinName\":\"ADC0\", \"value\":\"'+str(value)+'\"}'
+    outstring='{\"boardNumber\":\"1\", \"boardType\":\"RPi\", \"value\":\"'+str(value)+'\"}'
     print(outstring)
     time.sleep(1)

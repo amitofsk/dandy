@@ -2,7 +2,7 @@
 
 ## 1.0 Introduction
 ### 1.1 What is DANDY?
-[`DANDY`](https://github.com/amitofsk/dandy) is a set of reuseable python examples and a library of python functions to help display sensor data in a graphical user interface (GUI).
+[`DANDY`](https://github.com/amitofsk/dandy) is a set of reusable python examples and a library of python functions to help display sensor data in a graphical user interface (GUI).
 
 ### 1.2 What are we building?
 Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a computer either over USB or wirelessly. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, using a slider, or on a chart plot.
@@ -26,7 +26,7 @@ This guide is NOT for you if:
  - You have not programmed before.
  - You want a plug-and-play solution. This is a software library, so you will have to program.
  - You want to acquire sensor data with precise timing. In this project, data collection happens with an inexpensive microcontroller without a real time operating system.
- - You want to collect data using elaborate equipment. This project involves small discte sensors.  
+ - You want to collect data using elaborate equipment. This project involves small discrete sensors.  
 ## 2.0 Gather hardware supplies
 Hardware used:
 - Small Protoboard and wires
@@ -59,7 +59,7 @@ If you do not know what version you have, run the command below in a command lin
  ```python
  py --version
  ```
-Python comes with a minimalist Integrated Developement Environment (IDE) named IDLE. This tutorial assumes you will use IDLE to write Python code that will be run on the computer. However, you can use another IDE such as PyCharm or Thonny if you prefer, or you can use your favorite text editor.
+Python comes with a minimalist Integrated Development Environment (IDE) named IDLE. This tutorial assumes you will use IDLE to write Python code that will be run on the computer. However, you can use another IDE such as PyCharm or Thonny if you prefer, or you can use your favorite text editor.
 
 
 ### 3.3 Install the pyserial library 
@@ -85,7 +85,8 @@ This tutorial will involve both writing Python code for a computer as well as wr
 One advantage of using a different IDE for the computer code and the microcontroller code is that the IDE will remind you which hardware you are programming for. 
 <br><br>
 If you will be using MicroPython or CircuitPython for the microcontroller, download and install the Mu IDE from [`CodeWithMU`](https://codewith.mu/en/download). If you will be using Arduino, download and install the [`Arduino IDE`](https://www.arduino.cc/en/software/). 
-
+<br><br>
+If you are using the Cy8cproto, follow the instructions at [](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) to download MicroPython for the Cy8cproto as well as the Arduino Lab for MicroPython IDE.
 (TODO: Add instructions for infineon ide.)
 
 
@@ -370,9 +371,9 @@ The fifth line tells the RPi that we will call GP25, the internal LED, the name 
 ![](./docPics/Section3.4.3.2_step4.png)
 
 #### 5.1.4 Reading data from the computer
-In section 6.0, we will send data from the computer to the micrcontroller. To complete this example, we will need to write both Python code for the computer and MicroPython code for the microcontroller. While we're programming the microcontroller, let's write this code. 
+In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and MicroPython code for the microcontroller. While we're programming the microcontroller, let's write this code. 
 <br><br> 
-Copy the code below into the Mu editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the micrcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6. 
+Copy the code below into the Mu editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6. 
 <br><br>
 If you close the Mu IDE, the microcontroller continues to run this code. If you unplug the RPi and plug it back into your computer, the microcontroller continues to run this code.
  
@@ -468,9 +469,9 @@ Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, an
 
 #### 5.1.4 Reading data from the computer
 
-In section 6.0, we will send data from the computer to the micrcontroller. To complete this example, we will need to write both Python code for the computer and CircuitPython code for the microcontroller. While we're programming the microcontroller, let's write this code.
+In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and CircuitPython code for the microcontroller. While we're programming the microcontroller, let's write this code.
 <br><br>
-Copy the code below into the Mu editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the micrcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
+Copy the code below into the Mu editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
 <br><br>
 If you close the Mu IDE, the microcontroller continues to run this code. If you unplug the RPi and plug it back into your computer, the microcontroller continues to run this code.
 
@@ -567,9 +568,9 @@ Line 5 tells the Arduino that we will call pin 8 the name `button`. Line 6 tells
 When you run this example and hold down the pushbutton wired to the RPi, the program prints `T`. Otherwise it prints `F`.
 
 #### 5.1.4 Reading data from the computer
-In section 6.0, we will send data from the computer to the micrcontroller. To complete this example, we will need to write both Python code for the computer and Arduino code for the Arduino hardware. While we're programming the microcontroller, let's write this code.
+In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and Arduino code for the Arduino hardware. While we're programming the microcontroller, let's write this code.
 <br><br>
-Copy the code below into the Arduino editor and upload. When you run it, nothing will happen until you send a character from the computer to the micrcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
+Copy the code below into the Arduino editor and upload. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
 <br><br>
 If you close the Arduino IDE, the microcontroller continues to run this code. If you unplug the Arduino and plug it back into your computer, the microcontroller continues to run this code.
 
@@ -1109,7 +1110,7 @@ if __name__=="__main__":
 
 ![](./docPics/TripleAIN.png)
 ### 8.2 Set up the hardware
-In the previous example, we tried out some widgets that come with the DANDY library. In the previous examples, input values came from a scale widget. Next, we want input values to come from a potentiometer attatched to microcontroller. Let's set up the hardware and microcontroller code for this exmaple.
+In the previous example, we tried out some widgets that come with the DANDY library. In the previous examples, input values came from a scale widget. Next, we want input values to come from a potentiometer attached to microcontroller. Let's set up the hardware and microcontroller code for this example.
 
 For section 8.2, follow the option for the hardware of your choice. 
 
@@ -1565,6 +1566,7 @@ if __name__=="__main__":
 | Terms and Abbreviations| Definition |
 | ---  | ---        |
 | Ain | Abbreviation (in file names) for analog input |
+| API | Application programming interface
 | Ard | Abbreviation (in file names) for Arduino |
 | CP  | Abbreviation (in file names) for CircuitPython |
 | Cy8cproto | The Infineon microcontroller CY8CPROTO-062-4343W kit | 
@@ -1573,6 +1575,7 @@ if __name__=="__main__":
 | IDE | Integrated development environment |
 | JSON | JavaScript Object Notation, a format for sending data |
 | MP | Abbreviation (in file names) for MicroPython |
+| pip | The Python Package Index, a repository for Python libraries |
 | port | How an operating system keeps track of a hardware connection |
 | PWM | Pulse width modulation |
 | RPi | Raspberry Pi Pico microcontroller |

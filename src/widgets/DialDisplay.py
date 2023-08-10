@@ -61,6 +61,6 @@ class DialDisplay(ain.AnalogInDisplay):
 
 if __name__=="__main__":
     dial_example=tk.Tk()
-    dial_widget=DialDisplay(dial_example)
+    dial_widget=DialDisplay(dial_example, height=18, width=18)
     dial_widget.pack()
         

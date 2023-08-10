@@ -85,7 +85,7 @@ class SerialAndGui(tk.Tk):
         while True:
             await asyncio.sleep(interval*10)
             in_string=await qIn.get()
-            print(in_string)
+            #print(in_string)
            
 
     async def updater(self, interval):

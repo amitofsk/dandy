@@ -64,7 +64,7 @@ class AnalogHWShort(sg.SerialAndGui):
             in_json=json.loads(in_string)
             val=in_json["value"]
             val_float=float(val)
-            #print(val)
+            print(val)
             #Scale val so it is in a reasonable range for display
             #TODO: Get rid of magic number.
             scaled_val=val_float/100.0
