@@ -1,6 +1,9 @@
 #This example demonstrates the KnobDisplay and SlideDisplay widgets.
 #Put your cursor over the KnobDisplay widget and scroll the middle mouse button.
 
+##TODO: When you press quit, you get an error from slideDisplay.
+#Can I clean this up?
+
 import tkinter as tk
 import sys
 sys.path.append('../widgets') 

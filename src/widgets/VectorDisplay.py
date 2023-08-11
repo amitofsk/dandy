@@ -1,4 +1,5 @@
-#This class displays three analog inputs (x,y,z) as an vector.
+#This class displays three numeric values, such as from analog inputs (x,y,z)
+#components of analog sensors, as an vector.
 #It is a child of AnalogInDisplay.
 
 #Reference on Isometric Projection: https://en.wikipedia.org/wiki/Isometric_projection
@@ -13,19 +14,18 @@ import tkinter as tk
 import math  
 import AnalogInDisplay as ain
 
-radiusScaleFactor=0.75
 
 class VectorDisplay(ain.AnalogInDisplay):
     def __init__(self, windowV, height=100, width=100):
         super().__init__(windowV, a_height=height, a_width=width)
-        #xOrigin and yOrigin are used in Dial too.
-        #Maybe I should move them to AnalogInDisplay?
         self.__xOrigin=0.5*self.get_ain_width()
         self.__yOrigin=0.5*self.get_ain_height()
+        #radius_scale_factor sets the fraction of the window used by the widget.
+        self.__radius_scale_factor=0.75 
         if height<width:
-            self.__radius=0.5*radiusScaleFactor*self.get_ain_height()
+            self.__radius=0.5*self.__radius_scale_factor*self.get_ain_height()
         else:
-            self.__radius=0.5*radiusScaleFactor*self.get_ain_width()
+            self.__radius=0.5*self.__radius_scale_factor*self.get_ain_width()
       
         self.__theta_view=math.radians(45) 
         self.__phi_view=math.radians(225)
@@ -33,18 +33,25 @@ class VectorDisplay(ain.AnalogInDisplay):
                     (self.__xOrigin-(math.cos(self.__theta_view)*self.__radius)), \
                     (self.__yOrigin-(math.sin(self.__theta_view) \
                     *math.sin(self.__phi_view)*self.__radius)), \
-                    fill="blue", arrow=tk.LAST)
+                    arrow=tk.LAST)
         self.__axisY=self.ain_canvas.create_line(self.__xOrigin, self.__yOrigin, \
                     self.__xOrigin, (self.__yOrigin-self.__radius\
-                    *math.cos(self.__phi_view)), fill="blue", arrow=tk.LAST)
+                    *math.cos(self.__phi_view)), arrow=tk.LAST)
         self.__axisZ=self.ain_canvas.create_line(self.__xOrigin,self.__yOrigin , \
                     (self.__xOrigin-(-math.sin(self.__theta_view)*self.__radius)), \
                     (self.__yOrigin-(math.sin(self.__phi_view) \
                     *math.cos(self.__theta_view)*self.__radius)), \
-                    fill="blue", arrow=tk.LAST)
+                    arrow=tk.LAST)
         self.__lineA=self.ain_canvas.create_line(self.__xOrigin+self.__radius, \
                     self.__yOrigin+self.__radius, self.__xOrigin, self.__yOrigin, \
-                    width=2, arrow=tk.FIRST)
+                    width=2, arrow=tk.FIRST, fill=self.get_color1())
+        self.__labelX=self.ain_canvas.create_text(0.3*width, 0.75*height, \
+                    text="X", fill=self.get_color1())
+        self.__labelY=self.ain_canvas.create_text(0.5*width, 0.9*height, \
+                    text="Y", fill=self.get_color1())
+        self.__labelZ=self.ain_canvas.create_text(0.7*width, 0.75*height, \
+                    text="Z", fill=self.get_color1())
+
         windowV.update()
 
  
@@ -58,11 +65,13 @@ class VectorDisplay(ain.AnalogInDisplay):
                     (zValue*math.sin(self.__theta_view))
         projectedY=(xValue*math.sin(self.__phi_view)*math.sin(self.__theta_view)) \
                     +(yValue*math.cos(self.__phi_view)) \
-                    +(zValue*math.sin(self.__phi_view)*math.cos(self.__theta_view))
+                    +(zValue*math.sin(self.__phi_view)\
+                    *math.cos(self.__theta_view))
         positionX=self.__xOrigin-projectedX
         positionY=self.__yOrigin-projectedY 
-        self.__lineA=self.ain_canvas.create_line(positionX, positionY, self.__xOrigin, \
-                    self.__yOrigin, width=2, arrow=tk.FIRST)
+        self.__lineA=self.ain_canvas.create_line(positionX, positionY, \
+                    self.__xOrigin, self.__yOrigin, width=2, arrow=tk.FIRST, \
+                    fill=self.get_color1())
        
         
 

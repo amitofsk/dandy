@@ -7,9 +7,9 @@
 ### 1.2 What are we building?
 Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a computer either over USB or wirelessly. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, using a slider, or on a chart plot.
 <br><br>
-All of these steps can be implemented using existing open software, but some steps are easier than others. For example, Arduino makes writing the microcontroller software easy, and Tkinter and Qt are user-friendly libraries for writing GUIs. Where are the challenges in writing the software? First, the code for the microcontroller and the code for the GUI on the laptop are typically written in different languages. Multiple languages are not a problem for an experienced coder, but they are an obstacle for a novice or a hobbyist. Second, libraries for writing GUI software typically have reusable widgets like buttons and sliders, but they don't have ones made specifically for handling inputs from analog sensors. Third, the software on the laptop has to both continually read from the sensors and continually update the GUI. These should appear to the user to happen simultaneously, without either task blocking the other.
+All of these steps can be implemented using existing open software, but some steps are easier than others. For example, Arduino makes writing the microcontroller software easy, and Tkinter and Qt are user-friendly libraries for writing GUIs. Where are the challenges in writing the software? First, the code for the microcontroller and the code for the GUI on the laptop are typically written in different languages. Multiple languages are not a problem for an experienced coder, but they are an obstacle for a novice or a hobbyist. Second, libraries for writing GUI software typically have reusable widgets like buttons and spinboxes, but they don't have ones made specifically for handling inputs from analog sensors. Third, the software on the laptop has to both continually read from the sensors and continually update the GUI. These should appear to the user to happen simultaneously, without either task blocking the other.
 <br><br> 
-This project addresses all of these challenges. The goal of this project is not to show a new application of a sensor. Instead, it is to simplify writing software for this typical setup easier. 
+This project addresses all of these challenges. The goal of this project is not to show a new application of a sensor. Instead, it is to simplify writing software for this typical setup easier.  
 ![Overview Diagram](./docPics/OverviewDiagram.png)
 
 
@@ -40,9 +40,9 @@ Hardware used:
   - Option C: The [CY8CPROTO-062-4343W](https://www.digikey.com/en/products/detail/infineon-technologies/CY8CPROTO-062-4343W/9739908?0=%2Frf-evaluation-and-development-kits-boards&s=N4IgjCBcoCwOxVAYygMwIYBsDOBTANCAPZQDaIAzBQGxwUAMIAuoQA4AuUIAyuwE4BLAHYBzEAF9xhAExkQSAJ4AOJKz5F2JJuKA) (PSoC6)
   - Option D: [Arduino](https://www.digikey.com/en/products/detail/arduino/A000073/3476357)
 
-We will be using the button as a simple digital input sensor, and we will be using the potentiometer as a simple analog sensor.
+We will be using the button as an example digital input sensor, and we will be using the potentiometer as an example analog sensor.
 
-This tutorial has four options, depending on your choice of language and microcontroller. Option A is the Raspberry Pi Pico (RPi) and MicroPyton, option B is the RPi and CircuitPython, option C is the Cy8cproto a nd MicroPython, and option D is the Arduino.  Some steps have different versions for the different options.
+This tutorial has four options, depending on your choice of microcontroller and language to program it in. Option A is the Raspberry Pi Pico (RPi) with MicroPyton, option B is the RPi with CircuitPython, option C is the PSoC6 with MicroPython, and option D is Arduino hardware programmed in the Arduino language.  Some steps have different versions for the different options.
 
 If you are using the RPi and your microcontroller didn't come with headers pre-installed, solder them on now, Then, plug your RPi into the protoboard. The picture below shows a RPi without and with headers. 
 
@@ -50,7 +50,7 @@ If you are using the RPi and your microcontroller didn't come with headers pre-i
 
 If you are using the Arduino, you can use any version. However, these instructions show pin numbers and details for the Uno.
 
-This tutorial will be entered into the hackster.io [Connect Things With Code](https://www.hackster.io/contests/connectthingswithcode) contest, and the CY8CPROTO (PSoC6) was chosen since it is part of that contest. If you are using the PSoC6, you do not need the button, potentiometer, and other components because the microcontroller has these components built into it. The magnetic field sensor is also part of that contest.
+This tutorial will be entered into the hackster.io [Connect Things With Code](https://www.hackster.io/contests/connectthingswithcode) contest, and the PSoC6 microcontroller was chosen since it is part of that contest. If you are using the PSoC6, you do not need the button, potentiometer, and other components because the microcontroller has these built in. The magnetic field sensor is also part of that contest.
 
 
 
@@ -81,7 +81,7 @@ pip install pyserial
 ### 3.4 Download the DANDY library.
 The next step is to download the DANDY library from github. Github is a website that hosts tons of open source software projects. 
 <br><br>
-This step requires git. Git comes with Linux operating systems. If you are on a Windows machine, you may have to install it. Git can be downloaded from [Git's website](https://git-scm.com). Once you install it, open a GitBash terminal.  
+This step requires Git. Git comes with Linux, but requires separate installation with Windows.  On Windows, donwload and install it from [Git's website](https://git-scm.com). Once you install it, open a GitBash terminal.  
 <br><br>
 Change to the directory that you want work in. Then, use the following command in the terminal to download the DANDY repository from github. 
  ```python
@@ -125,7 +125,7 @@ Let's write our first GUI program using Python and Tkinter. We're writing code t
 <br><br>
 Try out the example below. You should see a window with a label and a working quit button. 
 
-If you downloaded the `DANDY` library, examples are in the `src/examples` directory. 
+If you downloaded the DANDY library, examples are in the `src/examples` directory. 
 
 (See file src/examples/ButtonGUI.py.)
 
@@ -153,9 +153,9 @@ if __name__=="__main__":
 <br><br><br>
 #### 4.2.2 Example with two buttons
 
-Let's try another example to get more familiar with Tkinter. This example will have two `Buttons` and a `Label` which shows a `PhotoImage`. If you press one of the buttons, the label toggles between two images. Here we write our own function, named `toggle_me`, that is executed when the button is pressed. 
+Let's try another example to get more familiar with Tkinter. This example has two `Buttons` and a `Label` which shows a `PhotoImage`. If you press one of the buttons, the label toggles between two images. Here we write our own function, named `toggle_me`, that is executed when the button is pressed. 
 <br><br> 
-Either make sure the images smileOn.png and smileOff.png are in the same directory as the example, or alter the code below to point to their location. This example and the images are also in the `example` directory of the `DANDY` library you downloaded. 
+Either make sure the images smileOn.png and smileOff.png are in the same directory as the example, or alter the code below to point to their location. This example and the images are also in the `example` directory of the DANDY library you downloaded. 
 <br><br>
 Try out this example too.
 <br><br>
@@ -206,9 +206,8 @@ if __name__=="__main__":
 
 #### 4.3.1 The LEDDisplay widget
 
-Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The `DANDY` library, which you just installed, has additional widgets. 
+Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The DANDY library, which you just installed, has additional widgets. These widgets are designed for displaying sensor data and related tasks. They are summarized in the figure below.
 
-If you are writing data acquisition applications, these widgets may be useful. They are summarized in the figure below. 
 
 (TODO: Add figure summarizing DANDY widgets.)
 
@@ -342,8 +341,8 @@ Connect a button between pin 21 (GP16) and pin 36 (3.3V power)<br>
 Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) for the Raspberry Pi Pico (RPi). <br>
 ![](docPics/PiAndButton5.png)
 
-#### 5.1.2 Install MicroPython on the RPi
-The RPi does not have a full operating system. Instead, we'll install MicroPython, which is a Python interpreter specifically for embedded devices. Think of MicroPython as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program. 
+#### 5.1.2 Install MicroPython firmware on the RPi
+The RPi does not have a full operating system. Instead, we'll install MicroPython firmware, which contains a Python interpreter specifically for embedded devices. Think of MicroPython firmware as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program. 
 <br><br>
 Download the latest release of MicroPython from [here](https://micropython.org/download/rp2-pico/).
 <br><br>
@@ -435,7 +434,7 @@ Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.
 
 
 ##### 5.1.2 Install CircuitPython on the RPi
-The RPi does not have a full operating system. Instead, we'll install CircuitPython, which is a Python interpreter specifically for embedded devices. Think of CircuitPython as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program.
+The RPi does not have a full operating system. Instead, we'll install CircuitPython firmware, which contains a Python interpreter specifically for embedded devices. Think of CircuitPython firmware as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program.
 <br><br>
 Download the latest release of CircuitPython from [here](https://circuitpython.org/board/raspberry_pi_pico/).
 <br><br>
@@ -482,12 +481,10 @@ while True:
     time.sleep(1)
 
 ```
-Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, and it will be an output. Lines 8 and 9 tell the RPi that we will call GP16 (pin21) the name `button`, and it will be an input.
-
-The `button.PULL.DOWN` line connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
+Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, and it will be an output. Lines 8 and 9 tell the RPi that we will call GP16 (pin21) the name `button`, and it will be an input. The `button.PULL.DOWN` line connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
 
 
-<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the LED. Otherwise it prints `F` and turns off the LED.
+When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the LED. Otherwise it prints `F` and turns off the LED.
 ![](./docPics/Section3.4.3.2_step4.png)
 
 (TODO: Fixme, the figure above is for MicroPython, not CircuitPython)
@@ -524,8 +521,6 @@ while True:
         led.value(False)
     time.sleep(1)
 
-
-
 ```
 
 (TODO: Test this circuitpython code above... I got it from https://stackoverflow.com/questions/48922189/receive-data-from-host-computer-using-circuit-python-on-circuit-playground-expre . It is untested. )
@@ -540,12 +535,76 @@ The PSoC6 has an internal button and LED, so we don't need to wire any external 
 
 #### 5.1.2 Install MicroPython
 
-If you followed the instructions at  [here](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) or [here](https://ifx-micropython.readthedocs.io/en/latest/psoc6/intro.html), you've already installed MicroPython on the PSoC6 as well as installed the Arduino Lab IDE on your computer. 
+If you followed the instructions at [here](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) or [here](https://ifx-micropython.readthedocs.io/en/latest/psoc6/intro.html), you've already installed MicroPython firmware on the PSoC6 as well as installed the Arduino Lab IDE on your computer. 
 
 Connect a USB cable between the USB port on the PSoC6 labeled `KITPROG3` and computer. Next, open the Arduino Lab IDE.
 
 #### 5.1.3 Blinky lights
+
+Now we're ready to write our first MicroPython program that will run on the PSoC. We'll use the Arduino Lab IDE, so open it now.
+<br><br>
+Write the following instruction in the editor, and press the `Run` button. You should see the result on the bottom of the Mu window.
+```python
+print ("Hello")
+```
+
+Now let's write a MicroPython program that uses the internal pushbutton labeled `SW2 User` near the center of the board. Copy the program below into the editor, and run it.
+
+(See file src/mircrocontr/serialWritePSoC.py.)
+
+
+```python
+from machine import Pin
+import time
+print ("hello")
+
+button = Pin("P0_4", Pin.IN, Pin.PULL_DOWN)
+led=Pin("P13_7", Pin.OUT)
+while True:
+    if button.value():
+        print("F")
+        led.value(True)
+    else:
+        print("T")
+        led.value(False)
+    time.sleep(1)
+```
+The fourth line tells the RPi that we will call the `SW2 User` pushbutton  (pin P0.4) the name `button`. This line also says `button` will be an input. The `Pin.PULL_DOWN` option connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
+<br><br>
+The fifth line tells the RPi that we will call pin 13.7, the internal LED, the name `led`. This line also says `led` will be an output.
+<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED.
+
+Unlike the RPi, this board is active low, so low values are considered True and high values are considered Falsse. (checkme)
+
 #### 5.1.4 Reading data from the computer
+
+In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and MicroPython code for the microcontroller. While we're programming the microcontroller, let's write this code.
+<br><br>
+Copy the code below into the Arduino Lab editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
+<br><br>
+If you close the Arduino Lab IDE, the microcontroller continues to run this code. If you unplug the PSoC6 and plug it back into your computer, the microcontroller continues to run this code.
+
+(See file src/microcontr/serialReadPSoC.py.)
+
+```python
+from machine import Pin
+import time
+import sys
+print ("hello")
+
+led=Pin("P13_7", Pin.OUT)
+led.value(False)
+while True:
+    #read as character
+    ch = sys.stdin.read(1)
+    print (ch)
+    led.value(False)
+    time.sleep(0.25)
+    led.value(True)
+    time.sleep(1)
+
+```
+
 
 ### 5.1 Option D: Arduino
 #### 5.1.1 Build the circuit
@@ -1612,8 +1671,7 @@ if __name__=="__main__":
 | API | Application programming interface
 | Ard | Abbreviation (in file names) for Arduino |
 | CP  | Abbreviation (in file names) for CircuitPython |
-| Cy8cproto | The Infineon microcontroller CY8CPROTO-062-4343W kit | 
-| git | A version control tool |
+| Git | A version control tool |
 | GUI | Graphical user interface |
 | IDE | Integrated development environment |
 | JSON | JavaScript Object Notation, a format for sending data |
@@ -1621,6 +1679,7 @@ if __name__=="__main__":
 | MP | Abbreviation (in file names) for MicroPython |
 | pip | The Python Package Index, a repository for Python libraries |
 | port | How an operating system keeps track of a hardware connection |
+| PSoC6 | The Infineon microcontroller CY8CPROTO-062-4343W kit |  
 | PWM | Pulse width modulation |
 | RPi | Raspberry Pi Pico microcontroller |
 | Tkinter | A Python library for making graphical user interfaces |

@@ -1,4 +1,5 @@
-#This class displays an analog input as if it were sent through a comparator
+#This class displays a numeric value, such as from an analog input
+# sensor, as if it were sent through a comparator
 #to a tricolor LED. It relies on LEDDisplay.
 #It is a child of LEDDisplay, not AnalogInDisplay.
 

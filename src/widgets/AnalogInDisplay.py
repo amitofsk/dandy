@@ -2,19 +2,26 @@
 #The child classes are SlideDisplay, SimplePlotDisplay, DialDisplay,
 #and TricolorDisplay. You should probably use the child classes instead.
 
+#TODO: aincanvas should be private and have a getter... It shows up
+#in child classes too.
+
 import tkinter as tk
 
 class AnalogInDisplay:
-    #Here's the constructor for when you don't have any options
+    # Here's the constructor for when you don't have any options
     def __init__(self, windowAIn, a_height=100, a_width=100):
         self.__minimum=0.0
         self.__maximum=10.0
         self.__ain_height=a_height
         self.__ain_width=a_width
+        self.__color1='#007DC8'
+        self.__color2='#98D2D2'
+        #self.__color3='#4B0000'  
+        
         self.ain_canvas=tk.Canvas(windowAIn, height=self.__ain_height, \
                                  width=self.__ain_width)
 
-    ##Setters and getters
+    # Setters and getters
     def set_minimum(self, min_value=0):
         self.__minimum=min_value
 
@@ -47,7 +54,13 @@ class AnalogInDisplay:
         return self.__ain_width
         
 
-    ##Member functions related to packing
+    def get_color1(self):
+        return self.__color1
+
+    def get_color2(self):
+        return self.__color2
+
+    # Member functions related to packing
     def pack(self):
         self.ain_canvas.pack()
 
