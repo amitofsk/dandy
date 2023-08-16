@@ -7,7 +7,11 @@
 ### 1.2 What are we building?
 Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a computer either over USB or wirelessly. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, using a slider, or on a chart plot.
 <br><br>
-All of these steps can be implemented using existing open software, but some steps are easier than others. For example, Arduino makes writing the microcontroller software easy, and Tkinter and Qt are user-friendly libraries for writing GUIs. Where are the challenges in writing the software? First, the code for the microcontroller and the code for the GUI on the laptop are typically written in different languages. Multiple languages are not a problem for an experienced coder, but they are an obstacle for a novice or a hobbyist. Second, libraries for writing GUI software typically have reusable widgets like buttons and spinboxes, but they don't have ones made specifically for handling inputs from analog sensors. Third, the software on the laptop has to both continually read from the sensors and continually update the GUI. These should appear to the user to happen simultaneously, without either task blocking the other.
+All of these steps can be implemented using existing open software, but some steps are easier than others. For example, Arduino makes writing the microcontroller software easy, and Tkinter and Qt are user-friendly libraries for writing GUIs. 
+
+**Where are the challenges in writing the software?**
+ 
+First, the code for the microcontroller and the code for the GUI on the laptop are typically written in different languages. Multiple languages are not a problem for an experienced coder, but they are an obstacle for a novice or a hobbyist. Second, libraries for writing GUI software typically have reusable widgets like buttons and spinboxes, but they don't have ones made specifically for handling inputs from analog sensors. Third, the software on the laptop has to both continually read from the sensors and continually update the GUI. These should appear to the user to happen simultaneously, without either task blocking the other.
 <br><br> 
 This project addresses all of these challenges. The goal of this project is not to show a new application of a sensor. Instead, it is to simplify writing software for this typical setup easier.  
 ![Overview Diagram](./docPics/OverviewDiagram.png)
@@ -33,6 +37,8 @@ Hardware used:
 - Buttons that fit in the protoboard
 - Resistors (300 $\Omega$ - 1k $\Omega$ ) 
 - [Potentiometer](https://www.digikey.com/en/products/detail/bourns-inc/PTV09A-4025U-B103/3781137) that fits in the protoboard
+- LED
+- Small [servo motor](https://www.digikey.com/en/products/filter/motors-ac-dc/178?s=N4IgTCBcDaIM4FMBOA3A9iAugXyA) (section 10.2 only)
 - The TLE493DW2B6-A0 [magnetic field sensor](https://www.digikey.com/en/products/detail/infineon-technologies/S2GO3DTLE493DW2B6A0TOBO1/10667589?s=N4IgTCBcDaICoBkCiAWAnAZgCIHUwCEA2AWgEEAGEAXQF8g) (Section 8.5 only)
 - USB cable to connect your microcontroller
 - Microcontroller
@@ -55,10 +61,11 @@ This tutorial will be entered into the hackster.io [Connect Things With Code](ht
 
 
 ## 3.0 Install software
+This tutorial involves both writing Python code for a computer as well as writing code for a microcontroller, so we have two programming environments to set up.
 
 ### 3.1 Check your Python installation
 
-This tutorial requires at least Python version 3.7. It has been tested on both Windows and Linux systems.
+We will write Python code with a GUI for the computer. This tutorial requires at least Python version 3.7. It has been tested on both Windows and Linux systems.
 <br><br>
 If you do not have Python, you can download the latest version from [`Python's website`](https://www.python.org/downloads/).
 <br><br>
@@ -71,6 +78,8 @@ Python comes with a minimalist Integrated Development Environment (IDE) named ID
 
 
 ### 3.3 Install the pyserial library 
+The pyserial library is used to communicate with devices connected by a USB cable. We will use it to communicate between the computer and the microcontroller.
+
 In the terminal, execute
 ```python
 pip install pyserial
@@ -88,11 +97,12 @@ Change to the directory that you want work in. Then, use the following command i
  git clone https://github.com/amitofsk/dandy.git
  ```
 ### 3.5 Install the Mu IDE or the Arduino IDE
-This tutorial will involve both writing Python code for a computer as well as writing Micropython, Circuitpython, or Arduino code for a microcontroller. We'll write Python code for the computer using the IDLE Integrated Development Environment (IDE). We'll use a different IDE for the microcontroller. 
+In addition to writing Python code for the computer using the IDLE IDE, we will also be writing code for the microcontroller. In this step, we will download the IDE used for programming the microcontroller. 
 
 One advantage of using a different IDE for the computer code and the microcontroller code is that the IDE will remind you which hardware you are programming for. 
 
-If you will be using MicroPython or CircuitPython with the RPi, download and install the [Mu IDE](https://codewith.mu/en/download). 
+If you will be using MicroPython or CircuitPython with the RPi, download and install the [Mu IDE](https://codewith.mu/en/download). The Thonny IDE could also work, but this tutorial will use Mu. Most other Python IDEs do not have the needed libraries.
+
 <br><br>
 If you will be using Arduino, download and install the [Arduino IDE](https://www.arduino.cc/en/software/). 
 <br><br>
@@ -110,7 +120,7 @@ Files used in section 4:
 - examples/smileOn.png
 - examples/smileOff.png
 
-DANDY contains a set of widgets useful for displaying input data and other functions. In this section, we'll learn how to program GUIs with Tkinter as well as use the DANDY widgets. 
+DANDY contains a set of widgets useful for displaying input data and other functions. In this section, we'll learn how to program GUIs with Tkinter as well as use the DANDY widgets. We will be programming for the computer here using the IDLE IDE.
    
 
 ### 4.1 What Tkinter is?
@@ -207,7 +217,7 @@ if __name__=="__main__":
 #### 4.3.1 The LEDDisplay widget
 
 Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The DANDY library, which you just installed, has additional widgets. These widgets are designed for displaying sensor data and related tasks. They are summarized in the figure below.
-
+See the [DANDY API](./WidgetApi.md) for additional details about the available widgets. 
 
 (TODO: Add figure summarizing DANDY widgets.)
 
@@ -330,9 +340,13 @@ In section 4, we wrote Python code for the computer, and we used the IDLE IDE. I
  - Option B: Raspberry Pi Pico (RPi) and CircuitPython
  - Option C: PSoC6 and MicroPython
  - Option D: Arduino
+
+
 Follow the option of your choice for this section.
 
-All of the examples in this section have three versions. The one with MP in its file name is the MicroPython version, the one with CP in its files name is the CircuitPython version, and the one with Ard in its file name is the Arduino version. 
+All of the examples in this section have four versions. File names ending in MP are for Option A, file names ending in CP are for option B, file names ending in PSoC are for option C, and file names ending in Ard are for option D. 
+
+Note that all of the example files in the `microcontr` directory should be run on the microcontroller. All of the files in the `examples`, `widgets`, and `utilities` directories, however, are to be run on the computer.
 
 ### 5.1 Option A: Micropython and RPi
 #### 5.1.1 Build the circuit
@@ -352,18 +366,34 @@ You should now see the RPi drive available (for example, in Windows Explorer). D
 <br><br>
 Disconnect the RPi by unplugging the USB cable. Reconnect the RPi, this time without holding down the `BOOTSEL` button.  
 
+#### 5.1.3 Hello world
 
-#### 5.1.3  Blinky lights
 Now we're ready to write our first MicroPython program that will run on the RPi. We'll use the Mu IDE, so open it now.
 <br><br>
 This step requires some libraries for interacting with the hardware, so you can't use IDLE or a text editor unless you manually download those libraries. If you don't want to use Mu, Thonny is another IDE option that has the needed libraries. This tutorial, however, uses Mu.
-<br><br>
-Write the following instruction in the editor, and press the `Run` button. You should see the result on the bottom of the Mu window.
+
+Click on the `Mode` button and select `RP2040` to tell the Mu IDE that you will be programming in MicroPython. You should now see `RP2040` on the lower right of the MU IDE window.
+
+The middle of the Mu IDE is a text editor where you can enter your code. Below that is a windowcalled the [REPL](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/circuitpython-programming-basics) terminal, short for Read, Evaluate, Print, and Loop.
+
+You can type individual MicroPython instructions in the REPL terminal. They will be evaluated on the microcontroller. If they contain any print statements, the microcontroller will send the message serially via the USB cable, and you will see the result in the REPL terminal.
+
+Since most of our programs will be more than one line, we'll write our instructions in the editor instead of the REPL terminal. After we run our programs, we will still see results of any print statements on the REPL terminal.
+
+Write the following instruction in the editor, and save it as `hello.py`. Next, press the `RUN` button. You should see the message printed in the REPL terminal.
 ```python
 print ("Hello")
 ```
 
-Now let's write a MicroPython program that uses the pushbutton you wired to the RPi. Copy the program below into the editor, and run it. 
+![](./docPics/Hello_Mu_MP.png)
+
+
+
+#### 5.1.4  Blinky lights
+
+Now let's write a MicroPython program that uses the pushbutton you wired to the RPi. In this example, when you press down the pushbutton, the internal LED on the RPi will turn on and `T` will be printed in the REPL terminal. When the button is not pressed down, the LED will be off and `F` will be printed. 
+
+Copy the program below into the editor or load the `microcontr/serialWriteMP.py` example program. Then, run it. 
 
 (See file src/mircrocontr/serialWriteMP.py.)
 
@@ -390,10 +420,12 @@ The fifth line tells the RPi that we will call GP25, the internal LED, the name 
 <br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED. 
 ![](./docPics/Section3.4.3.2_step4.png)
 
-#### 5.1.4 Reading data from the computer
+#### 5.1.5 Reading data from the computer
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and MicroPython code for the microcontroller. While we're programming the microcontroller, let's write this code. 
 <br><br> 
-Copy the code below into the Mu editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6. 
+Create a new file in the Mu editor and copy in the code below. Alternatively, load the `microcontr/serialReadMP.py` example file. 
+
+Run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6. 
 <br><br>
 If you close the Mu IDE, the microcontroller continues to run this code. If you unplug the RPi and plug it back into your computer, the microcontroller continues to run this code.
  
@@ -444,19 +476,36 @@ You should now see the RPi drive available (for example, in Windows Explorer). D
 <br><br>
 Disconnect the RPi by unplugging the USB cable. Reconnect the RPi, this time without holding down the `BOOTSEL` button.
 
+#### 5.1.3 Hello world
 
-#### 5.1.3 Blinky lights
+Now we're ready to write our first MicroPython program that will run on the RPi. We'll use the Mu IDE, so open it now. Adafruit has written a nice [CircuitPython tutorial.](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/overview)
 
-Now we're ready to write our first CircuitPython program that will run on the RPi. We'll use the Mu IDE, so open it now. Adafruit has written a nice [CircuitPython tutorial.](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/overview)
 <br><br>
 This step requires some libraries for interacting with the hardware, so you can't use IDLE or a text editor unless you manually download those libraries. If you don't want to use Mu, Thonny is another IDE option that has the needed libraries. This tutorial, however, uses Mu.
-<br><br>
-Write the following instruction in the editor, and press the `Run` button. You should see the result on the bottom of the Mu window.
+
+Click on the `Mode` button and select `CircuitPython` to tell the Mu IDE that you will be programming in CircuitPython. You should now see `CircuitPython` on the lower right of the MU IDE window.
+
+The middle of the Mu IDE is a text editor where you can enter your code. Below that is a windowcalled the [REPL](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/circuitpython-programming-basics) terminal, short for Read, Evaluate, Print, and Loop.
+
+You can type individual MicroPython instructions in the REPL terminal. They will be evaluated on the microcontroller. If they contain any print statements, the microcontroller will send the message serially via the USB cable, and you will see the result in the REPL terminal.
+
+Since most of our programs will be more than one line, we'll write our instructions in the editor instead of the REPL terminal. After we run our programs, we will still see results of any print statements on the REPL terminal.
+
+Write the following instruction in the editor, and save it as `hello.py`. Next, press the `RUN` button. You should see the message printed in the REPL terminal.
 ```python
 print ("Hello")
 ```
 
-Now let's write a CircuitPython program that uses the pushbutton you wired to the RPi. Copy the program below into the editor, and run it.
+![](./docPics/Hello_Mu_MP.png)
+
+
+
+#### 5.1.4 Blinky lights
+
+Now let's write a CircuitPython program that uses the pushbutton you wired to the RPi.In this example, when you press down the pushbutton, the internal LED on the RPi will turn on and `T` will be printed in the REPL terminal. When the button is not pressed down, the LED will be off and `F` will be printed.
+
+
+Copy the program below into the editor or load the `microcontr/serialWriteCP.py` example program. Then, run it.
 
 (See file src/microcontr/serialWriteCP.py.)
 
@@ -488,14 +537,15 @@ When you run this example and hold down the pushbutton wired to the RPi, the pro
 ![](./docPics/Section3.4.3.2_step4.png)
 
 (TODO: Fixme, the figure above is for MicroPython, not CircuitPython)
-(TODO: Write this code and put it in the microcontr folder.)
 (TODO: Test the code above, I just added the pulldown line without testing it.)
 
-#### 5.1.4 Reading data from the computer
+#### 5.1.5 Reading data from the computer
 
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and CircuitPython code for the microcontroller. While we're programming the microcontroller, let's write this code.
 <br><br>
-Copy the code below into the Mu editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
+Create a new file in the Mu editor and copy in the code below. Alternatively, load the `microcontr/serailReadCP.py` example file.
+
+Run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
 <br><br>
 If you close the Mu IDE, the microcontroller continues to run this code. If you unplug the RPi and plug it back into your computer, the microcontroller continues to run this code.
 
@@ -535,20 +585,26 @@ The PSoC6 has an internal button and LED, so we don't need to wire any external 
 
 #### 5.1.2 Install MicroPython
 
-If you followed the instructions at [here](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) or [here](https://ifx-micropython.readthedocs.io/en/latest/psoc6/intro.html), you've already installed MicroPython firmware on the PSoC6 as well as installed the Arduino Lab IDE on your computer. 
+If you followed the instructions [here](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) or [here](https://ifx-micropython.readthedocs.io/en/latest/psoc6/intro.html), you've already installed MicroPython firmware on the PSoC6 as well as installed the Arduino Lab IDE on your computer. 
 
 Connect a USB cable between the USB port on the PSoC6 labeled `KITPROG3` and computer. Next, open the Arduino Lab IDE.
 
-#### 5.1.3 Blinky lights
+#### 5.1.3 Hello world
 
 Now we're ready to write our first MicroPython program that will run on the PSoC. We'll use the Arduino Lab IDE, so open it now.
 <br><br>
-Write the following instruction in the editor, and press the `Run` button. You should see the result on the bottom of the Mu window.
+Write the following instruction in the editor, and press the `Run` button. You should see the result in the bottom terminal window.
+
+(EXPLAIN PRINT STATEMENTS)
+
 ```python
 print ("Hello")
 ```
 
-Now let's write a MicroPython program that uses the internal pushbutton labeled `SW2 User` near the center of the board. Copy the program below into the editor, and run it.
+#### 5.1.4 Blinky lights
+Now let's write a MicroPython program that uses the internal pushbutton labeled `SW2 User` near the center of the board. In this ex ample, when you press down the pushbutton, the internal LED will turn on and `T` will be printed. When the button is not pressed down, the LED will be off and `F` will be printed.
+
+Copy the program below into the editor or load the `microcontr/serialWritePSoC.py` example program. Then, run it.
 
 (See file src/mircrocontr/serialWritePSoC.py.)
 
@@ -574,13 +630,15 @@ The fourth line tells the RPi that we will call the `SW2 User` pushbutton  (pin 
 The fifth line tells the RPi that we will call pin 13.7, the internal LED, the name `led`. This line also says `led` will be an output.
 <br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED.
 
-Unlike the RPi, this board is active low, so low values are considered True and high values are considered Falsse. (checkme)
+Unlike the RPi, this board is active low, so low values are considered 'True' and high values are considered 'False'. 
 
-#### 5.1.4 Reading data from the computer
+#### 5.1.5 Reading data from the computer
 
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and MicroPython code for the microcontroller. While we're programming the microcontroller, let's write this code.
 <br><br>
-Copy the code below into the Arduino Lab editor, save it, and run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
+Create a new file and copy in the code below, or load the `microcontr/serialReadPSoC.py` example file.
+
+Run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
 <br><br>
 If you close the Arduino Lab IDE, the microcontroller continues to run this code. If you unplug the PSoC6 and plug it back into your computer, the microcontroller continues to run this code.
 
@@ -610,32 +668,47 @@ while True:
 #### 5.1.1 Build the circuit
 Connect a button between the 3.3V pin and D8. Using the USB cable, plug the Arduino into the computer. 
 
-(TODO: Pic needed)
+For the Arduino Uno, refer to the [pinout](https://docs.arduino.cc/hardware/uno-rev3) and the figure below. Other Arduino models will work too, but refer to their pinout for which pins to use.
+
+![Arduino Circuit2](./docPics/ArdCircuit2.png)
 
 #### 5.1.2 Install Arduino firmware
 Arduino hardware comes pre-installed with the instructions needed to run Arduino software. So, we don't need to do anything here.
 
-#### 5.1.3 Blinky lights
+#### 5.1.3 Hello world
+
 Now we're ready to write our first Arduino program that will run on the Arduino hardware. We'll use the Arduino's IDE, so open it now.
 <br><br>
-Write the following instruction in the editor, and press the `Upload` button. Go to `Tools->SerialMonitor`, and you should see the message displayed.
+Write the following instruction in the editor, and press the `Upload` button. 
 
 
 ```c++
 
 void setup()
-  {  
-  Serial.begin(9600);
+  {
+  Serial.begin(115200);
   Serial.println("hi");
   }
 
 void loop()
 {
-  Serial.println("hello"); 
+  Serial.println("hello");
 }
 ```
 
-Now let's write an Arduino program that uses the pushbutton you wired to the Arduino hardware. Copy the program below into the Arduino editor, and upload it.
+To see the printed characters, open `Serial Monitor` under the `Tools` menu. All of this code is evaluated in on the microcontoller, not the computer. Even print statements are evaluated on the microcontroller. The resulting message is sent via the USB cable to the computer and displayed in the Serial Monitor.  
+
+The Serial Monitor sometimes takes over the resources of the USB serial communication channel with the microcontroller, so you may have to close the Serial Monitor before you upload new code to the Arduino or send other signals from the computer to the Arduino.
+
+To correctly see data on the Serial Monitor, it must be set at the correct baud rate. Click on the baud rate in the lower right corner of the Serial Monitor and select 115200.
+
+
+#### 5.1.4 Blinky lights
+
+Now let's write an Arduino program that uses the pushbutton you wired to the Arduino hardware. In this example, when you press down the pushbutton, the internal LED will turn on and `T` will be printed. When the button is not pressed down, the LED will be off and `F` will be printed.
+
+Copy the program below into the editor or load the `microcontr/serialWriteArd.ino` example program. Then, upload it.
+
 
 (See file src/mircrocontr/serialWriteArd.ino.)
 
@@ -669,12 +742,13 @@ Line 5 tells the Arduino that we will call pin 8 the name `button`. Line 6 tells
 <br><br>
 When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the LED. Otherwise it prints `F` and turns off the LED.
 
-(TODO: Explain Arduino's serial monitor here...)
 
-#### 5.1.4 Reading data from the computer
+#### 5.1.5 Reading data from the computer
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and Arduino code for the Arduino hardware. While we're programming the microcontroller, let's write this code.
 <br><br>
-Copy the code below into the Arduino editor and upload. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
+Create a new file in the Arduino editor and copy in the code below. Alternatively, load the `microcontr/serailReadArd.ino` example file.
+
+Upload it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
 <br><br>
 If you close the Arduino IDE, the microcontroller continues to run this code. If you unplug the Arduino and plug it back into your computer, the microcontroller continues to run this code.
 
@@ -703,29 +777,27 @@ void loop() {
 }
 ```
 
-(TODO: Somewhere say not to leave the serial monitor open.)
-Also, make sure the Arduino's SerialMonitor is at the right baudrate...
 
-## 6.0 Sending DIGITAL OUTPUT data from the computer to the microcontroller
+## 6.0 Sending characters TO the MICROCONTROLLER from the computer
 
 Files used in 6.0:
 - examples/DigitalOut.py
 - examples/DigitalOutDisplay.py
 
 Now let's get the computer to talk to the microcontroller. More specifically, in this section, we'll send a character from the computer to the microcontroller. When the microcontroller receives a character, the internal light will blink on and off.
-<br><br> 
+<br><br>
 In section 5.1.4, you wrote the necessary code for the microcontroller and ran it. Make sure your microcontroller is still plugged in and running that code. We won't use the pushbutton connected to the microcontroller in this example, so it doesn't matter if it is connected or not. 
 <br><br>
-Close your Mu IDE or your Arduino IDE.
+Close the Mu, Arduino, or Arduino Lab IDE that you used to program the microcontroller.
 <br><br> 
-In this section we write Python code for the computer. When we wrote code for the microcontroller, there were different options for the different hardware choices: MicroPython and the RPi, CircuitPython and the RPi, MicroPython and the Cy8cproto, and Arduino. Examples in this section will apply for any computer with a Python interpreter, whether that computer runs Windows or Linux.
+In this section we write Python code for the computer. When we wrote code for the microcontroller, there were different options for the different hardware choices: MicroPython and the RPi, CircuitPython and the RPi, MicroPython and the PSoC6, and Arduino. Examples in this section will apply for any computer with a Python interpreter, whether that computer runs Windows or Linux.
 
-### 6.1 Digital output, without a GUI
+### 6.1 Sending characters to the microcontroller, without a GUI
 Let's write the Python code that will run on the computer for this example. Open the IDLE IDE, and copy the code below, and run it. Every second, this program sends the character `Z` from the computer, down the USB cable, to the microcontroller. 
 <br><br>
-This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0`. Alter the code below so that the correct port is used. 
+This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
 <br><br>
-We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baudrate, bytesize, and number of stopbits. For this example, you shouldn't need to alter these parameters, but in other cases, you might.
+We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baud rate, bytesize, and number of stopbits. If you are using the PSoC6, replace `STOPBITS_TWO` with `STOPBITS_ONE` near line 11. 
 <br><br>
 
 (See file src/examples/DigitalOut.py.)
@@ -756,16 +828,16 @@ serialPort.close()
 When you run the example above, the computer sends a character to the microcontroller every second. The microcontroller is still running code that blinks the LED when it receives a character, so you should see the microcontroller's internal LED blink every second. To verify that it works, replace `time.sleep(1)` with `time.sleep(3)`. Now the computer will send a character every three seconds, and the microcontroller's LED will blink at this slower rate.
 <br><br>
 
-You may be able to automatically assign the serial port with the following lines. However, these lines aren't too reliable, so it is better to set `port` manually.
+You may be able to automatically assign the serial port with the following lines. However, these lines aren't too reliable, so it is better to set `PORT` manually.
 
 ```python
 ports=list(port_list.comports())
 port=(ports[0].device)
 print(ports[0].device)
 ```
+Keep in mind that whenever you send serially using the USB cable in this way, you are sending characters. You can send characters like `4` or `3`, but even though these look like integers, they are actually characters. If you are writing software for the receiver, you can include an instruction that, for example, casts the character `4` into an integer if you want to treat it as a number.
 
-
-### 6.2 Digital output, with a GUI
+### 6.2 Sending characters to the microcontroller, with a GUI
 
 Let's rewrite the Python code in the example above to include a GUI. Try out the example below. 
 <br><br>
@@ -813,9 +885,9 @@ if __name__=="__main__":
 ```
 ![](docPics/digOutButtons.png)
 
+The strategies in section 6 really only work if you are sending single characters and the characters are available whenever the microcontroller tries to read them. If you want to send longer messages to the microcontroller or want to ensure that the microcontroller doesn't block waiting to get information, you need more complicated instructions. See section 10 for more information.
 
-
-## 7.0 Displaying DIGITAL data INPUT from the microcontroller on the computer
+## 7.0 Displaying characters sent FROM the MICROCONTROLLER to the computer
 
 Files used in section 7:
 - microcontr/serialWriteMP.py
@@ -828,15 +900,21 @@ Files used in section 7:
 - utilities/SerialAndGui.py
 
 <br><br>
-In this section, we will send data from the microcontroller to the computer. More specifically, you should have a pushbutton wired to a microcontroller, and your microcontroller should be connected to the computer by a USB cable. If you aren't pressing the pushbutton, the microcontroller sends the character `F` to the computer. If you are pressing the pushbutton, it sends `T`. We'll go through this example multiple ways. 
+In this section, we will send data from the microcontroller to the computer. 
+
+More specifically, you should have a pushbutton wired to a microcontroller, and your microcontroller should be connected to the computer by a USB cable. If you aren't pressing the pushbutton, the microcontroller sends the character `F` to the computer. If you are pressing the pushbutton, it sends `T`. We'll go through this example multiple ways. 
+
+(Think of the pushbutton like a digital input...)
 <br><br>
+
+
 ### 7.1 Set up the microcontroller and run the example
 
 You should still have the pushbutton wired to the microcontroller. We'll need it for this example.Now, let's program the microcontroller. Open the Mu or Arduino IDE. Re-open the blinky lights example from section 5.1.3. (See file src/microcontr/serialWriteMP.py, src/microcontr/serialWriteCP.py, or src/microcontr/serialWriteArd.py.)
  We'll use this program once again in this section. Run it, and then close the IDE for your microcontroller. Leave the microcontroller connected to your computer with the USB cable. 
 <br><br>
 
-### 7.2 Digital input, no GUI
+### 7.2 Receiving characters from the microcontroller, no GUI
 
 In the previous section, we wrote code for the microcontroller using the Mu or Arduino IDE. In this section, we will be writing code for the computer using IDLE IDE. 
 <br><br> 
@@ -863,7 +941,9 @@ while True:
 serialPort.close()
 ```
 
-### 7.3 Digital input, now with widgets and asyncIO
+(TODO: Put this in a class and clean up, uncomment COM, name it PORT,...)
+
+### 7.3 Receiving data from the microcontroller, now with widgets and asyncIO
 #### 7.3.1 What is asyncio and why do we need it here.
 Tkinter is the graphics library. Typically, tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serial data.
 The problem is that we want both loops to run continuously and simultaneously. One possible solution would be to put each of these tasks in different threads. 
@@ -1068,7 +1148,7 @@ if __name__=="__main__":
 
 
 
-## 8.0 Displaying ANALOG INPUT data from the microcontroller to the computer
+## 8.0 Displaying NUMERICAL data sent FROM the MICROCONTROLLER to the computer
 
 Files used in section 8:
 - widgets/AnalogInDisplay.py
@@ -1085,7 +1165,9 @@ Files used in section 8:
 - microcontr/analogToComputerCP.py
 - microcontr/analogToComputerArd.ino
 
-In this section, we'll detail how to send analog data from a microcontroller to a computer and display the result in a GUI. In this section, the analog data will come from a potentiometer wired in to the microcontroller. However, you can directly replace that potentiometer with a thermistor, pressure sensor, accelerometer, or other type of analog sensor.
+In this section, we'll detail how to send numerical data from a microcontroller to a computer and display the result in a GUI. In this section, the analog data will come from a potentiometer wired in to the microcontroller. However, you can directly replace that potentiometer with a thermistor, pressure sensor, accelerometer, or other type of analog sensor.
+
+NOTE... we send characters and cast them in the receiver...
 
 ### 8.1 DANDY widgets for analog inputs, no hardware
 
@@ -1284,7 +1366,7 @@ Open the Mu IDE. Copy and run this code. As you adjust the potentiometer, values
 
 (See file src/microcontr/analogToComputerCP.py.)
 
-#### 8.2.1 Option C: MicroPython and the Cy8cproto
+#### 8.2.1 Option C: MicroPython and the PSoC
 
 #### 8.2.1 Option D: Arduino
 
@@ -1456,7 +1538,7 @@ Here are the files used in this section with the microcontrollers
 In this section we demonstrate DANDY widgets that look like microcontrollers. First we show these widgets without hardware, and then we incorporate the hardware. 
 
 #### 9.1 Example with no hardware
-This example demonstrates the widgets that look like microcontrollers. This section does not use hardware.  The file `MCDisplay.py` is a parent class. The files `RPiPicoDisplay.py`, `AUnoDisplay.py`, `AMKRDisplay.py`, `ANanoEveryDisplay.py`, and `Cy8cprotoDisplay.py` are child classes that look like the RPi, Arduino Uno, Arduino MKR1010, Arduino Nano Every, and Cy8cproto microcontrollers respectfully.
+This example demonstrates the widgets that look like microcontrollers. This section does not use hardware.  The file `MCDisplay.py` is a parent class. The files `RPiPicoDisplay.py`, `AUnoDisplay.py`, `AMKRDisplay.py`, `ANanoEveryDisplay.py`, and `Cy8cprotoDisplay.py` are child classes that look like the RPi, Arduino Uno, Arduino MKR1010, Arduino Nano Every, and PSoC microcontrollers respectfully.
 This example is found in the file `MCDemo.py` which imports these widgets.
 <br><br>
 When you run this example, you will see a widget that looks like the RPi. Pin 6 shows a LEDDisplay widget, and pin 21 shows a button. There is also a toggle button at the bottom of the screen. If you press either the button near bin 31 or the toggle button, the LEDDisplay near pin 6 changes color.
@@ -1605,7 +1687,7 @@ if __name__=="__main__":
 In this section, we demonstrate a widget that is useful when sending analog or pulse width modulated (PWM) signals out of the computer.
 This will allow us to control motors or other actuators that accept an analog voltage.
 <br><br>
-Not all microcontrollers have this feature. The Arduino and Cy8cproto can send pulse width modulated (PWM) signals to specific pins. The RPPi does not. The Cy8cproto has an internal digital to analog converter on a particular pin. The Arduino and RPi do not have this feature. 
+Not all microcontrollers have this feature. The Arduino and PSoC can send pulse width modulated (PWM) signals to specific pins. The RPPi does not. The PSoC has an internal digital to analog converter on a particular pin. The Arduino and RPi do not have this feature. 
 <br><br>
 Therefore, the example section 10.2 is only for option D, the Arduino.
 <br><br>
@@ -1666,10 +1748,11 @@ if __name__=="__main__":
 
  
 | Terms and Abbreviations| Definition |
-| ---  | ---        |
+| ---------------------- | ------------------------------------------------------------ |
 | Ain | Abbreviation (in file names) for analog input |
-| API | Application programming interface
+| API | Application programming interface |
 | Ard | Abbreviation (in file names) for Arduino |
+| baud rate | Speed that information is sent in bits per second | 
 | CP  | Abbreviation (in file names) for CircuitPython |
 | Git | A version control tool |
 | GUI | Graphical user interface |
@@ -1677,10 +1760,12 @@ if __name__=="__main__":
 | JSON | JavaScript Object Notation, a format for sending data |
 | LED | Light emitting diode |
 | MP | Abbreviation (in file names) for MicroPython |
+| Mu | The IDE used to program the Raspberry Pi microcontroller |
 | pip | The Python Package Index, a repository for Python libraries |
 | port | How an operating system keeps track of a hardware connection |
 | PSoC6 | The Infineon microcontroller CY8CPROTO-062-4343W kit |  
 | PWM | Pulse width modulation |
+| REPL | Read, evaluate, print, loop. The terminal window in the Mu IDE |
 | RPi | Raspberry Pi Pico microcontroller |
 | Tkinter | A Python library for making graphical user interfaces |
 
