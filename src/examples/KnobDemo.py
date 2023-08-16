@@ -20,7 +20,8 @@ class KnobDemo(tk.Tk):
                             height=100)
         self.knob1=kd.KnobDisplay(self.canvasK, width=100, height=100)
 
-        self.value=5
+        self.offset=5
+        self.value=0
         self.canvasK.pack()
         self.knob1.pack()
         self.slide1.pack()
@@ -35,8 +36,8 @@ class KnobDemo(tk.Tk):
     def updater(self):
         while True:
             print(self.value)
-            self.value=self.knob1.get_angle()
-            self.slide1.set_to_value(10*self.value)    
+            self.value=self.offset+self.knob1.get_angle()
+            self.slide1.set_to_value(self.value)    
             self.update()
             
 

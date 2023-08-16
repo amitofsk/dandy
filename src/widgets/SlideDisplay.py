@@ -27,10 +27,11 @@ class SlideDisplay(ain.AnalogInDisplay):
 
    
     def set_to_value(self, aValue):
-        self.ain_canvas.delete(self.__slide_fill)
-        hval=((1-self.__yScaleFactor)-(self.__yBottom/self.get_maximum()))\
-              *aValue+self.__yBottom
-        self.__slide_fill=self.ain_canvas.create_rectangle(self.__xLeft, hval, \
+        if (aValue>self.get_minimum()) and (aValue<self.get_maximum()):
+            self.ain_canvas.delete(self.__slide_fill)
+            hval=((1-self.__yScaleFactor)-(self.__yBottom/self.get_maximum()))\
+                  *aValue+self.__yBottom
+            self.__slide_fill=self.ain_canvas.create_rectangle(self.__xLeft, hval, \
                     self.__xRight,self.__yBottom, fill=self.get_color1())
                
     

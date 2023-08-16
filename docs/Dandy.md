@@ -797,7 +797,7 @@ Let's write the Python code that will run on the computer for this example. Open
 <br><br>
 This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
 <br><br>
-We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baud rate, bytesize, and number of stopbits. If you are using the PSoC6, replace `STOPBITS_TWO` with `STOPBITS_ONE` near line 11. 
+We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baud rate, bytesize, and number of stopbits. If you are using the PSoC6, replace `STOPBITS_TWO` with `STOPBITS_ONE` near line 17. 
 <br><br>
 
 (See file src/examples/DigitalOut.py.)
@@ -807,23 +807,26 @@ import serial
 import serial.tools.list_ports as port_list
 import time
 
-print('Hello')
-#Set your serial port.
-#On Windows, uncomment the line below and replace COM1 with the appropriate port.
-port='COM1'
-#On Linux, uncomment the line below.
-#port='/dev/ttyACM0'
-baudrate=115200
-serialPort=serial.Serial(port=port, baudrate=baudrate, bytesize=8, \
-                         timeout=0.1, stopbits=serial.STOPBITS_TWO)
-while True:
-    #serialString=serialPort.read()
-    #print(serialString)
-    serialPort.write(bytes('Z', 'utf-8'))
-    print('I wrote Z')
-    time.sleep(1)
-serialPort.close()
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+#PORT='/dev/ttyACM0'
 
+class DigitalOut():
+    baudrate=115200
+    serialPort=serial.Serial(port=PORT, baudrate=baudrate, bytesize=8, \
+                         timeout=0.1, stopbits=serial.STOPBITS_TWO)
+    while True:
+        serialPort.write(bytes('80', 'utf-8'))
+        print('I wrote Z')
+        time.sleep(1) 
+    serialPort.close()
+
+
+
+if __name__=="__main__":
+    example=DigitalOut()
 ```
 When you run the example above, the computer sends a character to the microcontroller every second. The microcontroller is still running code that blinks the LED when it receives a character, so you should see the microcontroller's internal LED blink every second. To verify that it works, replace `time.sleep(1)` with `time.sleep(3)`. Now the computer will send a character every three seconds, and the microcontroller's LED will blink at this slower rate.
 <br><br>
@@ -921,27 +924,38 @@ In the previous section, we wrote code for the microcontroller using the Mu or A
 Copy the code below or open the example that came with the DANDY library. Make sure to set your port appropriately. 
 <br><br>
 Run the code. When you are not pressing the pushbutton wired to the microcontroller, it will print `F`. When you are pressing the pushbutton, it will print `T`. 
+
 (See file src/examples/DigitalIn.py.)
 
 ```python
+#This example reads characters in from the microcontroller to the computer
+#and prints the result. Be sure to set the correct port for your machine.
+
 import serial
 import serial.tools.list_ports as port_list
 
-print('Hello')
+
+#Set up PORT.
 #If you are on Windows, uncomment the next line and adjust as needed.
-#port='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-port='/dev/ttyACM0'
-baudrate=115200
-serialPort=serial.Serial(port=port, baudrate=baudrate, \
+#PORT='/dev/ttyACM0'
+
+class DigitalIn(): 
+    baudrate=115200
+    serialPort=serial.Serial(port=PORT, baudrate=baudrate, \
             bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
-while True:
-    serialString=serialPort.read()
-    print(serialString)
-serialPort.close()
+    while True:
+        serialString=serialPort.read()
+        print(serialString)
+    serialPort.close()
+
+
+if __name__=="__main__":
+    example=DigitalIn()
+
 ```
 
-(TODO: Put this in a class and clean up, uncomment COM, name it PORT,...)
 
 ### 7.3 Receiving data from the microcontroller, now with widgets and asyncIO
 #### 7.3.1 What is asyncio and why do we need it here.

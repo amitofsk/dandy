@@ -12,7 +12,9 @@ import sys
 sys.path.append ('../widgets')
 import LEDDisplay as ld  
 import SymbolDisplay as sd  
-
+import SlideDisplay as sld
+import TricolorDisplay as td
+import DialDisplay as dd
 
 class MCDisplay:
     def __init__(self, windowMC, leftPins=15, rightPins=15, widgetSize=21):
@@ -113,7 +115,6 @@ class MCDisplay:
                         height=self.__widget_size, width=self.__widget_size, \
                         LED_orientation="west")
                     self.__left_bar[ii].pin_number=pin_no
-            
                 self.__left_bar[ii].pack()
         if(pin_no>self.__right_pins):
             for ii in range(self.__right_pins):
@@ -153,6 +154,62 @@ class MCDisplay:
                 self.__right_bar[ii].pack()
             return self.__right_bar[self.__left_pins+self.__right_pins-pin_no]
 
+
+    def set_tricolor(self, pin_no):
+        if(pin_no<=self.__left_pins):
+            for ii in range(self.__left_pins):
+                self.__left_bar[ii].pack_forget()
+                if self.__left_bar[ii].pin_number==pin_no:
+                    self.__left_bar[ii]=td.TricolorDisplay(self.get_left_bar_frame(), \
+                        height=self.__widget_size, width=self.__widget_size)
+                    self.__left_bar[ii].pin_number=pin_no
+                self.__left_bar[ii].pack()
+        if(pin_no>self.__right_pins):
+            for ii in range(self.__right_pins):
+                self.__right_bar[ii].pack_forget()
+                if self.__right_bar[ii].pin_number==pin_no:
+                    self.__right_bar[ii]=td.TricolorDisplay(self.get_right_bar_frame(), \
+                        height=self.__widget_size, width=self.__widget_size)
+                    self.__right_bar[ii].pin_number=pin_no
+                self.__right_bar[ii].pack()
+
+
+    def set_dial(self, pin_no):
+        if(pin_no<=self.__left_pins):
+            for ii in range(self.__left_pins):
+                self.__left_bar[ii].pack_forget()
+                if self.__left_bar[ii].pin_number==pin_no:
+                    self.__left_bar[ii]=dd.DialDisplay(self.get_left_bar_frame(), \
+                        height=self.__widget_size, width=self.__widget_size)
+                    self.__left_bar[ii].pin_number=pin_no
+                self.__left_bar[ii].pack()
+        if(pin_no>self.__right_pins):
+            for ii in range(self.__right_pins):
+                self.__right_bar[ii].pack_forget()
+                if self.__right_bar[ii].pin_number==pin_no:
+                    self.__right_bar[ii]=dd.DialDisplay(self.get_right_bar_frame(), \
+                        height=self.__widget_size, width=self.__widget_size)
+                    self.__right_bar[ii].pin_number=pin_no
+                self.__right_bar[ii].pack()
+
+
+    def set_slide(self, pin_no):
+        if(pin_no<=self.__left_pins):
+            for ii in range(self.__left_pins):
+                self.__left_bar[ii].pack_forget()
+                if self.__left_bar[ii].pin_number==pin_no:
+                    self.__left_bar[ii]=sld.SlideDisplay(self.get_left_bar_frame(), \
+                        height=self.__widget_size, width=self.__widget_size)
+                    self.__left_bar[ii].pin_number=pin_no
+                self.__left_bar[ii].pack()
+        if(pin_no>self.__right_pins):
+            for ii in range(self.__right_pins):
+                self.__right_bar[ii].pack_forget()
+                if self.__right_bar[ii].pin_number==pin_no:
+                    self.__right_bar[ii]=sld.SlideDisplay(self.get_right_bar_frame(), \
+                        height=self.__widget_size, width=self.__widget_size)
+                    self.__right_bar[ii].pin_number=pin_no
+                self.__right_bar[ii].pack()
       
     def get_pin_loc(self, pin_no):
         if (pin_no<=self.__left_pins):

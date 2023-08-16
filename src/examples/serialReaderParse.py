@@ -1,3 +1,4 @@
+##TODO: CUT THIS EXAMPLE... IT WAS ONLY USED FOR TESTING
 
 #The purpose of this code is to read from the serial port.
 #Reference https://gist.github.com/yptheangel/fcd62ad59a569ace75eb07025b8e9c4f

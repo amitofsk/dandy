@@ -41,7 +41,7 @@ class MCDemo(tk.Tk):
         #Let's add a button at pin 21
         self.button3=self.mc1.set_button(21)
         self.button3.bind('<ButtonPress>',self.go_button2)
-        
+
         #Run tkinter's main loop
         tk.mainloop()
 
