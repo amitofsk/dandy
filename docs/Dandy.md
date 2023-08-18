@@ -1530,7 +1530,32 @@ if __name__=="__main__":
 
 
 ### 8.5 Displaying vector data
-(TODO: Write an example which uses the magnetometer that comes in the hackster hardware kit, sends three analog input values from the microcontroller to the computer, and displays the result using the VectorDisplay widget.)
+
+In this section, we will use a sensor to measure 3D magnetic field, and we'll display the result on the computer using the `VectorDisplay` DANDY widget.
+
+More specifically, We'll use the TLE493D-W2B6 Hall effect sensor which measures magnetic field in the x, y, and z directions. This sensor will be wired to the microcontroller and will send data to the microcontroller using its I2C bus. The microcontroller will be connected to a computer by a USB cable, and it will send data serially to the computer down the USB cable.
+
+As in past examples, we'll write both software for the microcontroller and software for the computer.   
+ 
+Some substeps are different for the different options, so follow the option for the hardware you will be using.
+
+#### 8.5.1 Set up the hardware
+
+##### 8.5.1.1 Option A and B
+
+##### 8.5.1.1 Option C
+##### 8.5.1.1 Option D
+
+#### 8.5.2 Write the microcontroller code
+
+##### 8.5.2.1 Option A
+##### 8.5.2.1 Option B
+##### 8.5.2.1 Option C
+##### 8.5.2.1 Option D
+
+#### 8.5.3 Write the code for the GUI on the computer
+
+
 
 ### 8.6 Now with two RPi's??
 
