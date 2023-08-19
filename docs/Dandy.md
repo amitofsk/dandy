@@ -1548,6 +1548,8 @@ Some substeps are different for the different options, so follow the option for 
 
 #### 8.5.2 Write the microcontroller code
 
+![](./docPics/registers.png)
+
 ##### 8.5.2.1 Option A
 ##### 8.5.2.1 Option B
 ##### 8.5.2.1 Option C
@@ -1555,6 +1557,7 @@ Some substeps are different for the different options, so follow the option for 
 
 #### 8.5.3 Write the code for the GUI on the computer
 
+![](./docPics/magnet.png)
 
 
 ### 8.6 Now with two RPi's??
