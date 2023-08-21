@@ -9,6 +9,11 @@ import serial
 import serial.tools.list_ports as port_list
 import sys
 
+#If you are on Windows, uncomment the next line and adjust as needed.
+#port='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+
 class DigitalOutDisplay(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -17,12 +22,9 @@ class DigitalOutDisplay(tk.Tk):
         self.button_quit=tk.Button(self, text="Quit", command=self.destroy)
         self.button1.pack()
         self.button_quit.pack()
-        #Uncomment the next line for windows
-        #port='COM1'
-        #Uncomment the next line for Linux
-        port='/dev/ttyACM0'
+
         baudrate=115200
-        self.serial_port=serial.Serial(port=port, baudrate=baudrate, \
+        self.serial_port=serial.Serial(port=PORT, baudrate=baudrate, \
                         bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
         
         tk.mainloop()

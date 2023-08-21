@@ -25,10 +25,7 @@ import LEDDisplay as ld
 #PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
 PORT='/dev/ttyACM0'
-#The following lines may automatically set the port but aren't too reliable.
-#ports=list(port_list.comports())
-#print(ports[0].device)
-#PORT=ports[0].device
+
 
 class DigitalHWLong(tk.Tk):
     #Here's the constructor for the DigitalWithHW class.

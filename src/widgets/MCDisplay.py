@@ -5,7 +5,6 @@
 #microcontrollers. See RPiPicoDisplay.py, AUnoDisplay.py, ANanoEveryDisplay.py,
 #and AMKRDisplay.py.
 
-#TODO: add functions to set_dial and set_slide and set_tricolorLED too.
 
 import tkinter as tk
 import sys
