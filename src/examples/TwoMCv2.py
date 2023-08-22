@@ -1,13 +1,6 @@
-#This example has a potentiometer wired to a Raspberry Pi Pico.
-#It has a second potentiometer wired to an Arduino. Both microcontrollers
-#send data, via USB cables, to a computer. 
-#
-#This class is a child of the SerialAndGui class, which uses Python's asyncio
-#functionality.
-#
-#It automatically detects which MC to display...
-#This assumes each MC sends the computer data in json form.
-#Assume both potentiometers are wired to microcontroller pin 2?
+#Two microcontrollers.
+#Automatic detection.
+#Use RPiPicoDisplay and AUnoDisplay widgets.
 
 #Set up your ports. 
 #If you are on Windows, uncomment the next lines and adjust as needed.
@@ -29,10 +22,11 @@ sys.path.append('../widgets')
 sys.path.append('../utilities')
 import SerialAndGui as sg
 import DialDisplay as dd
-#import RPiPicoDisplay as rpp
-#import AUnoDisplay as aud
+import RPiPicoDisplay as rpp
+import AUnoDisplay as aud
+import ANanoEveryDisplay as ane
 
-class TwoMC(tk.Tk):
+class TwoMCv2(tk.Tk):
     def __init__(self, loop, interval=1/20):
         super().__init__()
         self.__loop=loop
@@ -40,7 +34,7 @@ class TwoMC(tk.Tk):
         self.__portB=PORTB
         self.protocol("WM_DELETE_WINDOW", self.close)
 
-        
+
         #We have four async tasks: check_serial_dataA,
         #check_serial_dataB, and use_serial_data
         #and updater. Each are detailed in their own function.
@@ -55,15 +49,60 @@ class TwoMC(tk.Tk):
         self.tasks.append(loop.create_task(self.updater(interval)))
         self.button_quit=tk.Button(self, text="Quit", \
                                    command=self.close)
-        self.dial1=dd.DialDisplay(self, height=100, width=100)
-        self.dial2=dd.DialDisplay(self, height=100, width=100)
-        self.dial1.pack()
-        self.dial2.pack()
-        self.button_quit.pack()
+        #Let's start with widgets for the Arduino Nano Every
+        self.mc1=ane.ANanoEveryDisplay(self)
+        self.mc2=ane.ANanoEveryDisplay(self)
+        self.slide1=self.mc1.set_slide(7)
+        self.dial1=self.mc2.set_dial(7)
 
+        self.mc1.pack(side='left')
+        self.mc2.pack(side='right')
+        self.button_quit.pack(side='bottom')        
 
 
     async def use_serial_data(self, interval, qIn: asyncio.Queue):
+        #Here we want to collect a few jsons and then set
+        #The board widget appropriately.
+        boardOneSet=1
+        boardTwoSet=1
+        for i in range (10):
+            #Pick off board number and type
+            in_string=await qIn.get()
+            print(in_string)
+            in_json=json.loads(in_string)
+            board_read=in_json["boardNumber"]
+            board_type=in_json["boardType"]
+            if board_read=="1":
+                if boardOneSet>0:
+                    #Set widget for board one
+                    self.mc1.pack_forget()
+                    if(board_type=="Arduino"):
+                        self.mc1=aud.AUnoDisplay(self)
+                        self.slide1=mc1.set_slide(8)
+                    if(board_type=="RPi"):
+                        self.mc1=rpp.RPiPicoDisplay(self)
+                        self.slide1=self.mc1.set_slide(31)
+                    if(board_type=="NanoEvery"):
+                        self.mc1=rpp.RPiPicoDisplay(self)
+                        self.slide1=self.mc1.set_slide(7)
+                    boardOneSet=0
+                    self.mc1.pack(side='left')
+            if board_read=="2":
+                if boardTwoSet>0:
+                    #Set widget for board two
+                    self.mc2.pack_forget()
+                    if(board_type=="Arduino"):
+                        self.mc2=aud.AUnoDisplay(self)
+                        self.dial1=self.mc2.set_dial(9)
+                    if(board_type=="RPi"):
+                        self.mc2=rpp.RPiPicoDisplay(self)
+                        self.dial1=self.mc2.set_dial(31)
+                    if(board_type=="NanoEvery"):
+                        self.mc2=rpp.RPiPicoDisplay(self)
+                        self.dial1=self.mc2.set_dial(7)
+                    boardTwoSet=0
+                    self.mc2.pack(side='right')
+
         while True:
             await asyncio.sleep(interval)
             #get the string from the queue
@@ -76,12 +115,14 @@ class TwoMC(tk.Tk):
             print(board_read)
             val=in_json["value"]
             val_float=float(val)
+            print(val_float)
             if(board_read=="1"):
                 scaled_value=val_float/6000
-                self.dial1.set_to_value(scaled_value)
+                self.slide1.set_to_value(scaled_value)
             else:
                 scaled_value=val_float/1024
-                self.dial2.set_to_value(scaled_value)
+                self.dial1.set_to_value(scaled_value)
+
 
 
     async def check_serial_dataA(self, interval, qIn: asyncio.Queue):
@@ -109,8 +150,6 @@ class TwoMC(tk.Tk):
                 #print(serial_byte)
         serial_port.close()
         
-
-
 
 
     async def check_serial_dataB(self, interval, qIn: asyncio.Queue):
@@ -141,7 +180,6 @@ class TwoMC(tk.Tk):
         serial_port.close()
         
 
-
     async def updater(self, interval):
         #This async function manually updates the Tkinter GUI.
         while True:
@@ -158,6 +196,6 @@ class TwoMC(tk.Tk):
 
 if __name__=="__main__":
     loop=asyncio.get_event_loop()
-    example=TwoMC(loop)
+    example=TwoMCv2(loop)
     loop.run_forever()
     loop.close()

@@ -12,7 +12,7 @@ import MCDisplay as mcd
 import LEDDisplay as ld  
 import SymbolDisplay as sd  
 
-class Cy8cprotoDisplay(mcd.MCDisplay):
+class PSoCDisplay(mcd.MCDisplay):
     def __init__(self, windowP):
         super().__init__(windowP, leftPins=43, rightPins=40, widgetSize=10)
         self.draw_pwr_gnd()
@@ -32,7 +32,7 @@ class Cy8cprotoDisplay(mcd.MCDisplay):
 
      
     def draw_pwr_gnd(self):
-        #The Cy8cproto pins 2, 4, 31, 36, 53, 61, 74, and 82 are ground.
+        #The PSoC pins 2, 4, 31, 36, 53, 61, 74, and 82 are ground.
         #Pins 1, 3, 5, 24, 35, 52, 54, 60, 81, and 83 are power.
         counter=1
         for ii in self.get_left_bar():
@@ -57,5 +57,5 @@ class Cy8cprotoDisplay(mcd.MCDisplay):
 
 if __name__=="__main__":
     mc_example=tk.Tk()
-    mc_widget=Cy8cprotoDisplay(mc_example)
+    mc_widget=PSoCDisplay(mc_example)
     mc_widget.pack()

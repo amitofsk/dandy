@@ -6,7 +6,7 @@ String out_msg="";
 
 void setup() {  
   Serial.begin(115200);
-  Serial.println("hi");
+ // Serial.println("hi");
 }
 
 void loop() {

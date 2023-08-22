@@ -5,7 +5,7 @@ Class diagram for the widgets folder:
 
 ## AMKRDisplay Class
 ### Description
-This class displays an Arduino MKR1010.
+The `AMKRDisplay` class shows a widget that looks like the Arduino MKR1010 microcontroller. 
 
 ### Member Functions
 The constructor:
@@ -24,12 +24,28 @@ draw_pwr_gnd(self)
 The Arduino MKR1010 has ground at pin 25, 3.3V power at pin 26, Vin power at pin 27, and 5V power at pin 28. This function draws the symbols for these pins.  
 
 ### Example
+
+```python
+import tkinter
+import sys
+sys.path.append('../widgets')
+import AMKRDisplay
+
+main_window=tkinter.Tk()
+mc1= AMKRDisplay.AMKRDisplay(main_window)
+mc1.set_led(3)
+mc1.pack()
+tkinter.mainloop()
+```
+
+![AMKRDisplay](./docPics/mkr1.png)
+
 ### Similar Classes 
-AMKRDisplay is a child of MCDisplay. The class ANanoEveryDisplay displays an Arduino Nano Every. AUnoDisplay displays an Arduino Uno.
+`AMKRDisplay` is a child of `MCDisplay`, so it has access to the parent's member functions. The class `ANanoEveryDisplay` displays an Arduino Nano Every. `AUnoDisplay` displays an Arduino Uno. 
 
 ## AnalogInDisplay Class
 ### Description
-AnalogInDisplay is the parent class of a number of widgets used to display numerical values coming, for example, from a sensor, through a microcontroller, to a computer. 
+`AnalogInDisplay` is the parent class of a number of widgets used to display numerical values. These widgetts are useful, for example, when displaying analog sensor data into a computer.
 ### Member Functions
 
 The constructor:
@@ -92,12 +108,14 @@ pack_forget(self)
 You should declare objects of the child classes instead of this class. 
 
 ### Similar Classes 
-SlideDisplay, VectorDisplay, SimplePlotDisplay, and DialDisplay are child classes of AnalogInDisplay.
+`SlideDisplay`, `VectorDisplay`, `SimplePlotDisplay`, and `DialDisplay` are child classes of `AnalogInDisplay`.
 
 
 ## ANanoEveryDisplay
 ### Description
-This class displays an Arduino Nano Every.
+The `ANanoEveryDisplay` class shows a widget that looks like the Arduino Nano Every microcontroller.
+
+
 ### Member Functions
 
 The constructor:
@@ -116,13 +134,30 @@ draw_pwr_gnd(self)
 The Arduino Nano Every pin 14 and 19 are ground. Pin 2 is 3.3V power, pin 12 is 5V power, and pin 15 is Vin power. This function draws these symbols. 
 
 ### Example
+
+```python
+import tkinter
+import sys
+sys.path.append('../widgets')
+import ANanoEveryDisplay
+
+main_window=tkinter.Tk()
+mc1= ANanoEvery.ANanoEveryDisplay(main_window)
+mc1.set_led(3)
+mc1.pack()
+tkinter.mainloop()
+```
+
+![ANanoEveryDisplay](./docPics/nanoevery1.png)
+
 ### Similar Classes 
-ANanoEveryDisplay is a child of MCDisplay. AMKRDisplay displays an Arduino MKR1010. AUnoDisplay displays an Arduino Uno.
+`NanoEveryDisplay` is a child of `MCDisplay`, so it has access to the parent's member functions. The class `AMKRDisplay` displays an Arduino MKR1010 Every. `AUnoDisplay` displays an Arduino Uno.
 
 
 ## AUnoDisplay
 ### Description
-This class displays an Arduino Uno.
+The `AUnoDisplay` class shows a widget that looks like the Arduino Uno microcontroller.
+
 ### Member Functions
 The constructor:
 ```python
@@ -137,43 +172,33 @@ redraw_body(self)
 ```python
 draw_pwr_gnd(self)
 ```
-The Arduino Uno pin s6, 7, and 29 are ground. Pin 4 is 3.3V power, pin 5 is 5V power, and pin 8 is Vin. This function draws these symbols.
+The Arduino Uno pins 6, 7, and 29 are ground. Pin 4 is 3.3V power, pin 5 is 5V power, and pin 8 is Vin. This function draws these symbols.
 
 ### Example
-### Similar Classes 
-AUnoDisplay is a child of MCDisplay. AMKRDisplay displays an Arduino MKR1010. ANanoEveryDisplay displays an Arduino Nano every.
-
-
-## Cy8cprotoDisplay
-### Description
-This class displays an Infineon Cyc8proto microcontroller.
-### Member Functions
-The constructor
 ```python
-__init__(self, windowP)
+import tkinter
+import sys
+sys.path.append('../widgets')
+import AUnoRDisplay
+
+main_window=tkinter.Tk()
+mc1= AUnoDisplay.AUnoDisplay(main_window)
+mc1.set_led(3)
+mc1.pack()
+tkinter.mainloop()
 ```
 
-Other member functions
-```python 
-redraw_body()
-```
+![AUnoDisplay](./docPics/uno1.png)
 
-```python
-draw_pwr_gnd()
-```
-Pins 2, 4, 31, 36, 53, 61, 74, and 82 are ground. Pins 1, 3, 5, 24, 35, 52, 54, 60, 81, and 83 are power.
-This function draws these symbols.
-
-### Example
 ### Similar Classes 
-Cyc8protoDisplay is a child of MCDisplay.
+`AUnoDisplay` is a child of `MCDisplay`, so it has access to the parent's member functions. The class `ANanoEveryDisplay` displays an Arduino Nano Every. `AMKRDisplay` displays an Arduino MKR1010.
 
 
 ## DialDisplay
 
 ### Description
 
-A DialDisplay object displays numerical value as a needle on a dial. DialDisplay is a child of class AnalogInDisplay.
+A `DialDisplay` object displays numerical value as a needle on a dial. It may be useful in displaying information from an analog sensor in the computer. 
 
 ### Member Functions
 
@@ -188,7 +213,7 @@ Other member functions:
 ```python
 set_to_value(self, aValue)
 ```
-The parameter `aValue` should be a numerical value between the minimum and maximum set in the parent class AnalogInDisplay.
+The parameter `aValue` should be a float value between the minimum and maximum set in the parent class `AnalogInDisplay`.
 
 
 ### Example
@@ -208,12 +233,13 @@ tkinter.mainloop()
 ![Dial widget](./docPics/dial.png)
 
 ### Similar Classes 
-DialDisplay is a child of AnalogInDisplay. SlideDisplay, TricolorDisplay,  and SimplePlotDisplay also display numerical values.
+`DialDisplay` is a child of `AnalogInDisplay`. `SlideDisplay`, 'TricolorDisplay`,  and `SimplePlotDisplay` also display numerical values.
 
 
 ## KnobDisplay
 ### Description
-A KnobDisplay object displays a knob, and it can be used for generating an analog value.
+A `KnobDisplay` object is a controllable knob. Put your cursor over the widget and scroll the middle mouse button to adjust the knob value. This widget can be used to send a numerical value to control an output. 
+
 ### Member Functions
 The constructor:
 ```python
@@ -243,11 +269,11 @@ turn_counterwise(self, event)
 
 ### Example
 ### Similar Classes 
-
+The Tkinter widget `Scale` is a controllable slider that can also be used to send a numerical value to control an output. 
 
 ## LEDBarDisplay 
 ### Description
-An LEDBarDisplay object displays multiple digital input bits as an LED bar. 
+An `LEDBarDisplay` widget displays multiple digital input bits as an LED bar. 
 ### Member Functions
 The constructor:
 ```python
@@ -272,7 +298,7 @@ set_gnd(self, pin_no)
 ``python
 set_power(self, pin_no, volts=0)
 ```
-In the function `set_power`, `volts` should be zero or another float value. If `volts` is not zero, the voltage value will be printed.
+In the function `set_power`, `volts` should be zero or another float value. If `volts` is not zero, the voltage value will be printed on the widget.
 
 ```python
 set_box(self, pin_no)
@@ -305,7 +331,7 @@ pack_forget(self)
 
 ## LEDDisplay class
 ### Description
-A LEDDisplay object displays a digital bit in a widget that looks like an LED. 
+A `LEDDisplay` object displays a digital bit in a widget that looks like an LED. 
 
 ### Member Functions 
 The constructor is:
@@ -490,7 +516,7 @@ The `draw_pwr_gnd` function also sets pin numbers.
 
 Member functions related to packing:
 ```python
-pack(self)
+pack(self, side='bottom')
 ```
 
 ```python
@@ -505,6 +531,33 @@ redraw_body(self)
 ### Example
 You should declare objects of the child classes of this function instead of this function.
 ### Similar Classes 
+
+
+## PSoCDisplay
+### Description
+This class displays an Infineon PSoC microcontroller.
+### Member Functions
+The constructor
+```python
+__init__(self, windowP)
+```
+
+Other member functions
+```python 
+redraw_body()
+```
+
+```python
+draw_pwr_gnd()
+```
+Pins 2, 4, 31, 36, 53, 61, 74, and 82 are ground. Pins 1, 3, 5, 24, 35, 52, 54, 60, 81, and 83 are power.
+This function draws these symbols.
+
+### Example
+### Similar Classes 
+PSoCDisplay is a child of MCDisplay.
+
+
 
 
 
@@ -547,7 +600,7 @@ add_point(self, valueA)
 
 ## SlideDisplay
 ### Description
-SlideDisplay is used to display a numerical value as a slider along a bar. It is a child of class AnalogInDisplay.
+`SlideDisplay` is used to display a numerical value as a slider along a bar. It may be useful in displaying information from an analog sensor.  It is a child of class `AnalogInDisplay`.
 ### Member Functions
 The constructor is:
 ```python
@@ -558,7 +611,7 @@ Other member functions:
 ```python
 set_to_value(self, aValue)
 ```
-The parameter `aValue` should be a numerical value between the minimum and maximum set in the parent class AnalogInDisplay.
+The parameter `aValue` should be a numerical value between the minimum and maximum set in the parent class `AnalogInDisplay`.
 
 ### Example
 
@@ -579,7 +632,7 @@ tkinter.mainloop()
 ![Slide widget](./docPics/slide.png)
 
 ### Similar Classes 
-TricolorDisplay, DialDisplay, and SimplePlotDisplay also display analog input values. 
+`TricolorDisplay`, `DialDisplay`, and `SimplePlotDisplay` also display numerical values. 
 
 ## SymbolDisplay
 ### Description
@@ -658,7 +711,7 @@ TricolorDisplay is a child of the LEDDisplay class. The classes DialDisplay, Sli
 
 ## VectorDisplay
 ### Description
-VectorDisplay displays three numerical values as a vector. Use this class to display velocity, magnetic field at a point, or other vector quantities. VectorDisplay is a child of class AnalogInDisplay. 
+The `VectorDisplay` widget displays three numerical values as a vector. Use this class to display velocity, magnetic field at a point, or other vector quantities. `VectorDisplay` is a child of class `AnalogInDisplay`. 
 ### Member Functions
 
 The constructor:
@@ -671,7 +724,6 @@ Other member functions:
 ```python
 set_to_value(self, xValue, yValue, zValue)
 ```
-
 
 ### Example
 
@@ -690,7 +742,7 @@ tkinter.mainloop()
 ![Vector widget](./docPics/vector.png)
 
 ### Similar Classes 
-The DialDisplay, SlideDisplay, and SimplePlotDisplay widgets display single numerical values. 
+The `DialDisplay`, `SlideDisplay`, and `SimplePlotDisplay` widgets display single numerical values. 
 
 
 

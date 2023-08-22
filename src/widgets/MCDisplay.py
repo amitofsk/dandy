@@ -3,7 +3,7 @@
 #replaced by LEDs, buttons, or other widgets.
 #This class has multiple children that draw specific
 #microcontrollers. See RPiPicoDisplay.py, AUnoDisplay.py, ANanoEveryDisplay.py,
-#and AMKRDisplay.py.
+#PSoCDisplay, and AMKRDisplay.py.
 
 
 import tkinter as tk
@@ -161,6 +161,7 @@ class MCDisplay:
                 if self.__left_bar[ii].pin_number==pin_no:
                     self.__left_bar[ii]=td.TricolorDisplay(self.get_left_bar_frame(), \
                         height=self.__widget_size, width=self.__widget_size)
+                    return_value=self.__left_bar[ii]
                     self.__left_bar[ii].pin_number=pin_no
                 self.__left_bar[ii].pack()
         if(pin_no>self.__right_pins):
@@ -169,8 +170,10 @@ class MCDisplay:
                 if self.__right_bar[ii].pin_number==pin_no:
                     self.__right_bar[ii]=td.TricolorDisplay(self.get_right_bar_frame(), \
                         height=self.__widget_size, width=self.__widget_size)
+                    return_value=self.__right_bar[ii]
                     self.__right_bar[ii].pin_number=pin_no
                 self.__right_bar[ii].pack()
+        return return_value
 
 
     def set_dial(self, pin_no):
@@ -180,6 +183,7 @@ class MCDisplay:
                 if self.__left_bar[ii].pin_number==pin_no:
                     self.__left_bar[ii]=dd.DialDisplay(self.get_left_bar_frame(), \
                         height=self.__widget_size, width=self.__widget_size)
+                    return_value=self.__left_bar[ii]
                     self.__left_bar[ii].pin_number=pin_no
                 self.__left_bar[ii].pack()
         if(pin_no>self.__right_pins):
@@ -188,8 +192,11 @@ class MCDisplay:
                 if self.__right_bar[ii].pin_number==pin_no:
                     self.__right_bar[ii]=dd.DialDisplay(self.get_right_bar_frame(), \
                         height=self.__widget_size, width=self.__widget_size)
+                    return_value=self.__right_bar[ii]
                     self.__right_bar[ii].pin_number=pin_no
                 self.__right_bar[ii].pack()
+        return return_value
+        
 
 
     def set_slide(self, pin_no):
@@ -199,6 +206,7 @@ class MCDisplay:
                 if self.__left_bar[ii].pin_number==pin_no:
                     self.__left_bar[ii]=sld.SlideDisplay(self.get_left_bar_frame(), \
                         height=self.__widget_size, width=self.__widget_size)
+                    return_value=self.__left_bar[ii]
                     self.__left_bar[ii].pin_number=pin_no
                 self.__left_bar[ii].pack()
         if(pin_no>self.__right_pins):
@@ -207,8 +215,10 @@ class MCDisplay:
                 if self.__right_bar[ii].pin_number==pin_no:
                     self.__right_bar[ii]=sld.SlideDisplay(self.get_right_bar_frame(), \
                         height=self.__widget_size, width=self.__widget_size)
+                    return_value=self.__right_bar[ii]
                     self.__right_bar[ii].pin_number=pin_no
                 self.__right_bar[ii].pack()
+        return return_value
       
     def get_pin_loc(self, pin_no):
         if (pin_no<=self.__left_pins):
@@ -248,8 +258,8 @@ class MCDisplay:
 
 
     #Here are functions related to packing.
-    def pack(self):
-        self.mc_canvas.pack()
+    def pack(self, side='bottom' ):
+        self.mc_canvas.pack(side=side)
 
 
     def pack_forget(self):

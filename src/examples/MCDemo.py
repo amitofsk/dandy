@@ -16,7 +16,7 @@ import SymbolDisplay as sd
 import AUnoDisplay as aud
 import ANanoEveryDisplay as aned
 import AMKRDisplay as amd
-import Cy8cprotoDisplay as cd
+import PSoCDisplay as pd
 
 class MCDemo(tk.Tk):
     def __init__(self):
@@ -25,11 +25,11 @@ class MCDemo(tk.Tk):
                                    command=self.destroy) 
         self.button2=tk.Button(self, text="Toggle",\
                                command=self.go_button)
-        self.mc1=rpp.RPiPicoDisplay(self)
+        #self.mc1=rpp.RPiPicoDisplay(self)
         #self.mc1=aud.AUnoDisplay(self)
         #self.mc1=aned.ANanoEveryDisplay(self)
         #self.mc1=amd.AMKRDisplay(self)
-        #self.mc1=cd.Cy8cprotoDisplay(self)
+        self.mc1=pd.PSoCDisplay(self)
            
         self.mc1.pack()
         self.button2.pack()
@@ -63,7 +63,7 @@ class MCDemo(tk.Tk):
             self.mc1.set_led_color(pin_loc, "blue")
         else:
             self.mc1.set_led_color(pin_loc, "yellow")
-        
+
         
 if __name__=="__main__":
     mygui=MCDemo()
