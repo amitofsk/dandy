@@ -3,6 +3,10 @@
 Class diagram for the widgets folder:
 ![widget classes](./docPics/widgetClasses.png)
 
+Pictures of widgets:
+![](./docPics/summaryWidgets.png)
+![](./docPics/summaryPicMC.png)
+
 ## AMKRDisplay Class
 ### Description
 The `AMKRDisplay` class shows a widget that looks like the Arduino MKR1010 microcontroller. 
@@ -233,7 +237,7 @@ tkinter.mainloop()
 ![Dial widget](./docPics/dial.png)
 
 ### Similar Classes 
-`DialDisplay` is a child of `AnalogInDisplay`. `SlideDisplay`, 'TricolorDisplay`,  and `SimplePlotDisplay` also display numerical values.
+`DialDisplay` is a child of `AnalogInDisplay`. `SlideDisplay`, `TricolorDisplay`,  and `SimplePlotDisplay` also display numerical values.
 
 
 ## KnobDisplay
@@ -583,6 +587,7 @@ You should declare objects of the child classes instead of class `MCDisplay`.
 ### Similar Classes 
 The following are child classes of `MCDisplay` and have access to its member functions: `AMKRDisplay`, `ANanoEveryDisplay`, `AUnoDisplay`, `PSoCDisplay`, and `RPiPicoDisplay`.
 
+![widgetMCs](./docPics/summaryPicMC.png)
 ## PSoCDisplay
 ### Description
 The `PSoCDisplay` class shows a widget that looks like the Infineon PSoC6 microcontroller. 
@@ -664,6 +669,8 @@ tkinter.mainloop()
 
 ## SimplePlotDisplay class
 ### Description
+A `SimplePlotDisplay` object displays numerical values on a plot verses time. It may be useful in displaying information from an analog input sensor in the computer. The plot extends horizontally 25 points. After 25 points, it loops back to the beginning and replots the points. 
+
 ### Member Functions
 The constructor:
 ```python
@@ -674,7 +681,25 @@ Other member functions:
 add_point(self, valueA)
 ```
 ### Example
+
+```python
+import tkinter
+import sys
+sys.path.append('../widgets')
+import SimplePlotDisplay
+
+main_window=tkinter.Tk()
+plot1=SimplePlotDisplay.SimplePlotDisplay(main_window)
+plot1.pack()
+plot1.add_point(7.0)    
+plot1.add_point(6.5)
+plot1.add_point(6.0)
+plot1.add_point(5.5)
+tkinter.mainloop()
+```
+![SimplePlotDisplay](./docPics/simplePlot.png)
 ### Similar Classes 
+`SimplePlotDisplay` is a child of `AnalogInDisplay`, so it has access to the parent's member functions. `DialDisplay`, `SlideDisplay`, and `TricolorDisplay` also display numerical values. 
 
 ## SlideDisplay
 ### Description
@@ -755,7 +780,6 @@ draw_box(self)
 import tkinter
 import sys
 sys.path.append('../widgets')
-import LEDBarDisplay
 import SymbolDisplay
 
 main_window=tkinter.Tk()
@@ -763,13 +787,16 @@ symbol1=SymbolDisplay.SymbolDisplay(main_window)
 symbol1.draw_ground()
 symbol1.pack()
 ```
+![ground](./docPics/ground.png)
+
 
 ### Similar Classes 
 The `SymbolDisplay` class is used by `LEDBarDisplay`, `MCDisplay`, and child classes of `MCDisplay` that show widgets that look like specific microcontrollers.
 
 ## TricolorDisplay 
 ### Description
-The TricolorDisplay clas displays an numerical value as if it went through a comparator to a tricolor LED. If the input value is below one value, the LED is green. If it is between that value and a second value, the LED is yellow. If the analog input is above the second value, the LED is red.
+The `TricolorDisplay` object displays a numerical value as if it went through a comparator to a tricolor LED. If the input value is below one cutoff level, the LED is green. If it is between that value and a second cutoff level, the LED is yellow. If it is above the second cutoff level, the LED is red.
+
 ### Member Functions
 The constructor:
 ```python
@@ -798,8 +825,22 @@ get_high_cutoff(self)
 ```
 
 ### Example
+```python
+import tkinter
+import sys
+sys.path.append('../widgets')
+import TricolorDisplay
+
+main_window=tkinter.Tk()
+led1=TricolorDisplay.TricolorDisplay(main_window)
+led1.set_to_value(5.5)
+led1.pack()
+tkinter.mainloop()
+```
+![](./docPics/led2.png)
+
 ### Similar Classes 
-TricolorDisplay is a child of the LEDDisplay class. The classes DialDisplay, SlideDisplay, and SimplePlotDisplay also display analog input values.
+`TricolorDisplay` is a child class `LEDDisplay`. The classes `DialDisplay`, `SlideDisplay`, and `SimplePlotDisplay` also display numerical values.
 
 ## VectorDisplay
 ### Description

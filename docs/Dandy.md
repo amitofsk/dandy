@@ -577,6 +577,7 @@ while True:
 
 (TODO: Test this circuitpython code above... I got it from https://stackoverflow.com/questions/48922189/receive-data-from-host-computer-using-circuit-python-on-circuit-playground-expre . It is untested. )
 
+(TODO: The code above isn't working yet... Maybe see ref https://github.com/Neradoc/circuitpython-sample-scripts/blob/main/usb_serial/README.md)
 
 
 
@@ -1384,6 +1385,24 @@ Open the Mu IDE. Copy and run this code. As you adjust the potentiometer, values
 
 
 (See file src/microcontr/analogToComputerCP.py.)
+
+```python
+import time
+import board
+import analogio
+ 
+print ("hello")
+
+adc=analogio.AnalogIn(board.GP26)
+
+value=0
+while True:
+    value=adc.value
+    outstring='{\"boardNumber\":\"1\", \"boardType\":\"RPi\", \"value\":\"'+str(value)+'\"}'
+    print(outstring)
+    time.sleep(1)
+```
+
 
 #### 8.2.1 Option C: MicroPython and the PSoC
 
