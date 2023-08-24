@@ -9,7 +9,7 @@ import time
 #If you are on Windows, uncomment the next line and adjust as needed.
 #PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
+PORT='/dev/ttyACM1'
 
 class DigitalOut():
     baudrate=115200
@@ -18,7 +18,7 @@ class DigitalOut():
     while True:
         serialPort.write(bytes('80', 'utf-8'))
         print('I wrote Z')
-        time.sleep(1) 
+        time.sleep(3) 
     serialPort.close()
 
 if __name__=="__main__":

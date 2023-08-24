@@ -45,7 +45,7 @@ tkinter.mainloop()
 
 ## AnalogInDisplay Class
 ### Description
-`AnalogInDisplay` is the parent class of a number of widgets used to display numerical values. These widgetts are useful, for example, when displaying analog sensor data into a computer.
+`AnalogInDisplay` is the parent class of a number of widgets used to display numerical values. These widgets are useful, for example, when displaying analog sensor data into a computer.
 ### Member Functions
 
 The constructor:
@@ -268,6 +268,38 @@ turn_counterwise(self, event)
 ```
 
 ### Example
+```python
+import tkinter as tk
+import sys
+sys.path.append('../widgets') 
+import KnobDisplay as kd 
+
+class MinimalKnobDemo(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.canvasK=tk.Canvas(self, height=300, width=300)
+        self.button_quit=tk.Button(self, text="Quit", \
+                            command=self.destroy)
+        self.knob1=kd.KnobDisplay(self.canvasK, width=100, height=100)
+        self.value=0
+        self.canvasK.pack()
+        self.knob1.pack()
+        self.button_quit.pack()
+        #We don't run Tkinter's main loop. Instead, we run the function
+        #updater, that manually updater the Tkinter loop.
+        self.updater()
+
+
+    def updater(self):
+        while True:
+            self.value=self.knob1.get_angle()
+            print(self.value)
+            self.update()
+            
+mygui=MinimalKnobDemo()
+```
+![Knob](./docPics/knob.png)
+
 ### Similar Classes 
 The Tkinter widget `Scale` is a controllable slider that can also be used to send a numerical value to control an output. 
 
@@ -295,7 +327,7 @@ set_one_color(self, led_number, color="yellow")
 set_gnd(self, pin_no)
 ```
 
-``python
+```python
 set_power(self, pin_no, volts=0)
 ```
 In the function `set_power`, `volts` should be zero or another float value. If `volts` is not zero, the voltage value will be printed on the widget.
@@ -326,12 +358,29 @@ pack_forget(self)
 
 
 ### Example
-### Similar Classes 
 
+```python
+import tkinter
+import sys
+sys.path.append('../widgets')
+import LEDBarDisplay
+import SymbolDisplay
+
+main_window=tkinter.Tk()
+bar1= LEDBarDisplay.LEDBarDisplay(main_window, led_count=4)
+bar1.set_all_color("yellow")
+bar1.set_one_color(2, "green")
+bar1.set_gnd(3)
+bar1.pack()
+tkinter.mainloop()
+```
+![ledbar1](./docPics/ledbar1.png)
+### Similar Classes 
+The `LEDDisplay` class displays single LED widgets. The `SymbolDisplay` class displays the power symbol, ground symbol, and box. The `LEDBarDisplay` widget uses these classes.
 
 ## LEDDisplay class
 ### Description
-A `LEDDisplay` object displays a digital bit in a widget that looks like an LED. 
+A `LEDDisplay` widget displays a horizontal or vertical row of LEDs. The LEDs can be replaced by power symbols, ground symbols, or boxes too. This widget can be used to display the status of multiple bits. 
 
 ### Member Functions 
 The constructor is:
@@ -438,6 +487,7 @@ tkinter.mainloop()
 
 ## MCDisplay class
 ### Description
+`MCDisplay` is the parent class of a number of widgets that look like specific microcontrollers. 
 ### Member Functions
 The constructor:
 ```python
@@ -529,13 +579,13 @@ redraw_body(self)
 ```
 
 ### Example
-You should declare objects of the child classes of this function instead of this function.
+You should declare objects of the child classes instead of class `MCDisplay`.
 ### Similar Classes 
-
+The following are child classes of `MCDisplay` and have access to its member functions: `AMKRDisplay`, `ANanoEveryDisplay`, `AUnoDisplay`, `PSoCDisplay`, and `RPiPicoDisplay`.
 
 ## PSoCDisplay
 ### Description
-This class displays an Infineon PSoC microcontroller.
+The `PSoCDisplay` class shows a widget that looks like the Infineon PSoC6 microcontroller. 
 ### Member Functions
 The constructor
 ```python
@@ -554,8 +604,22 @@ Pins 2, 4, 31, 36, 53, 61, 74, and 82 are ground. Pins 1, 3, 5, 24, 35, 52, 54, 
 This function draws these symbols.
 
 ### Example
+```python
+import tkinter
+import sys
+sys.path.append('../widgets')
+import RPiPicoDisplay
+
+main_window=tkinter.Tk()
+mc1= RPiPicoDisplay.RPiPicoDisplay(main_window)
+mc1.pack()
+tkinter.mainloop()
+```
+
+![PSOC](./docPics/psoc.png)
+
 ### Similar Classes 
-PSoCDisplay is a child of MCDisplay.
+`PSoCDisplay` is a child of `MCDisplay`, so it has access to the parent's member functions. Other classes that display specific microcontrollers are `AMKRDisplay`, `AUnoDisplay`, `ANanoEveryDisplay`, and `RPiPicoDisplay`.
 
 
 
@@ -563,6 +627,7 @@ PSoCDisplay is a child of MCDisplay.
 
 ## RPiPicoDisplay class
 ### Description
+The `RPiPicoDisplay` class shows a widget that looks like a Raspberry Pi Pico microcontroller. 
 ### Member Functions
 The constructor:
 ```python
@@ -581,7 +646,20 @@ Pins 3, 8, 13, 18, 23, 28, 33, and 38 are ground. Pin 36 is 3.3V power, pin 39 i
 This function draws symbols at these pins.  
 
 ### Example
+```python
+import tkinter
+import sys
+sys.path.append('../widgets')
+import RPiPicoDisplay
+
+main_window=tkinter.Tk()
+mc1= RPiPicoDisplay.RPiPicoDisplay(main_window)
+mc1.pack()
+tkinter.mainloop()
+```
+![rpi1](./docPics/rpi1.png)
 ### Similar Classes 
+`RPiPicoDisplay` is a child of `MCDisplay`, so it has access to the parent's member functions. Other classes that display specific microcontrollers are `AMKRDisplay`, `AUnoDisplay`, `ANanoEveryDisplay`, and `PSoCDisplay`.
 
 
 ## SimplePlotDisplay class
@@ -636,7 +714,7 @@ tkinter.mainloop()
 
 ## SymbolDisplay
 ### Description
-The SymbolDisplay class displays static symbols including ground and power symbols. When drawing a microcontroller, use these static symbols to display other pins which are neither inputs nor outputs. 
+The `SymbolDisplay` class displays static symbols including power symbols, ground symbols, and boxes.
 ### Member Functions
 The constructor:
 ```python
@@ -673,7 +751,21 @@ draw_box(self)
 
 
 ### Example
+```python
+import tkinter
+import sys
+sys.path.append('../widgets')
+import LEDBarDisplay
+import SymbolDisplay
+
+main_window=tkinter.Tk()
+symbol1=SymbolDisplay.SymbolDisplay(main_window)
+symbol1.draw_ground()
+symbol1.pack()
+```
+
 ### Similar Classes 
+The `SymbolDisplay` class is used by `LEDBarDisplay`, `MCDisplay`, and child classes of `MCDisplay` that show widgets that look like specific microcontrollers.
 
 ## TricolorDisplay 
 ### Description

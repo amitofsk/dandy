@@ -485,16 +485,20 @@ Click on the `Mode` button and select `CircuitPython` to tell the Mu IDE that yo
 
 The middle of the Mu IDE is a text editor where you can enter your code. The section below is called the [REPL](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/circuitpython-programming-basics) terminal, short for Read, Evaluate, Print, and Loop.
 
-You can type individual MicroPython instructions in the REPL terminal. They will be evaluated on the microcontroller. If they contain any print statements, the microcontroller will send the message serially via the USB cable, and you will see the result in the REPL terminal.
+You can type individual MicroPython instructions in the REPL terminal. They will be evaluated on the microcontroller. If they contain any print statements, the microcontroller will send the message serially via the USB cable, and you will see the result in the REPL terminal. If you don't see the REPL terminal, press the `Serial` button at the top to make it appear.
 
 Since most of our programs will be more than one line, we'll write our instructions in the editor instead of the REPL terminal. After we run our programs, we will still see results of any print statements on the REPL terminal.
 
-Write the following instruction in the editor, and save it as `hello.py`. Next, press the `RUN` button. You should see the message printed in the REPL terminal.
+Press the `Load` button at top, and load the file `code.py` from the RPi. This is the program that runs on the RPi. If we put instructions in this file and save, the instructions will run on the RPi. 
+
+Write the following instruction in the editor and save it. You may need to press `Ctrl-S` or `Ctrl-D` to save and run. You should see the message printed in the REPL terminal.
+
+
 ```python
 print ("Hello")
 ```
 
-![](./docPics/Hello_Mu_MP.png)
+![](./docPics/Hello_mu_CP.png)
 
 
 
@@ -508,34 +512,34 @@ Copy the program below into the editor or load the `microcontr/serialWriteCP.py`
 (See file src/microcontr/serialWriteCP.py.)
 
 ```python
+
 import time
 import board
 import digitalio
 
 print ("hello")
-led=DigitalInOut(board.LED)
+led=digitalio.DigitalInOut(board.LED)
 led.direction=digitalio.Direction.OUTPUT
-button=DigitalInOut(board.GP16)
-button.direction=digitalio.Direction.INPUT
-button.PULL.DOWN
+button=digitalio.DigitalInOut(board.GP16)
+button.switch_to_input(pull=digitalio.Pull.DOWN)
+
 while True:
-    if button.value():
+    if (button.value):
         print("T")
-        led.value(True)
+        led.value=True
     else:
         print("F")
-        led.value(False)
+        led.value=False
     time.sleep(1)
 
 ```
-Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, and it will be an output. Lines 8 and 9 tell the RPi that we will call GP16 (pin21) the name `button`, and it will be an input. The `button.PULL.DOWN` line connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
+Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, and it will be an output. Lines 8 and 9 tell the RPi that we will call GP16 (pin21) the name `button`, and it will be an input. The `pull=digitalio.Pull.DOWN` line connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
 
 
 When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the LED. Otherwise it prints `F` and turns off the LED.
-![](./docPics/Section3.4.3.2_step4.png)
+![](./docPics/Write_Mu_CP.png)
 
 (TODO: Fixme, the figure above is for MicroPython, not CircuitPython)
-(TODO: Test the code above, I just added the pulldown line without testing it.)
 
 #### 5.1.5 Reading data from the computer
 

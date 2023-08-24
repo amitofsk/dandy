@@ -10,17 +10,16 @@ import board
 import digitalio
 
 print ("hello")
-led=DigitalInOut(board.LED)
+led=digitalio.DigitalInOut(board.LED)
 led.direction=digitalio.Direction.OUTPUT
-button=DigitalInOut(board.GP16)
-button.direction=digitalio.Direction.INPUT
-button.PULL.DOWN
+button=digitalio.DigitalInOut(board.GP16)
+button.switch_to_input(pull=digitalio.Pull.DOWN)
+
 while True:
-    if button.value():
+    if (button.value):
         print("T")
-        led.value(True)
+        led.value=True
     else:
         print("F")
-        led.value(False)
+        led.value=False
     time.sleep(1)
-

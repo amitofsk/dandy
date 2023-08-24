@@ -3,9 +3,12 @@
 import tkinter
 import sys
 sys.path.append('../widgets')
-import AUnoDisplay
+import LEDBarDisplay
+import SymbolDisplay
 
 main_window=tkinter.Tk()
-mc1= AUnoDisplay.AUnoDisplay(main_window)
-mc1.pack()
-tkinter.mainloop()
+symbol1=SymbolDisplay.SymbolDisplay(main_window)
+symbol1.draw_ground()
+symbol1.pack()
+#tkinter.mainloop()
+
