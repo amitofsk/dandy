@@ -23,6 +23,7 @@ class DigitalOutDisplay(tk.Tk):
         self.button1.pack()
         self.button_quit.pack()
 
+       
         baudrate=115200
         self.serial_port=serial.Serial(port=PORT, baudrate=baudrate, \
                         bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)

@@ -483,9 +483,9 @@ This step requires some libraries for interacting with the hardware, so you can'
 
 Click on the `Mode` button and select `CircuitPython` to tell the Mu IDE that you will be programming in CircuitPython. You should now see `CircuitPython` on the lower right of the MU IDE window.
 
-The middle of the Mu IDE is a text editor where you can enter your code. The section below is called the [REPL](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/circuitpython-programming-basics) terminal, short for Read, Evaluate, Print, and Loop.
+The middle of the Mu IDE is a text editor where you can enter your code. The section below is called the [REPL](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/circuitpython-programming-basics) terminal, short for Read, Evaluate, Print, and Loop. If you don't see the REPL terminal, press the `Serial` button at the top of the Mu IDE.
 
-You can type individual MicroPython instructions in the REPL terminal. They will be evaluated on the microcontroller. If they contain any print statements, the microcontroller will send the message serially via the USB cable, and you will see the result in the REPL terminal. If you don't see the REPL terminal, press the `Serial` button at the top to make it appear.
+You can type individual MicroPython instructions in the REPL terminal. They will be evaluated on the microcontroller. If they contain any print statements, the microcontroller will send the message serially via the USB cable, and you will see the result in the REPL terminal.
 
 Since most of our programs will be more than one line, we'll write our instructions in the editor instead of the REPL terminal. After we run our programs, we will still see results of any print statements on the REPL terminal.
 
@@ -507,7 +507,7 @@ print ("Hello")
 Now let's write a CircuitPython program that uses the pushbutton you wired to the RPi. In this example, when you press down the pushbutton, the internal LED on the RPi will turn on and `T` will be printed in the REPL terminal. When the button is not pressed down, the LED will be off and `F` will be printed.
 
 
-Copy the program below into the editor or load the `microcontr/serialWriteCP.py` example program. Then, run it.
+Copy the program below into the file `code.py` or load the `microcontr/serialWriteCP.py` example program and save it as `code.py` on the RPi. Then, run it.
 
 (See file src/microcontr/serialWriteCP.py.)
 
@@ -533,19 +533,32 @@ while True:
     time.sleep(1)
 
 ```
-Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, and it will be an output. Lines 8 and 9 tell the RPi that we will call GP16 (pin21) the name `button`, and it will be an input. The `pull=digitalio.Pull.DOWN` line connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
+Lines 6 and 7 tell the RPi that we will call the internal LED the name `led`, and it will be an output. Lines 8 and 9 tell the RPi that we will call GP16 (pin21) the name `button`, and it will be an input. The `pull=digitalio.Pull.DOWN` instruction connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
 
 
 When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the LED. Otherwise it prints `F` and turns off the LED.
 ![](./docPics/Write_Mu_CP.png)
 
-(TODO: Fixme, the figure above is for MicroPython, not CircuitPython)
-
 #### 5.1.5 Reading data from the computer
 
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and CircuitPython code for the microcontroller. While we're programming the microcontroller, let's write this code.
-<br><br>
-Create a new file in the Mu editor and copy in the code below. Alternatively, load the `microcontr/serailReadCP.py` example file.
+
+When we plug the RPi into the computer and open the Mu IDE, a communication channel is set up between the computer and the RPi. The computer refers to this communication channel by a port name such as `COM1`. We see the communication between the computer and the RPi in the REPL terminal of the Mu IDE. 
+
+If we want to send data from the computer to the RPi using something other than the REPL terminal of the IDE, we run into a problem because the REPL terminal controls all of the communication. We can avoid this problem by setting up a second communication channel. This channel is specifically for communication between the computer and the RPi without using the REPL terminal. The computer will refer to this communication channel with a different port name, such as `COM2`. The port names used may be different on your computer. Windows port names may be `COM3`, `COM4`, and so on, while Linux port names are likely `\dev\ttyACM0` or `\dev\ttyACM`.
+
+To set up this second communication channel, we have to use the `usb_cdc` library in the code we write for the RPi. We also have to write two files and save them on the RPi.
+
+In the Mu IDE, press the `New` button, and save a file named `boot.py` on the RPi. Save the following two lines in that file to let the RPi know that we will be setting up this second communication channel.
+```python
+import usb_cdc
+usb_cdc.enable(data=True)
+```
+
+Unplug the RPi, and plug it back in so that the RPi finds this `boot.py` file.
+
+Next, open the file `code.py` that is saved on the RPi and copy in the example below. This example is also found in the `microcontr/serialRead.cp` file of the DANDY library.
+ 
 
 Run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
 <br><br>
@@ -558,27 +571,27 @@ import time
 import board
 import digitalio
 import supervisor
+import usb_cdc
 
 print ("hello")
-led=DigitalInOut(board.LED)
+led=digitalio.DigitalInOut(board.LED)
 led.direction=digitalio.Direction.OUTPUT
+serial=usb_cdc.data
 
 while True:
-    if supervisor.runtime.serial_bytes_available:
-	#read in a character
-	ch=input().strip()
+    if serial.in_waiting >0:
+        ch=serial.read()
         print(ch)
-        led.value(True)
+        led.value=True
         time.sleep(0.25)
-        led.value(False)
-    time.sleep(1)
+        led.value=False
+        time.sleep(1)
 
 ```
 
-(TODO: Test this circuitpython code above... I got it from https://stackoverflow.com/questions/48922189/receive-data-from-host-computer-using-circuit-python-on-circuit-playground-expre . It is untested. )
-
-(TODO: The code above isn't working yet... Maybe see ref https://github.com/Neradoc/circuitpython-sample-scripts/blob/main/usb_serial/README.md)
-
+For more information on communicating using the usb_cdc library, see the following references which were used in coming up with this example.
+[](https://github.com/Neradoc/circuitpython-sample-scripts/blob/main/usb_serial/README.md)
+[](https://docs.circuitpython.org/en/latest/shared-bindings/usb_cdc/index.html)
 
 
 ### 5.1 Option C: Micropython and the PSoC6
@@ -800,7 +813,9 @@ Let's write the Python code that will run on the computer for this example. Open
 <br><br>
 This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
 <br><br>
-We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baud rate, bytesize, and number of stopbits. If you are using the PSoC6, replace `STOPBITS_TWO` with `STOPBITS_ONE` near line 17. 
+If you are used CircuitPython to write the microcontroller code (Option B), make sure to use the port for the communication channel that doesn't involve the REPL terminal.
+
+We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baud rate, bytesize, and number of stopbits. If you are using the PSoC6 (Option C), replace `STOPBITS_TWO` with `STOPBITS_ONE` near line 17. 
 <br><br>
 
 (See file src/examples/DigitalOut.py.)
@@ -895,7 +910,7 @@ if __name__=="__main__":
 
 The strategies in section 6 really only work if you are sending single characters and the characters are available whenever the microcontroller tries to read them. If you want to send longer messages to the microcontroller or want to ensure that the microcontroller doesn't block waiting to get information, you need more complicated instructions. See section 10 for more information.
 
-## 7.0 Displaying characters sent FROM the MICROCONTROLLER to the computer
+## 7.0 Displaying CHARACTERS sent FROM the MICROCONTROLLER to the computer
 
 Files used in section 7:
 - microcontr/serialWriteMP.py
@@ -916,7 +931,7 @@ Think of the pushbutton like a digital input sensor that can either be in one of
 
 ### 7.1 Set up the microcontroller and run the example
 
-You should still have the pushbutton wired to the microcontroller. We'll need it for this example.Now, let's program the microcontroller. Open the Mu or Arduino IDE. Re-open the blinky lights example from section 5.1.3. (See file microcontr/serialWriteMP.py, microcontr/serialWriteCP.py, microcontr/serialWritePSoC.py, or src/microcontr/serialWriteArd.py.)
+You should still have the pushbutton wired to the microcontroller. We'll need it for this example. Now, let's program the microcontroller. Open the Mu or Arduino IDE. Re-open the blinky lights example from section 5.1.3. (See file microcontr/serialWriteMP.py, microcontr/serialWriteCP.py, microcontr/serialWritePSoC.py, or src/microcontr/serialWriteArd.py.)
  We'll use this program once again in this section. Run it, and then close the IDE for your microcontroller. Leave the microcontroller connected to your computer with the USB cable. 
 <br><br>
 
@@ -966,8 +981,8 @@ We are using the graphics library Tkinter. Typically, tkinter runs in a loop to 
 The problem is that we want both loops to run continuously and simultaneously. One possible solution would be to put each of these tasks in a different thread. 
 We are not quite doing this, but we are doing something quite similar. 
 <br><br>
-We will be using the asyncIO Python library. This library isn't quite multithreadding, but it accomplishes the same task. 
-Also, instead of telling tkinter to loop continually, we will tell it to manually update inside a loop. 
+We will be using the asyncIO Python library. This library isn't quite multithreading, but it accomplishes the same task. 
+Also, instead of telling Tkinter to loop continually, we will tell it to manually update inside a loop. 
 The asyncIO library is new to Python, so make sure you are at least using Python version 3.7.
 <br><br> 
 More info on asyncIO can be found at [async-io-python](https://realpython.com/async-io-python).
@@ -977,12 +992,12 @@ Information on using asyncIO with Tkinter came from [asyncio-and-tkinter](https:
 
 Make sure the microcontroller is plugged in and still running the previous example.
 <br><br>
-Run the example below. When you run it, you will see a window with an LEDDisplay widget and a quit button. When the pushbutton connected to your microcontroller is held down, the LEDDisplay widget will be yellow. Otherwise it will be blue.
+Run the example below. When you run it, you will see a window with an `LEDDisplay` widget and a quit button. When the pushbutton connected to your microcontroller is held down, the `LEDDisplay` widget will be yellow. Otherwise it will be blue.
 <br><br>
-Even though this example is short, it has a lot going on. The DigitalHWShort class defined in this example is a child of class SerialAndGui which is a child of Tk. The class SerialAndGui comes with the DANDY library, and it is detailed in ../utilities/SerialAndGui.py. 
+Even though this example is short, it has a lot going on. The `DigitalHWShort` class defined in this example is a child of class `SerialAndGui` which is a child of `Tk`. The class `SerialAndGui` comes with the DANDY library, and it is detailed in `src/utilities/SerialAndGui.py`. 
 The class `SerialAndGui` is an abstract class. If you run it by itself, you see an empty window which is not useful. Instead, as shown below, you should define a child class and overload the constructor and the `use_serial_data` function.
 <br><br>
-The `SerialAndGui` class involves three asynchronous tasks: `check_serial_data`, `use_serial_data`, and `updater`. Each is defined in its own function. The `check_serial_data` task reads from the serial port and writes the result to a queue. The `use_serial_data` task reads from the queue and does something with the data it finds. The `updater` task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
+The `SerialAndGui` class involves three asynchronous tasks: `check_serial_data`, `use_serial_data`, and `updater`. Each is defined in its own function. The `check_serial_data` task reads serially from the USB cable and writes the result to a queue. The `use_serial_data` task reads from the queue and does something with the data it finds. The `updater` task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
 <br><br>
 You don't have to write all the code for these tasks every time you want to use them. Instead, you can just define a child class of `SerialAndGui` as shown below.   
 
@@ -1003,9 +1018,9 @@ import SerialAndGui as sg
 
 #Set up PORT.
 #If you are on Windows, uncomment the next line and adjust as needed.
-#PORT='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
+#PORT='/dev/ttyACM0'
 
 class DigitalHWShort(sg.SerialAndGui):
     #Here's the constructor.
@@ -1052,7 +1067,7 @@ The previous example relied on the `SerialAndGui` class. A lot of the details we
 <br><br>
 This example accomplishes the same task as the previous example. Before you run it, make sure your microcontroller is still plugged in and running its code. As in the last section, when you run this example, you will see a window with an `LEDDisplay` widget. When the pushbutton connected to the microcontroller is pressed, the `LEDDisplay` is yellow, and otherwise it is blue. 
 <br><br>
-In this example, you can see the details of how to use asyncIO to both read serially from the USB port and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions `check_serial_data`, `use_serial_data`, and `updater`. The `DigitalWithHW` class defined below is a child only of Tk, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
+In this example, you can see the details of how to use asyncIO to both read serially from the USB cable and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions `check_serial_data`, `use_serial_data`, and `updater`. The `DigitalWithHW` class defined below is a child only of `Tk`, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
 
 (See file src/examples/DigitalHWLong.py.)
 
@@ -1070,9 +1085,9 @@ import LEDDisplay as ld
 
 #Set up PORT.
 #If you are on Windows, uncomment the next line and adjust as needed.
-#PORT='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
+#PORT='/dev/ttyACM0'
 
 class DigitalHWLong(tk.Tk):
     #Here's the constructor for the DigitalWithHW class.
@@ -1163,7 +1178,7 @@ if __name__=="__main__":
 
 
 
-## 8.0 Displaying NUMERICAL data sent FROM the MICROCONTROLLER to the computer
+## 8.0 Displaying NUMERICAL DATA sent FROM the MICROCONTROLLER to the computer
 
 Files used in section 8:
 - widgets/AnalogInDisplay.py
@@ -1180,14 +1195,14 @@ Files used in section 8:
 - microcontr/analogToComputerCP.py
 - microcontr/analogToComputerArd.ino
 
-In this section, we'll detail how to send numerical data from a microcontroller to a computer and display the result in a GUI. In this section, the analog data will come from a potentiometer wired in to the microcontroller. However, you can directly replace that potentiometer with a [thermistor](https://www.digikey.com/en/products/detail/vishay-beyschlag-draloric-bc-components/NTCLE100E3333JB0/769418), [force sensor](https://www.digikey.com/en/products/detail/ohmite/FSR07BE/10127625), or other type of analog sensor.
+In this section, we'll detail how to send numerical data from a microcontroller to a computer and display the result in a GUI. In this section, the data will come from a potentiometer wired in to the microcontroller. However, you can directly replace that potentiometer with an analog sensor such as a  [thermistor](https://www.digikey.com/en/products/detail/vishay-beyschlag-draloric-bc-components/NTCLE100E3333JB0/769418) or [force sensor](https://www.digikey.com/en/products/detail/ohmite/FSR07BE/10127625).
 
 
-### 8.1 DANDY widgets for analog inputs, no hardware
+### 8.1 DANDY widgets for displaying numerical data, no hardware
 
-The DANDY library contains multiple widgets designed to display analog input data. In this section, we don't use any hardware. Instead, we just try out these widgets. 
+The DANDY library contains multiple widgets designed to display numerical data. In this section, we don't use any hardware. Instead, we just try out these widgets. 
 
-#### 8.1.1 A first example, displaying one analog value
+#### 8.1.1 Displaying one numerical value
 
 Try out the example below. When you run it, you see a number of widgets. The `Label`, `Button`, and `Scale` widgets are built into Tkinter. The `SlideDisplay`, `DialDisplay`, `TricolorDisplay`, and `SimplePlotDisplay` widgets are from the DANDY library. 
 <br><br>
@@ -1254,7 +1269,7 @@ if __name__=="__main__":
 
 ![](./docPics/SingleAIN2.png)
 
-#### 8.1.2 A second example, displaying xyz values.
+#### 8.1.2 Displaying 3D vector data
 
 Some data, such as velocity, acceleration, and magnetic field at a point, is inherently three dimensional. The DANDY library contains the `VectorDisplay` widget for displaying vector data. Try out the example below.
 
@@ -1308,7 +1323,7 @@ if __name__=="__main__":
 
 ![](./docPics/TripleAIN.png)
 ### 8.2 Set up the hardware
-In the previous example, we tried out some widgets that come with the DANDY library. In the previous examples, input values came from a Scale widget. 
+In the previous example, we tried out some widgets that come with the DANDY library. In the previous examples, input values came from a `Scale` widget. 
 
 The inputs in this section will come from a potentiometer wired to the microcontroller. Let's set up the hardware and microcontroller code for this example.
 
@@ -1319,8 +1334,7 @@ Follow the option for the hardware of your choice.
 
 Connect a resistor and a potentiometer in series between pin 36 (3.3V power) and pin 38 (GND). Also, add a wire from the node between the resistor and potentiometer to pin 31. Pin 31 is also known as GP26, and it is connected to the internal analog to digital converter ADC0.
 
-If your potentiometer has three pins, make sure to use the middle pin and one of the outer ones
-.
+If your potentiometer has three pins, make sure to use the middle pin and one of the outer ones.
 
 
 
@@ -1333,12 +1347,12 @@ Let's write the code for the microcontroller, so open the Mu IDE.
 The microcontroller code below reads an analog value from pin 31, also known as GP26 and ADC0. This value is then written serially to the computer.  
 
 We could just print out the value itself. Instead, here we're a bit smarter. We're printing a message in JSON format that contains the value we read in addition to other pieces of information. 
-<br><br>
+
 JSON is a format for writing variable names along with their values. For more information, see [wikipedia](https://en.wikipedia.org/wiki/JSON). 
 
 All elements of the JSON are strings, not integers. While `value` may look like an integer, it really is a string. When we send information serially down the USB cable, we can only send characters, not integers.
 
-<br><br>
+
 Copy the code below into the editor of the Mu IDE or open the example. Run it. As you adjust the potentiometer, values displayed in the REPL terminal of the MU IDE should change.
 
 
@@ -1377,10 +1391,9 @@ If your potentiometer has three pins, make sure to use the middle pin and one of
 The microcontroller code below reads an analog value from pin 31, also known as GP26 and ADC0. This value is then written serially to the computer.
 
 We could just print out the value itself. Instead, here we're a bit smarter. We're printing a message in JSON format that contains the value we read in addition to other pieces of information.
-<br><br>
+
 A JSON is just a format for variables names and their values. For more information, see [wikipedia](https://en.wikipedia.org/wiki/JSON).
 
-<br><br>
 Open the Mu IDE. Copy and run this code. As you adjust the potentiometer, values displayed in the bottom window of the MU IDE should change.
 
 
@@ -1406,9 +1419,11 @@ while True:
 
 #### 8.2.1 Option C: MicroPython and the PSoC
 
+COMING SOON
+
 #### 8.2.1 Option D: Arduino
 
-Coming soon 
+COMING SOON 
 
 ![Arduino circuit with potentiometer](./docPics/potCircuit2.png)
 
