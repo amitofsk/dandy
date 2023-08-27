@@ -13,6 +13,12 @@ import LEDDisplay as ld
 import SerialAndGui as sg
 import RPiPicoDisplay as rpp  
 
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+#PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+PORT='/dev/ttyACM0'
+
 
 #Button is wired to pin 21
 BUTTON_NO=21
@@ -20,7 +26,7 @@ BUTTON_NO=21
 class MCDemo2Short(sg.SerialAndGui):
     #Here's the constructor.
     def __init__(self, loop, interval=1/20):
-        super().__init__(loop)
+        super().__init__(loop, port=PORT)
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.

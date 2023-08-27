@@ -39,8 +39,6 @@ class MagnetDemo(sg.SerialAndGui):
         self.button_quit.pack()
 
 
-
-
      #This async function reads from the queue and uses the data it finds.
      #We're overloading the parent's version of this function.
      async def use_serial_data(self, interval, qIn: asyncio.Queue):
@@ -62,11 +60,6 @@ class MagnetDemo(sg.SerialAndGui):
             #Do values go up -2048 to 2048?
             self.vector1.set_to_value(valueX, valueY, valueZ)
             
-            
-            
-
-
-
 
 if __name__=="__main__":
     loop=asyncio.get_event_loop()

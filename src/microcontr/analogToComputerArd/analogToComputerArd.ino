@@ -1,4 +1,8 @@
-//Voltage divider circuit and A0 ..
+//This example reads from pin ADC0 and prints the value, in 
+//json form. Before you run this example, connect a resistor and 
+//potentiometer in series between 3.3V and Ground. Connect another
+//wire from the node connecting the resistor and potentiometer
+//to pin ADC0.
 
 const int analogPin=A0;
 int aValue=0;

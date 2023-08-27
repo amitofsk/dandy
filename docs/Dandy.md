@@ -1202,7 +1202,7 @@ In this section, we'll detail how to send numerical data from a microcontroller 
 
 The DANDY library contains multiple widgets designed to display numerical data. In this section, we don't use any hardware. Instead, we just try out these widgets. 
 
-#### 8.1.1 Displaying one numerical value
+#### 8.1.1 Displaying a scalar numerical value
 
 Try out the example below. When you run it, you see a number of widgets. The `Label`, `Button`, and `Scale` widgets are built into Tkinter. The `SlideDisplay`, `DialDisplay`, `TricolorDisplay`, and `SimplePlotDisplay` widgets are from the DANDY library. 
 <br><br>
@@ -1269,7 +1269,7 @@ if __name__=="__main__":
 
 ![](./docPics/SingleAIN2.png)
 
-#### 8.1.2 Displaying 3D vector data
+#### 8.1.2 Displaying vector numerical data
 
 Some data, such as velocity, acceleration, and magnetic field at a point, is inherently three dimensional. The DANDY library contains the `VectorDisplay` widget for displaying vector data. Try out the example below.
 
@@ -1322,7 +1322,7 @@ if __name__=="__main__":
 ```
 
 ![](./docPics/TripleAIN.png)
-### 8.2 Set up the hardware
+### 8.2 Displaying numerical data, the microcontroller side
 In the previous example, we tried out some widgets that come with the DANDY library. In the previous examples, input values came from a `Scale` widget. 
 
 The inputs in this section will come from a potentiometer wired to the microcontroller. Let's set up the hardware and microcontroller code for this example.
@@ -1419,65 +1419,135 @@ while True:
 
 #### 8.2.1 Option C: MicroPython and the PSoC
 
-COMING SOON
+##### 8.2.1.1 Build the circuit
+(TODO: This section is incomplete.)
+Use the internal capsense slider?
+
+##### 8.2.2. Write the microcontroller code
+(TODO: This section is incomplete.)
+
+Let's write the code for the microcontroller, so open the Arduino Lab IDE.
+
+The microcontroller code below reads an analog value from the internal potentiometer, via pin . This value is then written serially to the computer.
+
+We could just print out the value itself. Instead, here we're a bit smarter. We're printing a message in JSON format that contains the value we read in addition to other pieces of information.
+
+A JSON is just a format for variables names and their values. For more information, see [wikipedia](https://en.wikipedia.org/wiki/JSON).
+
+Open the Arduino Lab IDE. Copy and run this code. As you slide your finger on the potentiometer, values displayed in the Serial Monitor should change.
+
+
+(See file src/microcontr/analogToComputerPSoC.py.)
+
+```python
+print('hello')
+```
+
 
 #### 8.2.1 Option D: Arduino
 
-COMING SOON 
+##### 8.2.1.1 Build the circuit
+Connect a resistor and a potentiometer in series between 3.3V power and GND. Also add a wire from the node between the resistor and the potentiometer to ADC0. The figure below shows the wiring for the Arduino Uno.
+
+If your potentiometer has three pins, make sure to use the middle pin and one of the outer ones.
+
+
 
 ![Arduino circuit with potentiometer](./docPics/potCircuit2.png)
 
+##### 8.2.2.2 Write the microcontroller code
 
-### 8.3 Displaying analog data from the microcontroller on the computer
+Let's write the code for the microcontroller, so open the Arduino IDE.
+
+The microcontroller code below reads an analog value from the pin ADC0. This value is then written serially to the computer.
+
+We could just print out the value itself. Instead, here we're a bit smarter. We're printing a message in JSON format that contains the value we read in addition to other pieces of information.
+
+A JSON is just a format for variables names and their values. For more information, see [wikipedia](https://en.wikipedia.org/wiki/JSON).
+
+Open the Arduino IDE. Copy and run this code. As you adjust the potentiometer, values displayed in the Serial Monitor should change.
+
+
+(See file src/microcontr/analogToComputerArd.py.)
+
+```c++
+const int analogPin=A0;
+int aValue=0;
+String out_msg="";
+
+void setup() {  
+  Serial.begin(115200);
+ // Serial.println("hi");
+}
+
+void loop() {
+  aValue=analogRead(analogPin); //values will be 0 to 1023
+  out_msg="{\"boardNumber\" : \"2\" , \"boardType\" : \"Arduino\" , \"value\" : \"";
+  out_msg=out_msg+aValue;
+  out_msg=out_msg+"\"}";
+  Serial.println(out_msg);
+  delay(1000);
+}
+```
+
+
+
+
+### 8.3 Displaying numerical data, the computer side
 
 Back to writing code for the computer in Python using the IDLE IDE. 
 This example reads the data from the microcontroller. It also picks off the part of the json that we're interested in. This example does not use a GUI. We'll add a GUI in the next section.  
 
 Make sure your microcontroller is still plugged in and running the example from the last section.
-Also make sure you've closed your Mu or Arduino IDE. Additionally, set port for your computer, near line 11.
+Also make sure you've closed your Mu or Arduino IDE. Additionally, set port for your computer.
 
-(See file src/examples/serialReaderParse.py)
+(See file src/examples/ReadInJson.py)
 
 ```python
 import serial
 import serial.tools.list_ports as port_list
 import json
 
-print('Hello World')
-#For Windows, uncomment the next line and adjust as needed.
-port='COM1'
-#For Linux, uncomment the next line and adjust as needed.
-#port='/dev/ttyACM0'
-baudrate=115200
-serialPort=serial.Serial(port=port, baudrate=baudrate, \
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+#PORT='/dev/ttyACM0'
+
+
+class ReadInJson():
+    baudrate=115200
+    serialPort=serial.Serial(port=port, baudrate=baudrate, \
             bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
 
-while True:
-    #Read until you see the two end characters '\r\n'
-    serial_string=serialPort.read_until('\r\n')
-    #Convert the bytes read into an actual string.
-    serial_string=serial_string.decode('utf-8')
-    if serial_string!="":
-        #Slice off the two end characters
-        serial_string=serial_string[:-2]
-        #Parse the json and save the result in serial_json
-        serial_json=json.loads(serial_string)
-        #Pick off the element named "value" of the json
-        val=serial_json["value"]
-        print(serial_string)
-        print(val)
+    while True:
+        #Read until you see the two end characters '\r\n'
+        serial_string=serialPort.read_until('\r\n')
+        #Convert the bytes read into an actual string.
+        serial_string=serial_string.decode('utf-8')
+        if serial_string!="":
+            #Slice off the two end characters
+            serial_string=serial_string[:-2]
+            #Parse the json and save the result in serial_json
+            serial_json=json.loads(serial_string)
+            #Pick off the element named "value" of the json
+            val=serial_json["value"]
+            print(serial_string)
+            print(val)
 
-serialPort.close()
+    serialPort.close()
 
+if __name__=="__main__":
+    example=ReadInJson()
 ```
-### 8.4 Displaying analog data, now with widgets and asyncio
+### 8.4 Displaying numerical data, the computer side, now with widgets and asyncIO
 
-Now let's put all the pieces together. The microcontroller reads analog data from the potentiometer and sends that analog data, in JSON format, to the computer. The code below runs on the computer. It reads that analog data and displays it using widgets from Tkinter and the DANDY library. The class `AnalogHWShort` defined below is a child of the class `SerialAndGui`. The asyncIO library is needed because we want to both update the GUI and read the serial data in loops, and these loops should appear to the user to happen at the same time. The details of using asyncIO are hidden in the parent's class `SerialAndGui`. 
-<br><br>
-You should still have the potentiometer wired to the microcontroller. The microcontroller should still be connected to your computer with the USB cable, and it should still be running the same example used in the last section.
-<br><br>
+Now let's put all the pieces together. The microcontroller reads analog data from the potentiometer and sends that data, in JSON format, to the computer. The code below runs on the computer. It reads that data and displays it using widgets from Tkinter and the DANDY library. The class `AnalogHWShort` defined below is a child of the class `SerialAndGui`. The asyncIO library is needed because we want to both update the GUI and read the serial data in loops, and these loops should appear to the user to happen at the same time. The details of using asyncIO are hidden in the parent's class `SerialAndGui`. 
+
+You should still have the potentiometer wired to the microcontroller. The microcontroller should still be connected to your computer with the USB cable, and it should still be running the same example used in section 8.2.
+
 Make sure to set `PORT` near line 21 for your machine.
-<br><br>
+
 Try out the example below. While this example is short, it is not simple. It has a lot going on.  
 
 (See file src/examples/AnalogHWShort.py.)
@@ -1570,42 +1640,157 @@ if __name__=="__main__":
 
 ### 8.5 Displaying vector data
 
-In this section, we will use a sensor to measure 3D magnetic field, and we'll display the result on the computer using the `VectorDisplay` DANDY widget.
-
-More specifically, We'll use the TLE493D-W2B6 Hall effect sensor which measures magnetic field in the x, y, and z directions. This sensor will be wired to the microcontroller and will send data to the microcontroller using its I2C bus. The microcontroller will be connected to a computer by a USB cable, and it will send data serially to the computer down the USB cable.
+In this section we will use a sensor to measure magnetic field, which is a vector quantity, and display the result on the computer using the `VectorDisplay` DANDY widget. The sensor communicates with the microcontroller using I2C.
 
 As in past examples, we'll write both software for the microcontroller and software for the computer.   
  
-Some substeps are different for the different options, so follow the option for the hardware you will be using.
+Some substeps are different for the different microcontroller options, so follow the option for the hardware you will be using.
 
-#### 8.5.1 Set up the hardware
+#### 8.5.1 The Hall effect sensor
 
-##### 8.5.1.1 Option A and B
+We will use the [TLE493D-W2B6](https://www.infineon.com/cms/en/product/evaluation-boards/s2go_3d_tli493dw2bw-a0/) [Hall Effect](https://eng.libretexts.org/Bookshelves/Electrical_Engineering/Electro-Optics/Direct_Energy_(Mitofsky)/05%3A_Hall_Effect) magnetic field sensor. 
 
-##### 8.5.1.1 Option C
-##### 8.5.1.1 Option D
+This sensor measures the X, Y, and Z components of the magnetic field. It also measures temperature, which we won't use but may be useful in other applications to calibrate more accurately. Each component of the magnetic field is read with twelve bit accuracy. However, those twelve bits are split up between two eight bit memory registers.  
 
-#### 8.5.2 Write the microcontroller code
-
+The figure illustrates how the data is stored in the sensor's memory registers. More information is available in the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512). This [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707) was also used as a reference. 
 ![](./docPics/registers.png)
 
-##### 8.5.2.1 Option A
-##### 8.5.2.1 Option B
-##### 8.5.2.1 Option C
-##### 8.5.2.1 Option D
 
-#### 8.5.3 Write the code for the GUI on the computer
+This sensor communicates to the microcontroller using I2C, a standard protocol for connecting sensors and other peripheral devices. For more information on this protocol, see Adafruit's [I2C tutorial](https://learn.adafruit.com/working-with-i2c-devices/overview?gclid=Cj0KCQjw6KunBhDxARIsAKFUGs8a1IfnOsOuboUUTYSDkMfGUpKmnPyXHH_ypoh6JR9ak4MTL3FhwXUaArUxEALw_wcB). 
+
+The I2C connection requires four wires: 3.3V power, ground, Serial DAta (SDA) which carries the data, and Serial CLock (SCL) for a timing signal. 
+
+To generate a magnetic field, put a refridgerator magnet near the sensor.
+
+
+#### 8.5.2 Option A: Vector example, microcontroller side
+Now let's set up the hardware and write the microcontroller's code for this example. This section assumes you are using the RPi and MicroPython.
+
+##### 8.5.2.1 Wire up the sensor
+
+![Magnet sensor and RPi](./docPics/magnetRPi.png)
+##### 8.5.2.2. Write the microcontroller code
+Explain the instructions for I2C and add references... 
+
+Explain that we are writing some setup instructions to ... as specified in reference ...
+
+Explain the unpacking of the data from the registers more...
+
+
+
+
+(See file src/microcontr/magnetMP.py.)
+```python
+print('hello')
+```
+
+
+#### 8.5.2 Option B: Vector example, microcontroller side
+Now let's set up the hardware and write the microcontroller's code for this example. This section assumes you are using the RPi and CircuitPython.
+
+
+
+##### 8.5.2.1 Wire up the sensor
+
+![Magnet sensor and RPi](./docPics/magnetRPi.png)
+
+##### 8.5.2.2. Write the microcontroller code
+
+#### 8.5.2 Option C: Vector example, microcontroller side
+Now let's set up the hardware and write the microcontroller's code for this example. This section assumes you are using the PSoC6 and MicroPython.
+
+
+##### 8.5.2.1 Wire up the sensor
+
+##### 8.5.2.2 Write the microcontroller code
+
+#### 8.5.2 Option D: Vector example, microcontroller side
+Now let's set up the hardware and write the microcontroller's code for this example. This section assumes you are using an Arduino.
+
+
+##### 8.5.2.1 Wire up the sensor
+![Magnet sensor and Arduino](./docPics/magnetArd.png)
+##### 8.5.2.2 Write the microcontroller code 
+
+#### 8.5.3 Vector example, computer side
+
+Now let's write the code that will run on the computer and display the data from the magnetic field sensor. Close your Mu or Arduino IDE. Open the IDLE IDE to write Python code for the computer.
+
+This example sets up a GUI with a `VectorDisplay` widget as well as a quit button. The microcontroller sends the X, Y, and Z values of the magnetic field to the computer packaged in a JSON. This example reads the information sent by the microcontroller, picks off the components of the data, and displays the magnetic field as a vector using the `VectorDisplay` widget.
+
+This example uses asyncIO to simultaneously read the data and update the GUI. The `MagnetDemo` class of this example is a child of class `SerialAndGUI`. The class `SerialAndGUI` uses three tasks: `check_serial_data`, `use_serial_data`, and `updater`. Here, we just overload the `use_serial_data` function so that it is specific for this example.  
+
+(See file src/examples/MagnetDemo.py.)
+
+```python
+
+import asyncio
+import tkinter as tk
+import time
+import json
+import serial
+import serial.tools.list_ports as port_list
+import sys
+sys.path.append('../widgets')
+sys.path.append('../utilities')
+import SerialAndGui as sg
+import VectorDisplay as vd
+
+
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+#PORT='/dev/ttyACM0'
+
+class MagnetDemo(sg.SerialAndGui):
+     def __init__(self, loop, interval=1/20, port=PORT):
+        super().__init__(loop, port=PORT)
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.close)
+        self.vector1=vd.VectorDisplay(self, height=100, width=200)
+
+        self.vector1.pack()
+        self.button_quit.pack()
+
+
+     #This async function reads from the queue and uses the data it finds.
+     #We're overloading the parent's version of this function.
+     async def use_serial_data(self, interval, qIn: asyncio.Queue):
+        while True:
+            await asyncio.sleep(interval*10)
+            #get the string from the queue
+            in_string=await qIn.get()
+            print(in_string)
+            #Parse the json and pick off the element named "value"
+            in_json=json.loads(in_string)
+            stringX=in_json["BX"]
+            valueX=float(stringX)
+            stringY=in_json["BY"]
+            valueY=float(stringY)
+            stringZ=in_json["BZ"]
+            valueZ=float(stringZ)
+            #Scale val so it is in a reasonable range for display
+            # Testme, does this work with negative values?
+            #Do values go up -2048 to 2048?
+            self.vector1.set_to_value(valueX, valueY, valueZ)
+            
+
+if __name__=="__main__":
+    loop=asyncio.get_event_loop()
+    example=MagnetDemo(loop)
+    loop.run_forever()
+    loop.close()
+```
 
 ![](./docPics/magnet.png)
 
+(TODO: FIx example above to scale properly and handle neg values... maybe send with an offset then remove it in the computer's python code?)
 
-### 8.6 Now with two RPi's??
-
-### 8.7 Now with two RPi's and two Arduinos?
 
 ## 9.0 Widgets that look like microcontrollers
 
-Here are the files used in this section with the microcontrollers
+Files used in section 9:
  - examples/MCDemo.py
  - examples/MCDemo2.py 
  - widgets/MCDisplay.py
@@ -1613,21 +1798,29 @@ Here are the files used in this section with the microcontrollers
  - widgets/AUnoDisplay.py
  - widgets/AMKRDisplay.py
  - widgets/ANanoEveryDisplay.py
- - widgets/Cy8cprotoDisplay.py 
- - serial read files?
+ - widgets/PSoCDisplay.py 
+ - microcontr/serialWriteMP.py
+ - microcontr/serialWriteCP.py
+ - microcontr/serialWritePSoC.py
+ - microcontr/serialWriteArd.ino
+ - microcontr/analogToComputerMP.py
+ - microcontr/analogToComputerCP.py
+ - microcontr/analogToComputerPSoC.py
+ - microcontr/analogToComputerArd.ino
 
-In this section we demonstrate DANDY widgets that look like microcontrollers. First we show these widgets without hardware, and then we incorporate the hardware. 
+The DANDY library contains five widgets that look like specific microcontrollers. First we show how to use these widgets without any hardware. Next we show how to use them with one microcontroller attached, and finally we show how to use them with two microcontrollers connected to the computer.
 
-#### 9.1 Example with no hardware
-This example demonstrates the widgets that look like microcontrollers. This section does not use hardware.  The file `MCDisplay.py` is a parent class. The files `RPiPicoDisplay.py`, `AUnoDisplay.py`, `AMKRDisplay.py`, `ANanoEveryDisplay.py`, and `Cy8cprotoDisplay.py` are child classes that look like the RPi, Arduino Uno, Arduino MKR1010, Arduino Nano Every, and PSoC microcontrollers respectfully.
-This example is found in the file `MCDemo.py` which imports these widgets.
-<br><br>
-When you run this example, you will see a widget that looks like the RPi. Pin 6 shows a LEDDisplay widget, and pin 21 shows a button. There is also a toggle button at the bottom of the screen. If you press either the button near bin 31 or the toggle button, the LEDDisplay near pin 6 changes color.
-<br><br>
-Here we see a widget that looks like a RPi. 
-To see widgets that look like the other microcontrollers, comment out between lines 28-32. Next, uncomment one of lines, corresponding to one of the microcontrollers. Save, and rerun the example.
-<br><br>
-Here, the LEDDisplay widget is near pin 6, and the button is near pin 21. Your turn, modify the code so that the LEDDisplay widget is near pin 10 and the button is near pin 12. (Try to avoid putting them at the power or ground pins.)
+![](./docPics/summaryPicMC.png)
+
+
+#### 9.1 Microcontroller widgets, example with no hardware
+This example demonstrates the widgets that look like microcontrollers. This section does not use hardware.  The file `MCDisplay.py` is a parent class. The files `RPiPicoDisplay.py`, `AUnoDisplay.py`, `AMKRDisplay.py`, `ANanoEveryDisplay.py`, and `PSoCDisplay.py` are child classes that look like the RPi, Arduino Uno, Arduino MKR1010, Arduino Nano Every, and PSoC microcontrollers respectfully. These child classes have access to member functions of the parent.
+
+When you run this example, you will see a widget that looks like the RPi. Pin 6 shows a `LEDDisplay` widget, and pin 21 shows a button. Additionally, a `toggle` button is at the bottom of the screen. If you press either the button near bin 31 or the toggle button, the `LEDDisplay` changes color.
+
+The `set_led` function of line 39 displays the `LEDDisplay` widget near pin 6. Other member functions display `SlideDisplay`, `DialDisplay`, or `TricolorDisplay` widgets near individual pins.
+
+When you run the example, you see a widget that looks like the RPi. To see widgets that look like the other microcontrollers, comment out between lines 28-32. Next, uncomment one of lines, corresponding to one of the microcontrollers. Save, and rerun the example.
 
 (See file src/examples/MCDemo.py.)
  
@@ -1642,7 +1835,7 @@ import SymbolDisplay as sd
 import AUnoDisplay as aud
 import ANanoEveryDisplay as aned
 import AMKRDisplay as amd
-import Cy8cprotoDisplay as cd
+import PSoCDisplay as cd
 
 class MCDemo(tk.Tk):
     def __init__(self):
@@ -1655,7 +1848,7 @@ class MCDemo(tk.Tk):
         #self.mc1=aud.AUnoDisplay(self)
         #self.mc1=aned.ANanoEveryDisplay(self)
         #self.mc1=amd.AMKRDisplay(self)
-        #self.mc1=cd.Cy8cprotoDisplay(self)
+        #self.mc1=cd.PSoCDisplay(self)
            
         self.mc1.pack()
         self.button2.pack()
@@ -1698,12 +1891,18 @@ if __name__=="__main__":
 ![Microcontroller GUI pic](./docPics/mcgui.png)
 
 
-#### 9.2 Example with hardware, digital input, and RPPicoDisplay
-See the file examples/MCDemo2Long.py for the long version which is not a child of SerialAndGui.py.
-Here I'm using RPiPicoDisplay.py, but you can replace that with the other microcontrollers.
-<br><br>
-Your microcontroller should be running SerialRead.py
-<br><br> You still need to clean up the port issue in SerialAndGui.py
+#### 9.2 Microcontroller widgets, example with hardware
+
+Follow the instructions in section 5.1.1 to wire a pushbutton to your micrcontroller, and use a USB cable to plug your micrcontroller into the computer. Upload the `serialWriteMP.py`, `serialWriteCP.py`, `serialWritePSoC.py`, or `serialWriteArd.ino` example used in section 5.1.4 to that microcontroller. When the user presses the pushbutton, `T` is sent serially to the computer. When the pushbutton is not pressed, `F` is sent.
+
+Next, we'll program the computer to respond to the character received. Close the Arduino or Mu IDE. Open the IDLE IDE. Copy the example below or load the file `examples/MCDemo2Short.py` that came with the DANDY library. Set `PORT` at the top of the example for your machine.
+
+When you run this example, you will see a widget that looks like a RPi microcontroller. The line which creates the widget, `self.mc1=rpp.RPiPicoDisplay(self)`, can be replaced with a line to create one of the widgets for the other microcontrollers instead if desired. 
+
+Run the example on the computer. Press the pushbutton attached to the microcontroller. You should see the color of the `LEDDisplay` widget near pin 21 cahnge. 
+
+This example uses the asyncIO library. The `MCDemo2Short` class defined in this example is a child of the `SerialAndGui` class defined in the file `src/utilities/SerialAndGui.py`. The `MCDemo2Short` class redefines the parent's `use_serial_data` member function. The file `MCDemo2Long.py` contains the same example without relying on the `SerialAndGui` parent class.
+
 
 (See file src/examples/MCDemo2Short.py.)
 ```python
@@ -1720,6 +1919,11 @@ import LEDDisplay as ld
 import SerialAndGui as sg
 import RPiPicoDisplay as rpp  
 
+#Set up PORT.
+#If you are on Windows, uncomment the next line and adjust as needed.
+PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+#PORT='/dev/ttyACM0'
 
 #Button is wired to pin 21
 BUTTON_NO=21
@@ -1727,7 +1931,7 @@ BUTTON_NO=21
 class MCDemo2Short(sg.SerialAndGui):
     #Here's the constructor.
     def __init__(self, loop, interval=1/20):
-        super().__init__(loop)
+        super().__init__(loop, port=PORT)
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -1764,19 +1968,250 @@ if __name__=="__main__":
     loop.close()
 ```
 
+
+#### 9.3 Example with two microcontrollers
+
+A computer keeps track of devices attached by USB connections, such as microcontrollers, by assigning them a port. If you plug two microcontrollers into your computer, the computer will be able to distinguish which one it is reading from or writing to by that port. This example demonstrates reading and displaying sensor data from two microcontrollers. 
+
+This example uses DANDY widgets that look like microcontrollers. In a previous example, we used `LEDDisplay` widgets near individual pins of these widgets that look like microcontrollers to display the status of the pins. In this example, we use `SlideDisplay` and `DialDisplay` widgets near pins to indicate the voltage across a potentiometer.
+
+Additionally, in this example, we don't have to know ahead of time which types of microcontrollers will be used. Data is sent from the microcontrollers to the computer in JSON format, and one element of the JSON contains the type of microcontroller used. 
+
+Let's get started.
+##### 9.3.1 Example with two microcontrollers, the microcontroller side
+Follow the instructions in section 8.2 to set up two microcontrollers. More specifically, construct the voltage divider circuit containing the resistor and potentiometer that connects to one of the analog input pins. Additionally, program the microcontroller with the example from section 8.2, found in `microcontr/analogToComputerMP.py`, `microcontr/analogToComputerCP.py`, `micorcontr/analogToComputerPSoC.py`, or `microcontr/analogToComputerArd.ino`.
+
+
+##### 9.3.2 Example with two microcontrollers, the computer side
+
+Now let's write the Python program for the computer that displays the widgets. Open the IDLE IDE and copy the code below or load the example from the file `src/examples/twoMCv2.py`. Set the ports for your two microcontrollers at the top of the code. 
+
+This example uses the asyncIO library. It involves four tasks: `check_serial_dataA`, `check_serial_dataB`, `use_serial_data`, and `updater`. In example with one microcontroller, the details of the use of asyncIO were hidden in the parent class `SerialAndGui`. That technique won't work here because we have a fourth task, so the details of the use of asyncIO are included in this example.
+
+When you first run this example, you will see two widgets that look like the Arduino Nano Every microcontroller. The microcontrollers are sending infromation to the computer in JSON format, and one element of the JSON, `boardType`, contains the microcontroller type. For the first messages received, this example identifies the board type and changes the widget to look like that particular microcontroller. This example is set up to recognize only Arduino Nano Everys, RPis, and Arduino Unos, but other microcontroller types with avaialble widgets could be included too. 
+
+The `set_slide` member function is used to display a `SlideDisplay` widget near one pin of a microcontroller widget. The `set_dial` member function is used to display a `DialDisplay` widget near one pin of the other microcontroller widget.
+
+Try out the example.
+
+(See file src/examples/twoMCv2.py.)
+```python
+import asyncio
+import tkinter as tk
+import time
+import json
+import serial
+import serial.tools.list_ports as port_list
+import sys
+sys.path.append('../widgets')
+sys.path.append('../utilities')
+import SerialAndGui as sg
+import DialDisplay as dd
+import RPiPicoDisplay as rpp
+import AUnoDisplay as aud
+import ANanoEveryDisplay as ane
+
+#Set up your ports. 
+#If you are on Windows, uncomment the next lines and adjust as needed.
+PORTA='COM1'
+PORTB='COM2'
+#If you are on Linux, uncomment the next lines and adjust as needed.
+#PORTA='/dev/ttyACM0'
+#PORTB='/dev/ttyACM1'
+
+
+class TwoMCv2(tk.Tk):
+    def __init__(self, loop, interval=1/20):
+        super().__init__()
+        self.__loop=loop
+        self.__portA=PORTA
+        self.__portB=PORTB
+        self.protocol("WM_DELETE_WINDOW", self.close)
+
+
+        #We have four async tasks: check_serial_dataA,
+        #check_serial_dataB, and use_serial_data
+        #and updater. Each are detailed in their own function.
+        self.q=asyncio.Queue()
+        self.tasks=[]
+        self.tasks.append(loop.create_task \
+                          (self.check_serial_dataA(interval, self.q)))
+        self.tasks.append(loop.create_task \
+                          (self.check_serial_dataB(interval, self.q)))
+        self.tasks.append(loop.create_task \
+                          (self.use_serial_data(interval, self.q)))
+        self.tasks.append(loop.create_task(self.updater(interval)))
+        self.button_quit=tk.Button(self, text="Quit", \
+                                   command=self.close)
+        #Let's start with widgets for the Arduino Nano Every
+        self.mc1=ane.ANanoEveryDisplay(self)
+        self.mc2=ane.ANanoEveryDisplay(self)
+        self.slide1=self.mc1.set_slide(7)
+        self.dial1=self.mc2.set_dial(7)
+
+        self.mc1.pack(side='left')
+        self.mc2.pack(side='right')
+        self.button_quit.pack(side='bottom')        
+
+
+    async def use_serial_data(self, interval, qIn: asyncio.Queue):
+        #Here we want to collect a few jsons and then set
+        #The board widget appropriately.
+        boardOneSet=1
+        boardTwoSet=1
+        for i in range (10):
+            #Pick off board number and type
+            in_string=await qIn.get()
+            print(in_string)
+            in_json=json.loads(in_string)
+            board_read=in_json["boardNumber"]
+            board_type=in_json["boardType"]
+            if board_read=="1":
+                if boardOneSet>0:
+                    #Set widget for board one
+                    self.mc1.pack_forget()
+                    if(board_type=="Arduino"):
+                        self.mc1=aud.AUnoDisplay(self)
+                        self.slide1=mc1.set_slide(8)
+                    if(board_type=="RPi"):
+                        self.mc1=rpp.RPiPicoDisplay(self)
+                        self.slide1=self.mc1.set_slide(31)
+                    if(board_type=="NanoEvery"):
+                        self.mc1=rpp.RPiPicoDisplay(self)
+                        self.slide1=self.mc1.set_slide(7)
+                    boardOneSet=0
+                    self.mc1.pack(side='left')
+            if board_read=="2":
+                if boardTwoSet>0:
+                    #Set widget for board two
+                    self.mc2.pack_forget()
+                    if(board_type=="Arduino"):
+                        self.mc2=aud.AUnoDisplay(self)
+                        self.dial1=self.mc2.set_dial(9)
+                    if(board_type=="RPi"):
+                        self.mc2=rpp.RPiPicoDisplay(self)
+                        self.dial1=self.mc2.set_dial(31)
+                    if(board_type=="NanoEvery"):
+                        self.mc2=rpp.RPiPicoDisplay(self)
+                        self.dial1=self.mc2.set_dial(7)
+                    boardTwoSet=0
+                    self.mc2.pack(side='right')
+
+        while True:
+            await asyncio.sleep(interval)
+            #get the string from the queue
+            in_string=await qIn.get()
+            print(in_string)
+            #Parse the json and pick off the element named "value"
+            in_json=json.loads(in_string)
+            
+            board_read=in_json["boardNumber"]
+            print(board_read)
+            val=in_json["value"]
+            val_float=float(val)
+            print(val_float)
+            if(board_read=="1"):
+                scaled_value=val_float/6000
+                self.slide1.set_to_value(scaled_value)
+            else:
+                scaled_value=val_float/256
+                self.dial1.set_to_value(scaled_value)
+
+
+
+    async def check_serial_dataA(self, interval, qIn: asyncio.Queue):
+        #This async function reads data from the serial port and puts the
+        #data in the queue.
+
+        baudrate=115200
+        serial_port=serial.Serial(port=self.__portA, baudrate=baudrate, \
+                        bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+        
+        #Read a byte at a time from the serial port.
+        #Convert the byte to a string, and put the string in the queue.
+        print('checking A')
+        while True:
+            await asyncio.sleep(interval)
+            #Read until you see the two end characters '\r\n'.
+            serial_byte=serial_port.read_until('\r\n')
+            #Convert the bytes read into a string
+            serial_string=serial_byte.decode()
+            #Slice off the two end characters
+            serial_string=serial_string[:-2]
+            if serial_string != "":
+                await qIn.put(serial_string)
+                #Uncomment the next line to see what the serial port is getting.
+                #print(serial_byte)
+        serial_port.close()
+        
+
+
+    async def check_serial_dataB(self, interval, qIn: asyncio.Queue):
+        #This async function reads data from the serial port and puts the
+        #data in the queue.
+
+        baudrate=115200
+        serial_port=serial.Serial(port=self.__portB, baudrate=baudrate, \
+                        bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+        
+        #Read a byte at a time from the serial port.
+        #Convert the byte to a string, and put the string in the queue.
+        print('checking B')
+        while True:
+            
+            await asyncio.sleep(interval)
+            #Read until you see the two end characters '\r\n'.
+            serial_byte=serial_port.read_until('\r\n')
+            #Convert the bytes read into a string
+            serial_string=serial_byte.decode()
+            #Slice off the two end characters
+
+            serial_string=serial_string[:-2]
+            if serial_string != "":
+                await qIn.put(serial_string)
+                #Uncomment the next line to see what the serial port is getting.
+                #print(serial_byte)
+        serial_port.close()
+        
+
+    async def updater(self, interval):
+        #This async function manually updates the Tkinter GUI.
+        while True:
+            self.update()
+            await asyncio.sleep(interval)
+
+
+    def close(self):
+        for task in self.tasks:
+            task.cancel()
+        self.__loop.stop()
+        self.destroy()
+
+
+if __name__=="__main__":
+    loop=asyncio.get_event_loop()
+    example=TwoMCv2(loop)
+    loop.run_forever()
+    loop.close()
+```
+
+
+![TwoMC example](./docPics/twoMC.png)
+
+
 ## 10.0 Widgets for ANALOG or PWM OUTPUT
 In this section, we demonstrate a widget that is useful when sending analog or pulse width modulated (PWM) signals out of the computer.
 This will allow us to control motors or other actuators that accept an analog voltage.
-<br><br>
+
 Not all microcontrollers have this feature. The Arduino and PSoC can send pulse width modulated (PWM) signals to specific pins. The RPPi does not. The PSoC has an internal digital to analog converter on a particular pin. The Arduino and RPi do not have this feature. 
-<br><br>
+
 Therefore, the example section 10.2 is only for option D, the Arduino.
-<br><br>
+
 ### 10.1 KnobDisplay widget without hardware
 
 DANDY also includes a `KnobDisplay` widget. Try out the example below. It contains a `KnobDisplay` widget, a `SlideDisplay` widget, and a quit button. Put your cursor over the `KnobDisplay` widget and scroll the middle mouse button.
 You will see the `SlideDisplay` widget change.
-<br><br>
+
 Note that in this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
 
 ```python

@@ -1,15 +1,8 @@
-#Two microcontrollers.
-#Automatic detection.
-#Use RPiPicoDisplay and AUnoDisplay widgets.
-
-#Set up your ports. 
-#If you are on Windows, uncomment the next lines and adjust as needed.
-#PORTA='COM1'
-#PORTB='COM2'
-#If you are on Linux, uncomment the next lines and adjust as needed.
-PORTA='/dev/ttyACM0'
-PORTB='/dev/ttyACM1'
-
+#This example demonstrates reading and displaying sensor dat from TWO
+#microcontrollers. It also demonstrates a SlideDisplay and DialDisplay
+#widget near pins of the microcontroller widgets. Furthermore, the code
+#looks at information sent by the microcontrollers to choose the
+#microcontroller widget to display.
 
 import asyncio
 import tkinter as tk
@@ -25,6 +18,17 @@ import DialDisplay as dd
 import RPiPicoDisplay as rpp
 import AUnoDisplay as aud
 import ANanoEveryDisplay as ane
+
+
+#Set up your ports. 
+#If you are on Windows, uncomment the next lines and adjust as needed.
+#PORTA='COM1'
+#PORTB='COM2'
+#If you are on Linux, uncomment the next lines and adjust as needed.
+PORTA='/dev/ttyACM0'
+PORTB='/dev/ttyACM1'
+
+
 
 class TwoMCv2(tk.Tk):
     def __init__(self, loop, interval=1/20):
@@ -120,7 +124,7 @@ class TwoMCv2(tk.Tk):
                 scaled_value=val_float/6000
                 self.slide1.set_to_value(scaled_value)
             else:
-                scaled_value=val_float/1024
+                scaled_value=val_float/256
                 self.dial1.set_to_value(scaled_value)
 
 
