@@ -1,0 +1,45 @@
+while True:
+    #print('hello')
+    #Read 7 registers from the i2c bus
+    data=i2c.readfrom(ADDRESS, 7)
+
+    #Start with the X component of the magnetic field.
+    #Pick off each of the three hexadecimal bytes. Reassemble them so the result is an integer.
+    X_first_hex=int(data[0]/16)
+    X_second_hex=data[0]%16
+    X_third_hex=int(data[4]/16)
+    BX=X_first_hex*256+X_second_hex*16+X_third_hex
+    #Values are in 2's complement. If we get a value between 2058 and 4096, the number is actually negative.  
+    #The if statement converts it to a signed value. 
+    if BX>2048:
+        BX=-1*(4096-BX)
+
+    #Do the same for the Y component of the magnetic field. 
+    Y_first_hex=int(data[1]/16)
+    Y_second_hex=data[1]%16
+    Y_third_hex=data[4]%16
+    BY=Y_first_hex*256+Y_second_hex*16+Y_third_hex
+    if BY>2048:
+        BY=-1*(4096-BY)
+
+    #Do the same for the Z component of the magnetic field.
+    Z_first_hex=int(data[2]/16)
+    Z_second_hex=data[2]%16
+    Z_third_hex=data[5]%16
+    BZ=Z_first_hex*256+Z_second_hex*16+Z_third_hex
+    if BZ>2048:
+        BZ=-1*(4096-BZ)
+    #print(BX, BY, BZ)
+    #msgString="{\"BX\":\"", BX, "\",\"BY\":\"",BY, "\",\"BZ\":\"", BZ, "\"}"
+    msgString="{\"BX\":\""
+    msgString=msgString+str(BX)
+    msgString=msgString+"\",\"BY\":\""
+    msgString=msgString+str(BY)
+    msgString=msgString+"\",\"BZ\":\""
+    msgString=msgString+str(BZ)
+    msgString=msgString+"\"}"
+    print(msgString)
+
+    time.sleep(1)
+
+

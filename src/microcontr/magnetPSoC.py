@@ -1,15 +1,15 @@
 #This example reads info from the TLE493D-W2B6 3D Magnetic field sensor
-#and prints the result in json format. Before starting, connect SDA of the sensor to pin 16 of the RPi, 
-#and connect SCL of the sensor to pin 17 of the RPi. Also connect power of the sensor to pin 36 of the RPi and 
-#ground of the sensor to pin 38 of the RPi.
+#and prints the result in json format. Before starting, connect SCL of the sensor to pin 6.0 of the PSoC, 
+#and connect SDA of the sensor to pin 6_1 of the PSoC. Also connect power and gnd of the sensor to the PSoC.
 
 #Reference on communicating with the sensor:
 #https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707
 
 #Reference on sensor data format:
 #https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512
-#Reference on MicroPython and the RPi
-#https://docs.micropython.org/en/latest/rp2/quickref.html
+
+#Reference on MicroPython and the PSoC
+#https://github.com/Infineon/micropython/blob/ports-psoc6-ifx/docs/psoc6/quickref.rst
 
 #Reference on micropython and i2c
 ##https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2
@@ -17,11 +17,10 @@
 
 
 
-
 from machine import I2C, Pin, SoftI2C
 import time
 #The hardware i2c didn't work reliably for me, so use the software i2c library.
-i2c=I2C(0, sda=Pin(16), scl=Pin(17))
+i2c=SoftI2C(scl="P6_0", sda="P6_1")
 ADDRESS=0x35
 
 #Scan to find I2C devices.

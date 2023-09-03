@@ -7,6 +7,11 @@
 
 #include <Wire.h>
 #define ADDRESS 0x35 //Addreass of the sensor on the I2C bus
+
+int16_t BX=0;
+int16_t BY=0;
+int16_t BZ=0;
+int16_t T=0;
 void setup() {
  
    //Setup I2C for talking to the sensor
@@ -25,10 +30,7 @@ void setup() {
    //Setup Serial for talking to the computer
    Serial.begin(115200);
    //Set up variables we'll need
-   int16_t BX=0;
-   int16_t BY=0;
-   int16_t BZ=0;
-   int16_t T=0;
+
  }
 
 
