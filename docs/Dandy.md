@@ -38,10 +38,10 @@ This project contains:
  - Example MicroPython, CircuitPython, and Arduino programs for reading from sensors connected to a Raspberry Pi Pico, Arduino, or PSoC6 microcontroller
  - Example Python programs for displaying sensor data graphically on a computer
  - A set of reusable widgets designed for displaying numerical data from sensors or sending numerical data to actuators
-![](./docs/docPics/summaryWidgets.png)
+![](./docPics/summaryWidgets.png)
 
  - Additional widgets designed to look like specific microcontrollers
-![](./docs/docPics/summaryPicMC.png)
+![](./docPics/summaryPicMC.png)
 
  - An [API](./docs/widgetApi.md) describing how to use the widgets
  - A [tutorial](./docs/Dandy.md) demonstrating how to use everything
@@ -239,9 +239,13 @@ if __name__=="__main__":
 #### 4.3.1 The LEDDisplay widget
 
 Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The DANDY library, which you just installed, has additional widgets. These widgets are designed for displaying sensor data and related tasks. They are summarized in the figure below.
+
+![](./docPics/summaryWidgets.png)
+![](./docPics/summaryPicMC.png)
+
+
 See the [DANDY API](./WidgetApi.md) for additional details about the available widgets. 
 
-(TODO: Add figure summarizing DANDY widgets.)
 
 The next example uses the DANDY widget `LEDDisplay`. When you run it, you will see two buttons and an image of an LED. When you press the button, the LED color changes. Try it out.
 <br><br>
@@ -929,6 +933,8 @@ if __name__=="__main__":
     mygui=DigitalOutDisplay()
 ```
 ![](docPics/digOutButtons.png)
+
+![](docPics/sequence6.2.png)
 
 The strategies in section 6 really only work if you are sending single characters and the characters are available whenever the microcontroller tries to read them. If you want to send longer messages to the microcontroller or want to ensure that the microcontroller doesn't block waiting to get information, you need more complicated instructions. See section 10 for more information.
 

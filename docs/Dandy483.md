@@ -72,12 +72,15 @@ pip install pyserial
 ### 3.4 Download the DANDY library.
 The next step is to download the DANDY library from github. Github is a website that hosts tons of open source software projects. 
 <br><br>
-This step requires Git. Git comes with Linux, but requires separate installation with Windows.  On Windows, donwload and install it from [Git's website](https://git-scm.com). Once you install it, open a GitBash terminal.  
+This step requires Git. Git comes with Linux, but requires separate installation with Windows.  On Windows, open the gitbash terminal. Git is also available in AppsAnywhere. 
 <br><br>
 Change to the directory that you want work in. Then, use the following command in the terminal to download the DANDY repository from github. 
  ```python
  git clone https://github.com/amitofsk/dandy.git
  ```
+
+Alternatively, the DANDY library is available as a zip file in Moodle. 
+
 ### 3.5 Install the Mu IDE or the Arduino IDE
 In addition to writing Python code for the computer using the IDLE IDE, we will also be writing code for the microcontroller. In this step, we will download the IDE used for programming the microcontroller. 
 
@@ -195,9 +198,14 @@ if __name__=="__main__":
 #### 4.3.1 The LEDDisplay widget
 
 Our examples so far have used widgets that are part of the Tkinter library that comes with Python. The DANDY library, which you just installed, has additional widgets. These widgets are designed for displaying sensor data and related tasks. They are summarized in the figure below.
+
+![](./docPics/summaryWidgets.png)
+![](./docPics/summaryPicMC.png)
+
+
 See the [DANDY API](./WidgetApi.md) for additional details about the available widgets. 
 
-(TODO: Add figure summarizing DANDY widgets.)
+
 
 The next example uses the DANDY widget `LEDDisplay`. When you run it, you will see two buttons and an image of an LED. When you press the button, the LED color changes. Try it out.
 <br><br>
@@ -535,14 +543,15 @@ if __name__=="__main__":
 ```
 ![](docPics/digOutButtons.png)
 
+![](docPics/sequence6.2.png)
+
+
 The strategies in section 6 really only work if you are sending single characters and the characters are available whenever the microcontroller tries to read them. If you want to send longer messages to the microcontroller or want to ensure that the microcontroller doesn't block waiting to get information, you need more complicated instructions. See section 10 for more information.
 
 ## 7.0 Displaying CHARACTERS sent FROM the MICROCONTROLLER to the computer
 
 Files used in section 7:
 - microcontr/serialWriteMP.py
-- microcontr/serialWriteCP.py
-- microcontr/serialWriteArd.ino
 - examples/DigitalIn.py
 - examples/DigitalHWShort.py
 - examples/DigitalHWLong.py
@@ -558,7 +567,7 @@ Think of the pushbutton like a digital input sensor that can either be in one of
 
 ### 7.1 Set up the microcontroller and run the example
 
-You should still have the pushbutton wired to the microcontroller. We'll need it for this example. Now, let's program the microcontroller. Open the Mu or Arduino IDE. Re-open the blinky lights example from section 5.1.3. (See file microcontr/serialWriteMP.py, microcontr/serialWriteCP.py, microcontr/serialWritePSoC.py, or src/microcontr/serialWriteArd.py.)
+You should still have the pushbutton wired to the microcontroller. We'll need it for this example. Now, let's program the microcontroller. Open the Mu or Arduino IDE. Re-open the blinky lights example from section 5.1.3. (See file microcontr/serialWriteMP.py.)
  We'll use this program once again in this section. Run it, and then close the IDE for your microcontroller. Leave the microcontroller connected to your computer with the USB cable. 
 <br><br>
 
@@ -1382,7 +1391,6 @@ if __name__=="__main__":
 
 ```
 ![KnobDisplay demo](./docPics/KnobDisplay.png)
-
 
 
 ## 11.0 Glossary
