@@ -27,7 +27,7 @@ PORT='/dev/ttyACM0'
 class DigitalHWShort(sg.SerialAndGui):
     #Here's the constructor.
     def __init__(self, loop, interval=1/20, port=PORT):
-        super().__init__(loop, port=PORT)
+        super().__init__(loop, port=PORT, data_format="char")
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -46,7 +46,7 @@ class DigitalHWShort(sg.SerialAndGui):
         while True:
             await asyncio.sleep(interval)
             in_string=await qIn.get()
-    
+            print(in_string)
             if in_string=="T":
                 print("T")
                 self.led1.change_LED_color("yellow")

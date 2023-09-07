@@ -35,10 +35,15 @@ PORT='/dev/ttyACM0'
 class SerialAndGui(tk.Tk):
     #Here's the constructor for the DigitalWithHW class.
     #DigitalWithHW is a child of class tk.Tk, which opens a window.
-    def __init__(self, loop, interval=1/20, port=PORT):
+    #The parameter data_format should be either char or string.
+    def __init__(self, loop, interval=1/20, port=PORT, data_format="string"):
         super().__init__()
         self.__loop=loop
         self.__port=PORT
+        if data_format=="char":
+            self.__data_format="char"
+        else:
+            self.__data_format="string"
         self.protocol("WM_DELETE_WINDOW", self.close)
 
         
@@ -56,22 +61,24 @@ class SerialAndGui(tk.Tk):
     async def check_serial_data(self, interval, qIn: asyncio.Queue):
         #This async function reads data from the serial port and puts the
         #data in the queue.
-
+        
         baudrate=115200
         serial_port=serial.Serial(port=self.__port, baudrate=baudrate, \
                         bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
-        
         #Read a byte at a time from the serial port.
         #Convert the byte to a string, and put the string in the queue.
-         
         while True:
             await asyncio.sleep(interval)
-            #Read until you see the two end characters '\r\n'.
-            serial_byte=serial_port.read_until('\r\n')
-            #Convert the bytes read into a string
-            serial_string=serial_byte.decode()
-            #Slice off the two end characters
-            serial_string=serial_string[:-2]
+            if self.__data_format=="char":
+                serial_byte=serial_port.read()
+                serial_string=serial_byte.decode()
+            else:
+                #Read until you see the two end characters '\r\n'.
+                serial_byte=serial_port.read_until('\r\n')
+                #Convert the bytes read into a string
+                serial_string=serial_byte.decode()
+                #Slice off the two end characters
+                serial_string=serial_string[:-2]
             if serial_string != "":
                 await qIn.put(serial_string)
                 #Uncomment the next line to see what the serial port is getting.

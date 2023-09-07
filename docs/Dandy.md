@@ -102,7 +102,9 @@ Python comes with a minimalist Integrated Development Environment (IDE) named ID
 ### 3.3 Install the pyserial library 
 The pyserial library is used to communicate with devices connected by a USB cable. We will use it to communicate between the computer and the microcontroller.
 
-In the terminal, execute
+On Windows, execute the following command in a Windows Powershell terminal. On Linux, execute the following command in a terminal.
+
+
 ```python
 pip install pyserial
 ```
@@ -837,7 +839,7 @@ In this section we write Python code for the computer. When we wrote code for th
 ### 6.1 Sending characters to the microcontroller, without a GUI
 Let's write the Python code that will run on the computer for this example. Open the IDLE IDE, and copy the code below, and run it. Every second, this program sends the character `Z` from the computer, down the USB cable, to the microcontroller. 
 <br><br>
-This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
+This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Device Manager of the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
 <br><br>
 If you are used CircuitPython to write the microcontroller code (Option B), make sure to use the port for the communication channel that doesn't involve the REPL terminal.
 
@@ -903,7 +905,7 @@ import serial.tools.list_ports as port_list
 import sys
 
 #If you are on Windows, uncomment the next line and adjust as needed.
-port='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
 #PORT='/dev/ttyACM0'
 
@@ -1053,7 +1055,7 @@ PORT='COM1'
 class DigitalHWShort(sg.SerialAndGui):
     #Here's the constructor.
     def __init__(self, loop, interval=1/20, port=PORT):
-        super().__init__(loop, port=PORT)
+        super().__init__(loop, port=PORT, data_format="char")
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -1561,7 +1563,7 @@ PORT='COM1'
 
 class ReadInJson():
     baudrate=115200
-    serialPort=serial.Serial(port=port, baudrate=baudrate, \
+    serialPort=serial.Serial(port=PORT, baudrate=baudrate, \
             bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
 
     while True:
@@ -1684,43 +1686,45 @@ if __name__=="__main__":
 
 ### 8.5 Displaying vector data
 
-In this section we will use a sensor to measure magnetic field, which is a vector quantity, and display the result on the computer using the `VectorDisplay` DANDY widget. The sensor communicates with the microcontroller using I2C.
+In this section we will use a sensor to measure magnetic field and display the result on the computer using the `VectorDisplay` DANDY widget. The sensor communicates with the microcontroller using I2C.
 
 As in past examples, we'll write both software for the microcontroller and software for the computer.   
  
-Some substeps are different for the different microcontroller options, so follow the option for the hardware you will be using.
+Some substeps are different for the different microcontroller options, so follow the option for the hardware you areusing.
 
 #### 8.5.1 The Hall effect sensor
 
 We will use the [TLE493D-W2B6](https://www.infineon.com/cms/en/product/evaluation-boards/s2go_3d_tli493dw2bw-a0/) [Hall Effect](https://eng.libretexts.org/Bookshelves/Electrical_Engineering/Electro-Optics/Direct_Energy_(Mitofsky)/05%3A_Hall_Effect) magnetic field sensor. 
 
-This sensor measures the X, Y, and Z components of the magnetic field. It also measures temperature, which we won't use but may be useful in other applications to calibrate more accurately. Each component of the magnetic field is read with twelve bit accuracy. However, those twelve bits are split up between two eight bit memory registers.  
+Magnetic field intensity at a point is inherently a vector quantity, and this sensor measures the X, Y, and Z components of the magnetic field. It also measures temperature, which we won't use but may be useful in other applications to calibrate more accurately. 
 
-The figure illustrates how the data is stored in the sensor's memory registers. More information is available in the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512). This [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707) was also used as a reference. 
+Each component of the magnetic field is read with twelve bit accuracy. However, those twelve bits are split up between two eight bit memory registers. The figure below illustrates how the data is stored in the sensor's memory registers. For example, the eight most significant bits of the X component of the magnetic field are stored in register 0, and the four least significant bits of the X component of the magnetic field are stored in register 4. 
+
+More information is available in the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512). This [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707) was also used as a reference. 
+
 ![](./docPics/registers.png)
 
 
-This sensor communicates to the microcontroller using I2C, a standard protocol for connecting sensors and other peripheral devices. For more information on this protocol, see Adafruit's [I2C tutorial](https://learn.adafruit.com/working-with-i2c-devices/overview?gclid=Cj0KCQjw6KunBhDxARIsAKFUGs8a1IfnOsOuboUUTYSDkMfGUpKmnPyXHH_ypoh6JR9ak4MTL3FhwXUaArUxEALw_wcB). 
+This sensor communicates to the microcontroller using I2C, a standard protocol for connecting sensors or other related devices. For more information on this protocol, see Adafruit's [I2C tutorial](https://learn.adafruit.com/working-with-i2c-devices/overview?gclid=Cj0KCQjw6KunBhDxARIsAKFUGs8a1IfnOsOuboUUTYSDkMfGUpKmnPyXHH_ypoh6JR9ak4MTL3FhwXUaArUxEALw_wcB). 
 
-The I2C connection requires four wires: 3.3V power, ground, Serial DAta (SDA) which carries the data, and Serial CLock (SCL) for a timing signal. 
+I2C communication requires four wires: 3.3V power, ground, Serial DAta (SDA) which carries the data, and Serial CLock (SCL) for a timing signal. 
 
 To generate a magnetic field, put a refridgerator magnet near the sensor.
 
 
 #### 8.5.2 Option A: Vector example, microcontroller side
-Now let's set up the hardware and write the microcontroller's code for this example. This section assumes you are using the RPi and MicroPython.
+In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the RPi and MicroPython.
 
 ##### 8.5.2.1 Wire up the sensor
+As shown in the figure below, connect 3V3 on the sensor to pin 36 on the RPi. Connect GND on the sensor to pin 38 on the RPi. Connect SCL on the sensor to pin 22 on the RPi, and connect SDA on the sensor to pin 21 on the RPi. 
 
 ![Magnet sensor and RPi](./docPics/magnetRPi.png)
 ##### 8.5.2.2. Write the microcontroller code
-Explain the instructions for I2C and add references... 
+Now let's write the code for the microcontroller, so open up the Mu IDE. 
 
-Explain that we are writing some setup instructions to ... as specified in reference ...
+This code reads the X, Y, and Z components of the magnetic field from the sensor. Next, it puts these quantities into a string in JSON format. Then, using the `print` instruction, it sends this JSON to the computer over the USB cable.
 
-Explain the unpacking of the data from the registers more...
-
-
+Open up the example below, and upload it to the microcontroller.
 
 
 (See file src/microcontr/magnetMP.py.)
@@ -1799,23 +1803,41 @@ while True:
 
 ```
 
+Let's look at some lines more closely. 
+
+The `devices=i2c.scan()` line looks for I2C devices connected to the microcontroller. If one is found, its address is printed. This sensor has address 0x35. So, if the microcontroller finds the sensor on the I2C bus, this value is printed. (Numbers beginning with 0x are given in hexadecimal.)
+
+Before the `while` loop are two `writeto_mem` instructions. To use the sensor, we need to write values into register 0x10 to configure it. More specifically, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
+
+Explain how we get the X component... and how we handle neg values...
+
+Next, the information is put in the variable `msgString` in JSON format, and sent to the computer over the USB cable using the `print` instruction.
+
+
 
 #### 8.5.2 Option B: Vector example, microcontroller side
-Now let's set up the hardware and write the microcontroller's code for this example. This section assumes you are using the RPi and CircuitPython.
+In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the RPi and CircuitPython.
 
 
 
 ##### 8.5.2.1 Wire up the sensor
+
+As shown in the figure below, connect 3V3 on the sensor to pin 36 on the RPi. Connect GND on the sensor to pin 38 on the RPi. Connect SCL on the sensor to pin 22 on the RPi, and connect SDA on the sensor to pin 21 on the RPi.
+
 
 ![Magnet sensor and RPi](./docPics/magnetRPi.png)
 
 ##### 8.5.2.2. Write the microcontroller code
 
 #### 8.5.2 Option C: Vector example, microcontroller side
-Now let's set up the hardware and write the microcontroller's code for this example. This section assumes you are using the PSoC6 and MicroPython.
+In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the PSoC6 and MicroPython.
 
 
 ##### 8.5.2.1 Wire up the sensor
+As shown in the figure below, connect 3V3 on the sensor to power on the PSoC. Connect GND on the sensor to GND on the PSoC. Con
+nect SCL on the sensor to 6.0 on the PSoC, and connect pin SDA on the sensor to 6.1 on the RPi.
+
+
 ![Magnet sensor and PSoC](./docPics/magnetPSoC.png)
 
 
@@ -1902,7 +1924,7 @@ while True:
 ```
 
 #### 8.5.2 Option D: Vector example, microcontroller side
-Now let's set up the hardware and write the microcontroller's code for this example. This section assumes you are using an Arduino.
+In this section, we wire up the sensor and write the code for the microcontroller. This section assumes you are using an Arduino.
 
 The code is the same for MP with the RPi as for MP with the PSoC. 
 
@@ -1911,6 +1933,9 @@ i2c=SoftI2C(scl="P6_0", sda="P6_1")
 
 
 ##### 8.5.2.1 Wire up the sensor
+Connect 3V3 on the sensor to 3.3V on the Arduino. Connect GND on the sensor to GND on the Arduino. Connect SCL on the sensor to SCL on the Arduino, and connect SDA on the sensor to SDA on the Arduino. The figure below shows the wiring for an Arduino Uno.
+
+
 ![Magnet sensor and Arduino](./docPics/magnetArd.png)
 ##### 8.5.2.2 Write the microcontroller code 
 
@@ -1921,6 +1946,8 @@ Now let's write the code that will run on the computer and display the data from
 This example sets up a GUI with a `VectorDisplay` widget as well as a quit button. The microcontroller sends the X, Y, and Z values of the magnetic field to the computer packaged in a JSON. This example reads the information sent by the microcontroller, picks off the components of the data, and displays the magnetic field as a vector using the `VectorDisplay` widget.
 
 This example uses asyncIO to simultaneously read the data and update the GUI. The `MagnetDemo` class of this example is a child of class `SerialAndGUI`. The class `SerialAndGUI` uses three tasks: `check_serial_data`, `use_serial_data`, and `updater`. Here, we just overload the `use_serial_data` function so that it is specific for this example.  
+
+Run this example. To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.  
 
 (See file src/examples/MagnetDemo.py.)
 
@@ -1972,9 +1999,7 @@ class MagnetDemo(sg.SerialAndGui):
             valueY=float(stringY)
             stringZ=in_json["BZ"]
             valueZ=float(stringZ)
-            #Scale val so it is in a reasonable range for display
-            # Testme, does this work with negative values?
-            #Do values go up -2048 to 2048?
+            #TO DO: Rescale values so they are in a good range to display
             self.vector1.set_to_value(valueX, valueY, valueZ)
             
 
@@ -2133,7 +2158,7 @@ BUTTON_NO=21
 class MCDemo2Short(sg.SerialAndGui):
     #Here's the constructor.
     def __init__(self, loop, interval=1/20):
-        super().__init__(loop, port=PORT)
+        super().__init__(loop, port=PORT, data_format="char")
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -2415,6 +2440,8 @@ DANDY also includes a `KnobDisplay` widget. Try out the example below. It contai
 You will see the `SlideDisplay` widget change.
 
 Note that in this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
+
+(See file src/examples/KnobDemo.py.) 
 
 ```python
 import tkinter as tk

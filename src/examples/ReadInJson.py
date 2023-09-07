@@ -16,7 +16,7 @@ PORT='/dev/ttyACM0'
 
 class ReadInJson():
     baudrate=115200
-    serialPort=serial.Serial(port=port, baudrate=baudrate, \
+    serialPort=serial.Serial(port=PORT, baudrate=baudrate, \
             bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
 
     while True:

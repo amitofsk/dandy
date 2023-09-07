@@ -62,7 +62,8 @@ This tutorial requires at least Python version 3.7.
 ### 3.3 Install the pyserial library 
 The pyserial library is used to communicate with devices connected by a USB cable. We will use it to communicate between the computer and the microcontroller.
 
-In the terminal, execute
+On Windows, open a Windows Powershell Terminal and execute the following command.  
+
 ```python
 pip install pyserial
 ```
@@ -446,7 +447,7 @@ In this section we write Python code for the computer. When we wrote code for th
 ### 6.1 Sending characters to the microcontroller, without a GUI
 Let's write the Python code that will run on the computer for this example. Open the IDLE IDE, and copy the code below, and run it. Every second, this program sends the character `Z` from the computer, down the USB cable, to the microcontroller. 
 <br><br>
-This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
+This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Device Manager of the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
 <br><br>
 If you are used CircuitPython to write the microcontroller code (Option B), make sure to use the port for the communication channel that doesn't involve the REPL terminal.
 
@@ -512,7 +513,7 @@ import serial.tools.list_ports as port_list
 import sys
 
 #If you are on Windows, uncomment the next line and adjust as needed.
-port='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
 #PORT='/dev/ttyACM0'
 
@@ -661,7 +662,7 @@ PORT='COM1'
 class DigitalHWShort(sg.SerialAndGui):
     #Here's the constructor.
     def __init__(self, loop, interval=1/20, port=PORT):
-        super().__init__(loop, port=PORT)
+        super().__init__(loop, port=PORT, data_format="char")
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -1036,7 +1037,7 @@ PORT='COM1'
 
 class ReadInJson():
     baudrate=115200
-    serialPort=serial.Serial(port=port, baudrate=baudrate, \
+    serialPort=serial.Serial(port=PORT, baudrate=baudrate, \
             bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
 
     while True:
@@ -1294,7 +1295,7 @@ BUTTON_NO=21
 class MCDemo2Short(sg.SerialAndGui):
     #Here's the constructor.
     def __init__(self, loop, interval=1/20):
-        super().__init__(loop, port=PORT)
+        super().__init__(loop, port=PORT, data_format="char")
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
@@ -1348,6 +1349,10 @@ DANDY also includes a `KnobDisplay` widget. Try out the example below. It contai
 You will see the `SlideDisplay` widget change.
 
 Note that in this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
+
+(See file src/examples/KnobDemo.py.)
+
+
 
 ```python
 import tkinter as tk

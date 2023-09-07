@@ -24,9 +24,9 @@ import VectorDisplay as vd
 
 #Set up PORT.
 #If you are on Windows, uncomment the next line and adjust as needed.
-#PORT='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
+#PORT='/dev/ttyACM0'
 
 class MagnetDemo(sg.SerialAndGui):
      def __init__(self, loop, interval=1/20, port=PORT):
@@ -55,9 +55,7 @@ class MagnetDemo(sg.SerialAndGui):
             valueY=float(stringY)
             stringZ=in_json["BZ"]
             valueZ=float(stringZ)
-            #Scale val so it is in a reasonable range for display
-            # Testme, does this work with negative values?
-            #Do values go up -2048 to 2048?
+            #TO DO: Rescale values so they are in a good range to display.
             self.vector1.set_to_value(valueX, valueY, valueZ)
             
 

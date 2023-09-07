@@ -26,7 +26,7 @@ BUTTON_NO=21
 class MCDemo2Short(sg.SerialAndGui):
     #Here's the constructor.
     def __init__(self, loop, interval=1/20):
-        super().__init__(loop, port=PORT)
+        super().__init__(loop, port=PORT, data_format="char")
         #The line above says run the parent's constructor.
         #The parent's constructor starts the three async tasks:
         #check_serial_data, use_serial_data, and updater.
