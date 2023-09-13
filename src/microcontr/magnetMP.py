@@ -20,7 +20,6 @@
 
 from machine import I2C, Pin, SoftI2C
 import time
-#The hardware i2c didn't work reliably for me, so use the software i2c library.
 i2c=I2C(0, sda=Pin(16), scl=Pin(17))
 ADDRESS=0x35
 

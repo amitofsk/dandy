@@ -1690,7 +1690,7 @@ In this section we will use a sensor to measure magnetic field and display the r
 
 As in past examples, we'll write both software for the microcontroller and software for the computer.   
  
-Some substeps are different for the different microcontroller options, so follow the option for the hardware you areusing.
+Some substeps are different for the different microcontroller options, so follow the option for the hardware you are using.
 
 #### 8.5.1 The Hall effect sensor
 
@@ -1705,7 +1705,7 @@ More information is available in the sensor's [user's manual](https://www.infine
 ![](./docPics/registers.png)
 
 
-This sensor communicates to the microcontroller using I2C, a standard protocol for connecting sensors or other related devices. For more information on this protocol, see Adafruit's [I2C tutorial](https://learn.adafruit.com/working-with-i2c-devices/overview?gclid=Cj0KCQjw6KunBhDxARIsAKFUGs8a1IfnOsOuboUUTYSDkMfGUpKmnPyXHH_ypoh6JR9ak4MTL3FhwXUaArUxEALw_wcB). 
+This sensor communicates with the microcontroller using I2C, a standard protocol for connecting sensors or other related devices. For more information on this protocol, see Adafruit's [I2C tutorial](https://learn.adafruit.com/working-with-i2c-devices/overview?gclid=Cj0KCQjw6KunBhDxARIsAKFUGs8a1IfnOsOuboUUTYSDkMfGUpKmnPyXHH_ypoh6JR9ak4MTL3FhwXUaArUxEALw_wcB). 
 
 I2C communication requires four wires: 3.3V power, ground, Serial DAta (SDA) which carries the data, and Serial CLock (SCL) for a timing signal. 
 
@@ -1726,12 +1726,14 @@ This code reads the X, Y, and Z components of the magnetic field from the sensor
 
 Open up the example below, and upload it to the microcontroller.
 
+To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
+
+
 
 (See file src/microcontr/magnetMP.py.)
 ```python
 from machine import I2C, Pin, SoftI2C
 import time
-#The hardware i2c didn't work reliably for me, so use the software i2c library.
 i2c=I2C(0, sda=Pin(16), scl=Pin(17))
 ADDRESS=0x35
 
@@ -1805,14 +1807,15 @@ while True:
 
 Let's look at some lines more closely. 
 
+The line `i2c=I2C(0, sda=Pin(16), scl=Pin(17))` creates the I2C object. This example in MicroPython for the RPi and the example in MicroPython for the PSoC are identical to each other except for the syntax of this line. This line uses a hardware i2c connection. 
+
 The `devices=i2c.scan()` line looks for I2C devices connected to the microcontroller. If one is found, its address is printed. This sensor has address 0x35. So, if the microcontroller finds the sensor on the I2C bus, this value is printed. (Numbers beginning with 0x are given in hexadecimal.)
 
-Before the `while` loop are two `writeto_mem` instructions. To use the sensor, we need to write values into register 0x10 to configure it. More specifically, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
+Two `writeto_mem` instructions are used before the `while` loop. To use the sensor, we need to configure it. To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
 
-Explain how we get the X component... and how we handle neg values...
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16)` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value. 
 
-Next, the information is put in the variable `msgString` in JSON format, and sent to the computer over the USB cable using the `print` instruction.
-
+The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.    
 
 
 #### 8.5.2 Option B: Vector example, microcontroller side
@@ -1829,13 +1832,14 @@ As shown in the figure below, connect 3V3 on the sensor to pin 36 on the RPi. Co
 
 ##### 8.5.2.2. Write the microcontroller code
 
+(TODO: Finish debugging this example.)
+
 #### 8.5.2 Option C: Vector example, microcontroller side
 In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the PSoC6 and MicroPython.
 
 
 ##### 8.5.2.1 Wire up the sensor
-As shown in the figure below, connect 3V3 on the sensor to power on the PSoC. Connect GND on the sensor to GND on the PSoC. Con
-nect SCL on the sensor to 6.0 on the PSoC, and connect pin SDA on the sensor to 6.1 on the RPi.
+As shown in the figure below, connect 3V3 on the sensor to power on the PSoC. Connect GND on the sensor to GND on the PSoC. Connect SCL on the sensor to 6.0 on the PSoC, and connect pin SDA on the sensor to 6.1 on the PSoC.
 
 
 ![Magnet sensor and PSoC](./docPics/magnetPSoC.png)
@@ -1843,7 +1847,15 @@ nect SCL on the sensor to 6.0 on the PSoC, and connect pin SDA on the sensor to 
 
 
 ##### 8.5.2.2 Write the microcontroller code
-The only difference between the MP version and the PSoC version is the constructor for the i2c object near line 23.
+Now let's write the code for the microcontroller, so open up the ArduinoLab IDE.
+
+This code reads the X, Y, and Z components of the magnetic field from the sensor. Next, it puts these quantities into a string in JSON format. Then, using the `print` instruction, it sends this JSON to the computer over the USB cable.
+
+Open up the example below, and upload it to the microcontroller.
+
+To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
+
+
 
 (See file src/microcontr/magnetPSoC.py)
 
@@ -1923,13 +1935,22 @@ while True:
 
 ```
 
+Let's look at some lines more closely.
+
+The line `i2c=SoftI2C(scl="P6_0", sda="P6_1")` creates the I2C object. This example in MicroPython for the PSoC and the example in MicroPython for the RPi are identical to each other except for the syntax of this line. This line uses a software i2c connection because the hardware i2c connection was not acting reliably.
+
+The `devices=i2c.scan()` line looks for I2C devices connected to the microcontroller. If one is found, its address is printed. This sensor has address 0x35. So, if the microcontroller finds the sensor on the I2C bus, this value is printed. (Numbers beginning with 0x are given in hexadecimal.)
+
+Two `writeto_mem` instructions are used before the `while` loop. To use the sensor, we need to configure it. To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
+
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16)` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
+
+The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
+
+
+
 #### 8.5.2 Option D: Vector example, microcontroller side
 In this section, we wire up the sensor and write the code for the microcontroller. This section assumes you are using an Arduino.
-
-The code is the same for MP with the RPi as for MP with the PSoC. 
-
-Occasionally, the hardware I2C works. I found the software I2C more reliable though. Use the same code as for option A, but replace the constructor with 
-i2c=SoftI2C(scl="P6_0", sda="P6_1")
 
 
 ##### 8.5.2.1 Wire up the sensor
@@ -1938,6 +1959,24 @@ Connect 3V3 on the sensor to 3.3V on the Arduino. Connect GND on the sensor to G
 
 ![Magnet sensor and Arduino](./docPics/magnetArd.png)
 ##### 8.5.2.2 Write the microcontroller code 
+
+Now let's write the code for the microcontroller, so open up the Arduino IDE.
+
+This code reads the X, Y, and Z components of the magnetic field from the sensor. Next, it puts these quantities into a string in JSON format. Then, using the `print` instruction, it sends this JSON to the computer over the USB cable.
+
+Open up the example below, and upload it to the microcontroller.
+
+To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
+
+
+(See file src/microcontr/magnetArd.ino)
+
+```c++
+print(hello)
+```
+
+(TODO: Finish writing up this section.)
+
 
 #### 8.5.3 Vector example, computer side
 
@@ -2012,7 +2051,7 @@ if __name__=="__main__":
 
 ![](./docPics/magnet.png)
 
-(TODO: FIx example above to scale properly and handle neg values... maybe send with an offset then remove it in the computer's python code?)
+(TODO: FIx example above to scale better.)
 
 
 ## 9.0 Widgets that look like microcontrollers
@@ -2486,7 +2525,97 @@ if __name__=="__main__":
 ```
 ![KnobDisplay demo](./docPics/KnobDisplay.png)
 
-### 10.2 (Option D only) KnobDisplay widget and servo motor 
+### 10.2 Microcontrollers and motors
+
+Purpose of this section - control motors and get them to spin at different frequencies...
+
+#### 10.2.1 Option A
+
+Start by wiring up the motor as shown below
+
+![RPi motor](./docPics/rpiMotor.png)
+
+```python
+
+from time import sleep
+from machine import Pin, PWM
+
+pwm = PWM(Pin(1))
+
+for i in range(5):
+    #Set to a new speed
+    speed=20*i+20
+    pwm.freq(speed)
+    #Rotate forward
+    for position in range(1000,9000,50):
+        pwm.duty_u16(position)
+        sleep(0.01)
+    #rotate back
+    for position in range(9000,1000,-50):
+        pwm.duty_u16(position)
+        sleep(0.01) 
+
+```
+
+#### 10.2.1 Option B
+
+Start by wiring up the motor as shown below
+
+![RPi motor](./docPics/rpiMotor.png)
+
+
+#### 10.2.1 Option C
+
+![PSoC motor](./docPics/psocMotor.png)
+
+```python
+from time import sleep
+from machine import Pin, PWM
+pwm.deinit()
+pwm = PWM('P6_0', freq=20, duty_u16=1000, invert=0)
+
+for i in range(5):
+    #Set to a new speed
+    speed=20*i+100
+    pwm.freq(speed)
+    print(pwm.freq())
+    #Rotate forward
+    for position in range(1000,9000,50):
+        pwm.duty_u16(position)
+        sleep(0.01)
+    #rotate back
+    for position in range(9000,1000,-50):
+        pwm.duty_u16(position)
+        sleep(0.01)
+pwm.deinit()
+
+```
+#### 10.2.1 Option D
+
+Start by wiring up the motor as shown below
+
+![Ard motor](./docPics/ardMotor.png)
+
+
+### 10.3 Microcontrollers, motors, and asyncio
+
+What are we trying to do here... Keep the motor wired in as before...
+
+Why do we need asyncio
+
+#### 10.3.1 Option A Write the microcontroller code.
+
+#### 10.3.1 Option B Write the microcontroller code
+
+#### 10.3.1 Option C Write the microcontroller code
+
+#### 10.3.1 Option D Write the microcontroller code
+
+#### 10.3.2 Write the code for the computer
+
+This is simpler than the code for the microcontroller...
+
+Put all the pieces together to finish the example. 
 
 
 ## 11.0 Glossary

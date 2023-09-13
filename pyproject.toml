@@ -1,0 +1,19 @@
+[project]
+name = "dandy"
+version = "0.0.1"
+authors = [
+  { name="Andrea Mitofsky", email="mitofskya@gmail.com" },
+  {name="Veronica Pablo Osorio"},
+]
+description = "DANDY is a set of reusable python examples and a library of python functions to help display sensor data in a graphical user interface."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+]
+keyowrds=["Arduino", "Raspberry Pi Pico", "Data Acquisition", "sensor"]
+dependencies =["pyserial"]
+[project.urls]
+"Homepage" = "https://github.com/amitofsk/dandy"
