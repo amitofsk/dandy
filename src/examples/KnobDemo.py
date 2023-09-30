@@ -4,11 +4,14 @@
 ##TODO: When you press quit, you get an error from slideDisplay.
 #Can I clean this up?
 
+#TODO: This doesn't work in windows. Will adding a delay fix it? 
+
 import tkinter as tk
 import sys
 sys.path.append('../widgets') 
 import KnobDisplay as kd 
 import SlideDisplay as sd
+import time
 
 class KnobDemo(tk.Tk):
     def __init__(self):
@@ -35,6 +38,7 @@ class KnobDemo(tk.Tk):
 
     def updater(self):
         while True:
+            time.sleep(.1)
             print(self.value)
             self.value=self.offset+self.knob1.get_angle()
             self.slide1.set_to_value(self.value)    

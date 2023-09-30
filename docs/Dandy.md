@@ -2527,13 +2527,25 @@ if __name__=="__main__":
 
 ### 10.2 Microcontrollers and motors
 
-Purpose of this section - control motors and get them to spin at different frequencies...
+In this section, we'll control a small servo motor directly using Pulse Width Modulation (PWM) instructions.
 
-#### 10.2.1 Option A
+Instead of getting input from a sensor, in this section send signals out of the microcontroller to control an actuator. More specifically, we send signals from the computer, over the USB cable to the microcontroller, and to the motor. These signals alter the motor's rotation rate.
 
-Start by wiring up the motor as shown below
+Most motors require a significant amount of power and are used to deliver a significant amount of torque to a load. However, we'll be using a small servo motor that can be powered directly from the microcontroller and does not need any separate power management. For this reason, the torque it can provide is limited. 
+
+Often, the easiest way to control a motor using a microcontroller is to use a library written specifically for the task. For example, open libraries are available for controlling [servos with Arduino](https://docs.arduino.cc/learn/electronics/servo-motors) and [servos with the RPi and CircuitPython](https://learn.adafruit.com/use-dc-stepper-servo-motor-solenoid-rp2040-pico/servo-motors). 
+
+In this section, however, we do not use an external library. Instead, we directly use PWM signals. This approach allows us to have more control of the instructions run by the microcontroller. Information on PWM and the RPi in MicroPython came from [https://microcontrollerslab.com/servo-motor-raspberry-pi-pico-micropython/](https://microcontrollerslab.com/servo-motor-raspberry-pi-pico-micropython/). Information on PWM and the RPi in CircuitPython came from [https://learn.adafruit.com/using-servos-with-circuitpython/low-level-servo-control](https://learn.adafruit.com/using-servos-with-circuitpython/low-level-servo-control). Information on PWM and Arduino came from [https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8).
+
+#### 10.2.1 Option A: Spin the motor at different frequencies
+
+Connect the motor to the RPi as shown below.  
 
 ![RPi motor](./docPics/rpiMotor.png)
+
+Next, let's write code for the microcontroller that spins the motor at different rates. Open the Mu IDE, copy over the code below, and try it out.
+
+(See file src/microcontr/motor1MP.py.)
 
 ```python
 
@@ -2557,16 +2569,30 @@ for i in range(5):
 
 ```
 
-#### 10.2.1 Option B
+#### 10.2.1 Option B: Spin the motor at different frequencies
 
-Start by wiring up the motor as shown below
+Connect the motor to the RPi as shown below.
 
 ![RPi motor](./docPics/rpiMotor.png)
 
+Next, let's write code for the microcontroller that spins the motor at different rates. Open the Mu IDE, copy over the code below, and try it out.
 
-#### 10.2.1 Option C
+(See file src/microcontr/motor1CP.py.)
+
+```python
+print('hey')
+```
+
+#### 10.2.1 Option C: Spin the motor at different frequencies
+
+Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.0 of the PSoC. 
 
 ![PSoC motor](./docPics/psocMotor.png)
+
+Next, let's write code for the microcontroller that spins the motor at different rates. Open the ArduinoLab IDE, copy over the code below, and try it out.
+
+
+(See file src/microcontr/motor1PSoC.py.)
 
 ```python
 from time import sleep
@@ -2590,33 +2616,81 @@ for i in range(5):
 pwm.deinit()
 
 ```
-#### 10.2.1 Option D
+#### 10.2.1 Option D: Spin the motor at different frequencies
 
-Start by wiring up the motor as shown below
+Connect the motor to the Arduino. The figure below shows wiring for the Arduino Uno. 
+
+Next, let's write code for the microcontroller that spins the motor at different rates. Open the Arduino IDE, copy over the code below, and try it out.
 
 ![Ard motor](./docPics/ardMotor.png)
 
+(See file src/microcontr/motor1Ard.ino.)
+
+```c++
+coming soon ...
+```
 
 ### 10.3 Microcontrollers, motors, and asyncio
 
-What are we trying to do here... Keep the motor wired in as before...
+In this example, we send signals from the computer to the microcontroller, and this signal controls the speed of the motor. 
 
-Why do we need asyncio
+We run into an issue we had in section 7.3. We want the microcontroller to simultaneously run two tasks. The first task is to communicate with the computer, and the second task is to control the motor. In section 7.3, we ran into this problem on the computer. Here we're running in to this problem on the microcontroller. In section 7.3, we solved this problem using asyncio. The MicroPython, CircuitPython, and Arduino also have asyncio instructions, so we'll use the same technique here.
 
-#### 10.3.1 Option A Write the microcontroller code.
+Microcontrollers don't have an operating system with a scheduler, and most microcontrollers only have one processor. For these reasons, we can't run multiple threads or multiple processes. The asyncIO functionality, however, allow us to run tasks in a way that seems simultaneous.  
 
-#### 10.3.1 Option B Write the microcontroller code
+[This site](https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c) contains a nice example of using asyncIO in MicroPython, and it was used as an example. 
 
-#### 10.3.1 Option C Write the microcontroller code
+Here is a [site with a tutorial](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview) on CircuitPython and asyncIO, and it was used as a reference too.
+Refs for CircuitPython and Arduino...
 
-#### 10.3.1 Option D Write the microcontroller code
+More details about the structure of this example ...
 
-#### 10.3.2 Write the code for the computer
+#### 10.3.1 Option A: Microcontroller code, now with asyncio
+In this section, we write MicroPython code for the RPi. Open the Mu IDE and copy the example below.
 
-This is simpler than the code for the microcontroller...
+Take a look at the code. As in the example of section 7.3, this example uses a queue and involves three tasks. 
+
+
+
+The first task `check_serial_data` reads in any messages sent over the USB serial connection. If there is information available, that data is read in and stored in a queue.  The second task `use_serial_data`  reads from the queue. It then adjusts the motor speed. The third task, `spin_motor`, actually spins the motor. The motor is controlled through PWM signals. Using low level PWM signals as opposed to motor driver libraries allows for more control of the instructions run by the processor.
+
+All we do inside main is set up the queue and begin these three tasks. 
+
+
+
+Paragaraph on the queue following ref: https://raw.githubusercontent.com/peterhinch/micropython-async/master/v3/primitives/queue.py
+
+Maybe explain how to cut and paste the queue section...
+
+Paragraph on what this code does...
+
+Comment on the poll instruction ...
+
+(See file src/microcontr/Motor2MP.py.)
+```python
+print('hello')
+```
+
+
+#### 10.3.1 Option B: Microcontroller code, now with asyncio
+
+#### 10.3.1 Option C: Microcontroller code, now with asyncio
+
+#### 10.3.1 Option D: Microcontroller code, now with asyncio
+
+#### 10.3.2 Sending motor controls from the computer
+In this section, we write the Python code for the computer. Close the Mu, ArduinoLab, or Arduino IDE, and open the IDLE IDE. This code will send numerical values from the computer, over the USB cable, to the microcontroller. 
+
+This code is simpler than the microcontroller code.  We only need one loop, for the GUI.
+
 
 Put all the pieces together to finish the example. 
 
+(See file src/examples/MotorControl.py.)
+
+```python
+print('hi')
+```
 
 ## 11.0 Glossary
 

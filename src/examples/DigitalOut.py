@@ -9,7 +9,7 @@ import time
 #If you are on Windows, uncomment the next line and adjust as needed.
 #PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM1'
+PORT='/dev/ttyACM0'
 
 class DigitalOut():
     baudrate=115200
