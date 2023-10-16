@@ -2469,14 +2469,10 @@ if __name__=="__main__":
 In this section, we demonstrate a widget that is useful when sending analog or pulse width modulated (PWM) signals out of the computer.
 This will allow us to control motors or other actuators that accept an analog voltage.
 
-Not all microcontrollers have this feature. The Arduino and PSoC can send pulse width modulated (PWM) signals to specific pins. The RPPi does not. The PSoC has an internal digital to analog converter on a particular pin. The Arduino and RPi do not have this feature. 
-
-Therefore, the example section 10.2 is only for option D, the Arduino.
 
 ### 10.1 KnobDisplay widget without hardware
 
-DANDY also includes a `KnobDisplay` widget. Try out the example below. It contains a `KnobDisplay` widget, a `SlideDisplay` widget, and a quit button. Put your cursor over the `KnobDisplay` widget and scroll the middle mouse button.
-You will see the `SlideDisplay` widget change.
+DANDY also includes a `KnobDisplay` widget. Try out the example below. It contains a `KnobDisplay` widget, a `SlideDisplay` widget, and a quit button. Put your cursor over the `KnobDisplay` widget and click the left or right mouse button to dial the knob. You will see the `SlideDisplay` widget change. This example relies on the KnobDisplay widget detailed in the file 'src/widgets/KnobDisplay.py'.
 
 Note that in this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
 
@@ -2488,6 +2484,7 @@ import sys
 sys.path.append('../widgets') 
 import KnobDisplay as kd 
 import SlideDisplay as sd
+import time
 
 class KnobDemo(tk.Tk):
     def __init__(self):
@@ -2513,7 +2510,8 @@ class KnobDemo(tk.Tk):
 
     def updater(self):
         while True:
-            print(self.value)
+            time.sleep(0.1)
+	    print(self.value)
             self.value=self.knob1.get_angle()
             self.slide1.set_to_value(10*self.value)    
             self.update()
@@ -2529,7 +2527,7 @@ if __name__=="__main__":
 
 In this section, we'll control a small servo motor directly using Pulse Width Modulation (PWM) instructions.
 
-Instead of getting input from a sensor, in this section send signals out of the microcontroller to control an actuator. More specifically, we send signals from the computer, over the USB cable to the microcontroller, and to the motor. These signals alter the motor's rotation rate.
+Instead of getting sensor data in to a microcontroller, in this section we send signals out of the microcontroller to control an actuator. More specifically, we send signals from the computer, over the USB cable to the microcontroller, and to the motor. These signals alter the motor's rotation rate.
 
 Most motors require a significant amount of power and are used to deliver a significant amount of torque to a load. However, we'll be using a small servo motor that can be powered directly from the microcontroller and does not need any separate power management. For this reason, the torque it can provide is limited. 
 
@@ -2539,7 +2537,7 @@ In this section, however, we do not use an external library. Instead, we directl
 
 #### 10.2.1 Option A: Spin the motor at different frequencies
 
-Connect the motor to the RPi as shown below.  
+In this section, we use the RPi microcontroller and code it in MicroPython. Connect the motor to the RPi as shown below.  
 
 ![RPi motor](./docPics/rpiMotor.png)
 
@@ -2569,9 +2567,10 @@ for i in range(5):
 
 ```
 
+
 #### 10.2.1 Option B: Spin the motor at different frequencies
 
-Connect the motor to the RPi as shown below.
+In this section, we use the RPi microcontroller and code it in CircuitPython. Connect the motor to the RPi as shown below.
 
 ![RPi motor](./docPics/rpiMotor.png)
 
@@ -2585,7 +2584,7 @@ print('hey')
 
 #### 10.2.1 Option C: Spin the motor at different frequencies
 
-Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.0 of the PSoC. 
+In this section, we use the PSoC and code it in MicroPython. Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.0 of the PSoC. 
 
 ![PSoC motor](./docPics/psocMotor.png)
 
@@ -2618,7 +2617,7 @@ pwm.deinit()
 ```
 #### 10.2.1 Option D: Spin the motor at different frequencies
 
-Connect the motor to the Arduino. The figure below shows wiring for the Arduino Uno. 
+In this section, we use the Arduino. Connect the motor to the Arduino. The figure below shows wiring for the Arduino Uno. 
 
 Next, let's write code for the microcontroller that spins the motor at different rates. Open the Arduino IDE, copy over the code below, and try it out.
 
@@ -2632,16 +2631,18 @@ coming soon ...
 
 ### 10.3 Microcontrollers, motors, and asyncio
 
-In this example, we send signals from the computer to the microcontroller, and this signal controls the speed of the motor. 
+In this example, we send a signal from the computer to the microcontroller, and this signal controls the speed of the motor. 
 
-We run into an issue we had in section 7.3. We want the microcontroller to simultaneously run two tasks. The first task is to communicate with the computer, and the second task is to control the motor. In section 7.3, we ran into this problem on the computer. Here we're running in to this problem on the microcontroller. In section 7.3, we solved this problem using asyncio. The MicroPython, CircuitPython, and Arduino also have asyncio instructions, so we'll use the same technique here.
+We run into an issue we also encountered in Section 7.3. We want the microcontroller to simultaneously do two things. First, we want it to communicate with the computer, and second we want it to control the motor. 
 
-Microcontrollers don't have an operating system with a scheduler, and most microcontrollers only have one processor. For these reasons, we can't run multiple threads or multiple processes. The asyncIO functionality, however, allow us to run tasks in a way that seems simultaneous.  
+In Section 7.3, we ran into this problem on the computer. Here we're running in to this problem on the microcontroller. In Section 7.3, we solved this problem using asyncIO. The MicroPython, CircuitPython, and Arduino also have asyncIO instructions, so we'll use the same technique here.
 
-[This site](https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c) contains a nice example of using asyncIO in MicroPython, and it was used as an example. 
+The microcontrollers we're using don't have an operating system with a scheduler, and most microcontrollers only have one processor. For these reasons, we can't run multiple threads or multiple processes. The asyncIO functionality, however, allow us to run multiple tasks in a way that seems simultaneous.  
+
+[This site](https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c) contains a nice example of using asyncIO in MicroPython, and it was used as a reference. 
 
 Here is a [site with a tutorial](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview) on CircuitPython and asyncIO, and it was used as a reference too.
-Refs for CircuitPython and Arduino...
+Refs for Arduino...
 
 More details about the structure of this example ...
 
@@ -2700,6 +2701,7 @@ print('hi')
 | Ain | Abbreviation (in file names) for analog input |
 | API | Application programming interface |
 | Ard | Abbreviation (in file names) for Arduino |
+| asyncIO | Asynchronous input output, a strategy for executing two tasks almost simultaneously
 | baud rate | Speed that information is sent in bits per second | 
 | CP  | Abbreviation (in file names) for CircuitPython |
 | Git | A version control tool |

@@ -1,10 +1,8 @@
 #This example demonstrates the KnobDisplay and SlideDisplay widgets.
-#Put your cursor over the KnobDisplay widget and scroll the middle mouse button.
+#Put your cursor over the KnobDisplay widget and click the left or right
+#mouse buttons. 
 
-##TODO: When you press quit, you get an error from slideDisplay.
-#Can I clean this up?
 
-#TODO: This doesn't work in windows. Will adding a delay fix it? 
 
 import tkinter as tk
 import sys
@@ -39,7 +37,7 @@ class KnobDemo(tk.Tk):
     def updater(self):
         while True:
             time.sleep(.1)
-            print(self.value)
+            #print(self.value)
             self.value=self.offset+self.knob1.get_angle()
             self.slide1.set_to_value(self.value)    
             self.update()

@@ -11,7 +11,7 @@ import digitalio
 import supervisor
 import usb_cdc
 
-print ("hello")
+print ("hello!")
 led=digitalio.DigitalInOut(board.LED)
 led.direction=digitalio.Direction.OUTPUT
 serial=usb_cdc.data
