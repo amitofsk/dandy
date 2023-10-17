@@ -19,7 +19,9 @@ import collections
 import select
 
 # Settings and globals
-pwm = PWM(Pin(1))
+pwm.deinit()
+pwm = PWM('P6_0', freq=20, duty_u16=1000, invert=0)
+#pwm = PWM(Pin(1))
 led=Pin(25, Pin.OUT)
 led.value(False)
 pwm.freq(50)
@@ -35,8 +37,8 @@ bigq=collections.deque(q, 100)
 # The use_serial_data task reads from the deque and uses what it finds to change the motor spin speed.
 #Pick stuff off from the deque until you get 'X'. Then, reassemble the number you found.
 #Then, spin the motor at that speed.
-#The advantage of splitting up the check_serial_data and use_serial_data tasks is that
-#the microcontroller can continue to read, even if the motor is still spinning.
+#The advantage of splitting up the check_serial_data and use_serial_data tasks is that...
+#You can read ahead, even if the motor is still spinning...
 async def use_serial_data():
     print('Started use_serial_data task')
     val='Z'
@@ -44,29 +46,22 @@ async def use_serial_data():
     tempMessage=''
     tempNum=0.0
     while True:
-        #Check if the deque is not empty
-        if bigq: 
-            #Pop stuff off the deque.     
+        if bigq: #Check if the deque is not empty
+            #Pop stuff off the deque. If it is not X, it is part of a number.
+            #Concatenate to a string.
+            #If it is X, you've reached the end of the number. Convert string to float and spin motor.
             val= bigq.popleft()
-            #If val is not X, it is part of a number. 
             if val != 'X':
-                #Concatenate the values you read into a string.
                 tempMessage=tempMessage+val
                 led.value(True)
-            #If val is X, you've reached the end of the number.  
             else:
-                #The first character is garbage. Drop it.
-                tempMessage=tempMessage[-1:] 
-                #print(tempMessage)
-                #Cast the bytes you received to a float.
+                tempMessage=tempMessage[-1:] #The first character is garbage. Drop it.
+                print(tempMessage)
                 tempNum=float(tempMessage)
-                #print(tempNum)
+                print(tempNum)
                 led.value(False)
-                #We read in floating point values 0.0 to 10.0.
-                #We multiply by 10 and cast to integer so the motor steps vary 0 to 100.
-                steps=int(tempNum*10) 
+                steps=int(tempNum*10)
                 print(steps)
-                #Reset some variables so we are ready to for the next number.
                 tempMessage=''
                 tempNum=0
                 val='Z'
@@ -91,7 +86,8 @@ async def check_serial_data():
 
 # The spin_motor task spins the motor at the desired speed.
 #Note, it is really the number of steps and delays between each step that set the speed,
-#not the actual pwm frequency. This task spins the motor forward and back.
+#not the actual pwm frequency.
+#This spins the motor forward and back.
 async def spin_motor(mySteps):
     print('Started spin_motor task')
     #Rotate forward
@@ -116,6 +112,7 @@ async def main():
     asyncio.create_task(spin_motor(steps))
 
     await check_serial_data()
+
 
 
 #Run the main loop

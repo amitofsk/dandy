@@ -1,12 +1,12 @@
-#When you run this example, you see three speed buttons, a dial, a knob widget,
-# a TricolorDisplay LED widget, and a quit button.  When you press a speed
-#button, a corresponding speed is printed to the serial USB connection.
-#If you dial the knob below a threshhold or above a second threshhold, the
-# color of the TricolorDisplay widget changes, and the corresponding speed
-#is printed to the serial USB connection too.
+#When you run this example, you see two buttons and a knob. To turn the knob,
+#put your cursor on it and click with either the left or right mouse button.
+#When you click the top button, a float representing the knob value
+#is both printed and sent serially down the USB cable. The bottom button
+#is a quit button. All messages sent via USB end in the character X to
+#identify the end of the message.
 
-#Reference of use of lambda function for the button command:
-#https://www.geeksforgeeks.org/how-to-pass-arguments-to-tkinter-button-command/
+#Paragraph on the relationship between dial value, motors steps, and
+#rotation speed...
 
 import tkinter as tk
 import time
@@ -15,7 +15,7 @@ import serial.tools.list_ports as port_list
 import sys
 sys.path.append('../widgets') 
 import KnobDisplay as kd
-import TricolorDisplay as td
+
 
 #If you are on Windows, uncomment the next line and adjust as needed.
 #PORT='COM1'
@@ -31,69 +31,36 @@ class MotorControl(tk.Tk):
         baudrate=115200
         self.serial_port=serial.Serial(port=PORT, baudrate=baudrate, \
                     bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
-        
-        
-        self.button1= tk.Button(self, text="Send Value", \
-                               #command=lambda: self.toggle_me(speed=self.value))
-                            command=self.toggle_me)
-        #self.button2=tk.Button(self, text="Send B", \
-        #                       command=lambda: self.toggle_me(speed=self.value))
-        #self.button3=tk.Button(self, text="Send C", \
-        #                       command=lambda: self.toggle_me(speed=30))
+
+        self.button1= tk.Button(self, text="Send Value", command=self.toggle_me)
         self.knob1=kd.KnobDisplay(self.canvasK, width=100, height=100)
-        #self.led1=td.TricolorDisplay(self)
         self.button_quit=tk.Button(self, text="Quit", command=self.destroy)
         
         self.button1.pack()
-        #self.button2.pack()
-        #self.button3.pack()
         self.canvasK.pack()
         self.knob1.pack()
-        #self.led1.pack()
         self.button_quit.pack()
 
-       
         #We don't run Tkinter's main loop. Instead, we run the function
         #updater, which we define below. That function manually updates
         #the Tkinter loop.
         self.updater()
-        #tk.mainloop()
+        
 
     def toggle_me(self):
-        #print("HERE")
-        #out_string='A'
-         
-        #print('I wrote A '+str(speed))
         message=str(self.value)
         message=message+'X'
         byteMessage=bytes(message, 'utf-8')
         print(byteMessage)
         self.serial_port.write(byteMessage)
-        #if speed==10:
-        #    self.serial_port.write(bytes('5.2', 'utf-8'))
-        #    print('A')
-        #    print(self.value)
-        
-        #elif speed==30:
-        #    self.serial_port.write(bytes('C', 'utf-8'))
-        #    print('C')
-        #else :
-        #    self.serial_port.write(message)
-        #    print('B')
-        #    print(self.value)
-        #TODO: Change from writing a character to a string
-        #The function bytes casts a string to bytes.
-        #self.serial_port.write(bytes(out_string,'utf-8'))
         self.update()
 
 
     def updater(self):
+        #This function manually updates the GUI repeatedly in a loop.
         while True:
             time.sleep(.1)
-            #print(self.value)
             self.value=self.offset+self.knob1.get_angle()
-            #Insert here...serial write and change Tricolor and comparator...
-            #Manually check buttons?
             self.update()
 
 if __name__=="__main__":

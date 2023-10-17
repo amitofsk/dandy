@@ -2466,8 +2466,8 @@ if __name__=="__main__":
 
 
 ## 10.0 Widgets for ANALOG or PWM OUTPUT
-In this section, we demonstrate a widget that is useful when sending analog or pulse width modulated (PWM) signals out of the computer.
-This will allow us to control motors or other actuators that accept an analog voltage.
+In this section, we demonstrate a widget that is useful when sending values other than individual characters out of the computer.
+This strategy will allow us to control motors or other actuators. More specifically, in the example of section 10.3, we will send a floating point value from the computer to a microcontroller and use this number to set a motor's rotation speed.
 
 
 ### 10.1 KnobDisplay widget without hardware
@@ -2535,37 +2535,45 @@ Often, the easiest way to control a motor using a microcontroller is to use a li
 
 In this section, however, we do not use an external library. Instead, we directly use PWM signals. This approach allows us to have more control of the instructions run by the microcontroller. Information on PWM and the RPi in MicroPython came from [https://microcontrollerslab.com/servo-motor-raspberry-pi-pico-micropython/](https://microcontrollerslab.com/servo-motor-raspberry-pi-pico-micropython/). Information on PWM and the RPi in CircuitPython came from [https://learn.adafruit.com/using-servos-with-circuitpython/low-level-servo-control](https://learn.adafruit.com/using-servos-with-circuitpython/low-level-servo-control). Information on PWM and Arduino came from [https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8).
 
+We will control the motors by PWM. The PWM signals are periodic with some pulse width and some frequency. The pulse width sets the desired rotation angle for the servo. The examples below use a PWM frequency of 50Hz. While PWM frequency influences rotation speed to some extent, it is not used here to control rotation speed. The servo motors operate so quickly that changing the PWM frequency is not a useful way to control motor speed for our purposes here. 
+
+Motor rotation speed will be controlled by the number of steps and the time of delays between steps instead. Suppose we want to rotate the motor shaft between an angle of ten degrees and 100 degrees. We will accomplish this rotation by breaking it up into a number of steps, and we will delay a fixed time between the steps. The motor will take three times as much time to accomplish this rotation, for example, if we go between these angles in 90 steps with a 10ms delay between each step than if we go between these angles in 30 steps with a 10ms delay between each step. In the examples below, we will have a variable number of steps involved with a fixed time between these steps. Therefore, if we set our motor to take fewer steps all else equal, it will rotate faster. 
+
 #### 10.2.1 Option A: Spin the motor at different frequencies
 
 In this section, we use the RPi microcontroller and code it in MicroPython. Connect the motor to the RPi as shown below.  
 
 ![RPi motor](./docPics/rpiMotor.png)
 
-Next, let's write code for the microcontroller that spins the motor at different rates. Open the Mu IDE, copy over the code below, and try it out.
+Next, let's write code for the microcontroller that spins the motor at different rates.  Open the Mu IDE, copy over the code below, and try it out.
 
 (See file src/microcontr/motor1MP.py.)
 
 ```python
 
+
 from time import sleep
 from machine import Pin, PWM
 
 pwm = PWM(Pin(1))
+pwm.freq(50)
 
 for i in range(5):
-    #Set to a new speed
-    speed=20*i+20
-    pwm.freq(speed)
+    steps=20*i+20   #Set number of steps.
     #Rotate forward
-    for position in range(1000,9000,50):
+    for position in range(1000,9000,steps):
         pwm.duty_u16(position)
         sleep(0.01)
     #rotate back
-    for position in range(9000,1000,-50):
+    for position in range(9000,1000,-1*steps):
         pwm.duty_u16(position)
-        sleep(0.01) 
+        sleep(0.01)
+
 
 ```
+This example rotates the motor. Each of the five times through the for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
+
+As explained in section 10.2.0, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the pwm frequency, this command was not used for controlling the speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
 
 
 #### 10.2.1 Option B: Spin the motor at different frequencies
@@ -2584,7 +2592,7 @@ print('hey')
 
 #### 10.2.1 Option C: Spin the motor at different frequencies
 
-In this section, we use the PSoC and code it in MicroPython. Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.0 of the PSoC. 
+In this section, we use the PSoC and code it in MicroPython. Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.1 of the PSoC. 
 
 ![PSoC motor](./docPics/psocMotor.png)
 
@@ -2596,25 +2604,28 @@ Next, let's write code for the microcontroller that spins the motor at different
 ```python
 from time import sleep
 from machine import Pin, PWM
-pwm.deinit()
-pwm = PWM('P6_0', freq=20, duty_u16=1000, invert=0)
+pwm = PWM('P6_1', freq=50, duty_u16=2000, invert=0)
 
 for i in range(5):
-    #Set to a new speed
-    speed=20*i+100
-    pwm.freq(speed)
-    print(pwm.freq())
+    steps=20*i+20   #Set number of steps.
     #Rotate forward
-    for position in range(1000,9000,50):
+    for position in range(1000,9000,steps):
         pwm.duty_u16(position)
         sleep(0.01)
     #rotate back
-    for position in range(9000,1000,-50):
+    for position in range(9000,1000,-1*steps):
         pwm.duty_u16(position)
         sleep(0.01)
+        
 pwm.deinit()
 
 ```
+This example rotates the motor. Each of the five times through the for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
+
+As explained in section 10.2.0, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the pwm frequency, this command was not used for controlling the speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
+
+Initially, I had tried connecting the yellow wire of the motor to pin 6.0 instead. For some reason, that didn't work. I'm not sure why, but I was able to get this example to work using pin 6.1 instead. Except for the syntax of the PWM constructor, this example is the same asin 10.2.1 option A. When using the PSoC, use the four input constructor as shown. 
+
 #### 10.2.1 Option D: Spin the motor at different frequencies
 
 In this section, we use the Arduino. Connect the motor to the Arduino. The figure below shows wiring for the Arduino Uno. 
@@ -2641,15 +2652,34 @@ The microcontrollers we're using don't have an operating system with a scheduler
 
 [This site](https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c) contains a nice example of using asyncIO in MicroPython, and it was used as a reference. 
 
-Here is a [site with a tutorial](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview) on CircuitPython and asyncIO, and it was used as a reference too.
+This [tutorial on CircuitPython and ayncIO](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview)  was used as a reference too.
 Refs for Arduino...
 
 More details about the structure of this example ...
 
+More info on the keywords async and await...
+
+
+
 #### 10.3.1 Option A: Microcontroller code, now with asyncio
 In this section, we write MicroPython code for the RPi. Open the Mu IDE and copy the example below.
 
-Take a look at the code. As in the example of section 7.3, this example uses a queue and involves three tasks. 
+Take a look at the code. As in the example of section 7.3, this asyncIO and multiple tasks. 
+
+Paragraph on deques and queues. ...
+
+Task 1: use_serial_data
+
+Task 2: check_serial_data
+
+Task 3: spin_motor
+
+Can we get away with fewer tasks... yes, but I purposely split up use_serial_data and check_serial_data here...
+
+Use of the poll instruction isn't needed, but it is helpful here...
+
+
+
 
 
 
@@ -2667,9 +2697,120 @@ Paragraph on what this code does...
 
 Comment on the poll instruction ...
 
+When you first start this example, the motor spins forward and back once. 
+
 (See file src/microcontr/Motor2MP.py.)
 ```python
-print('hello')
+
+from time import sleep
+from machine import Pin, PWM
+import sys
+import uasyncio as asyncio
+import collections
+import select
+
+# Settings and globals
+pwm = PWM(Pin(1))
+led=Pin(25, Pin.OUT)
+led.value(False)
+pwm.freq(50)
+steps=50
+# setup poll to read USB port
+poll_object = select.poll()
+poll_object.register(sys.stdin,1)
+
+#Set up a global deque that can store up to 100 elements
+q=()
+bigq=collections.deque(q, 100)
+
+
+# The use_serial_data task reads from the deque and uses what it finds to change the motor spin speed.
+#Pick stuff off from the deque until you get 'X'. Then, reassemble the number you found.
+#Then, spin the motor at that speed.
+#The advantage of splitting up the check_serial_data and use_serial_data tasks is that
+#the microcontroller can continue to read, even if the motor is still spinning.
+async def use_serial_data():
+    print('Started use_serial_data task')
+    val='Z'
+    steps=50
+    tempMessage=''
+    tempNum=0.0
+    while True:
+        #Check if the deque is not empty
+        if bigq: 
+            #Pop stuff off the deque.     
+            val= bigq.popleft()
+            #If val is not X, it is part of a number. 
+            if val != 'X':
+                #Concatenate the values you read into a string.
+                tempMessage=tempMessage+val
+                led.value(True)
+            #If val is X, you've reached the end of the number.  
+            else:
+                #The first character is garbage. Drop it.
+                tempMessage=tempMessage[-1:] 
+                #print(tempMessage)
+                #Cast the bytes you received to a float.
+                tempNum=float(tempMessage)
+                #print(tempNum)
+                led.value(False)
+                #We read in floating point values 0.0 to 10.0.
+                #We multiply by 10 and cast to integer so the motor steps vary 0 to 100.
+                steps=int(tempNum*10) 
+                print(steps)
+                #Reset some variables so we are ready to for the next number.
+                tempMessage=''
+                tempNum=0
+                val='Z'
+                await spin_motor(steps)
+        await asyncio.sleep(.2)
+
+# The check_serial_data task reads serially from USB and puts what it finds in the deque.
+#Read a character at a time and shove it in the deque.
+#Assume the transmitter ends each message with 'X'.
+async def check_serial_data():
+    print('Started check_serial_data task')
+    ch='X'
+    while True:
+        await asyncio.sleep(.2)
+        #read as character and put in queue
+        if poll_object.poll(0):
+            ch =  sys.stdin.read(1)
+            print (ch)
+            bigq.append(ch)
+
+
+# The spin_motor task spins the motor at the desired speed.
+#Note, it is really the number of steps and delays between each step that set the speed,
+#not the actual pwm frequency. This task spins the motor forward and back.
+async def spin_motor(mySteps):
+    print('Started spin_motor task')
+    #Rotate forward
+    print(mySteps)
+    for position in range(1000,9000,mySteps):
+        pwm.duty_u16(position)
+        await asyncio.sleep(0.1)
+    #rotate back
+    for position in range(9000,1000,-1*mySteps):
+        pwm.duty_u16(position)
+        await asyncio.sleep(0.1)
+    await asyncio.sleep(0.1)
+    #print('z')
+
+
+##Define the main function.
+async def main():
+    print("Hello")
+    # Start the three tasks and immediately return
+    asyncio.create_task(use_serial_data())
+    asyncio.create_task(check_serial_data())
+    asyncio.create_task(spin_motor(steps))
+
+    await check_serial_data()
+
+
+#Run the main loop
+asyncio.run(main())
 ```
 
 
@@ -2682,15 +2823,77 @@ print('hello')
 #### 10.3.2 Sending motor controls from the computer
 In this section, we write the Python code for the computer. Close the Mu, ArduinoLab, or Arduino IDE, and open the IDLE IDE. This code will send numerical values from the computer, over the USB cable, to the microcontroller. 
 
-This code is simpler than the microcontroller code.  We only need one loop, for the GUI.
+This code is simpler than the microcontroller code.  We only need one loop, for the GUI, so there is no need for asyncIO instructions here. 
 
+When you run this example, you see two buttons and a knob. To turn the knob, put your cursor on it and click with either the left or right mouse button. When you click the top button, a float representing the knob value is both printed and sent serially down the USB cableto the microcontroller. The bottom button is a quit button.
 
-Put all the pieces together to finish the example. 
+All messages sent via USB end in the character `X` to identify the end of the message. 
+
+Let's test this example out. Make sure the motor controller is still wired to your microcontroller, and make sure your microcontroller is connected to your computer with a USB cable.  Open the Mu, ArduinoLab, or Arduino IDE and run the example of section 10.3.1. Close the Mu, ArduinoLab, or Arduino IDE. Open IDLE and run the example below. 
+
+Dial the knob by putting your cursor on it and clicking the right or left mouse button. Then, press the top button above the knob to send a corresponding float value from the computer to the microcontroller. This knob varies from 0.0 to 10.0. It is used to control the number of steps the servo motor takes in travelling between one angle and another. Because there is a fixed time delay between each step, this knob essentially controls the motor speed. As explained above, this strategy is used to control motor rotation speed instead of directly using PWM frequency because it allows for slower motor rotation speeds which are more observable. 
 
 (See file src/examples/MotorControl.py.)
 
 ```python
-print('hi')
+
+import tkinter as tk
+import time
+import serial
+import serial.tools.list_ports as port_list
+import sys
+sys.path.append('../widgets') 
+import KnobDisplay as kd
+
+
+#If you are on Windows, uncomment the next line and adjust as needed.
+PORT='COM1'
+#If you are on Linux, uncomment the next line and adjust as needed.
+#PORT='/dev/ttyACM0'
+
+class MotorControl(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.canvasK=tk.Canvas(self, height=300, width=300)
+        self.offset=5
+        self.value=0
+        baudrate=115200
+        self.serial_port=serial.Serial(port=PORT, baudrate=baudrate, \
+                    bytesize=8, timeout=0.1, stopbits=serial.STOPBITS_TWO)
+
+        self.button1= tk.Button(self, text="Send Value", command=self.toggle_me)
+        self.knob1=kd.KnobDisplay(self.canvasK, width=100, height=100)
+        self.button_quit=tk.Button(self, text="Quit", command=self.destroy)
+        
+        self.button1.pack()
+        self.canvasK.pack()
+        self.knob1.pack()
+        self.button_quit.pack()
+
+        #We don't run Tkinter's main loop. Instead, we run the function
+        #updater, which we define below. That function manually updates
+        #the Tkinter loop.
+        self.updater()
+        
+
+    def toggle_me(self):
+        message=str(self.value)
+        message=message+'X'
+        byteMessage=bytes(message, 'utf-8')
+        print(byteMessage)
+        self.serial_port.write(byteMessage)
+        self.update()
+
+
+    def updater(self):
+        #This function manually updates the GUI repeatedly in a loop.
+        while True:
+            time.sleep(.1)
+            self.value=self.offset+self.knob1.get_angle()
+            self.update()
+
+if __name__=="__main__":
+    mygui=MotorControl()
 ```
 
 ## 11.0 Glossary
