@@ -19,16 +19,14 @@ import collections
 import select
 
 # Settings and globals
-pwm.deinit()
-pwm = PWM('P6_0', freq=20, duty_u16=1000, invert=0)
+pwm = PWM('P6_0', freq=50, duty_u16=2000, invert=0)
 #pwm = PWM(Pin(1))
 led=Pin(25, Pin.OUT)
 led.value(False)
-pwm.freq(50)
 steps=50
 # setup poll to read USB port
-poll_object = select.poll()
-poll_object.register(sys.stdin,1)
+#poll_object = select.poll()
+#poll_object.register(sys.stdin,1)
 
 #Set up a global deque that can store up to 100 elements
 q=()
@@ -78,7 +76,7 @@ async def check_serial_data():
     while True:
         await asyncio.sleep(.2)
         #read as character and put in queue
-        if poll_object.poll(0):
+        #if poll_object.poll(0):
             ch =  sys.stdin.read(1)
             print (ch)
             bigq.append(ch)

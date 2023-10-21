@@ -2587,7 +2587,32 @@ Next, let's write code for the microcontroller that spins the motor at different
 (See file src/microcontr/motor1CP.py.)
 
 ```python
-print('hey')
+import board
+import pwmio
+import time
+import digitalio
+
+led=digitalio.DigitalInOut(board.LED)
+led.direction=digitalio.Direction.OUTPUT
+pwm = pwmio.PWMOut(board.GP1, frequency=50)
+steps=50
+
+for i in range (5):
+    print('hey')
+    steps = 20*i+10
+    #Spin forward
+    led.value=True
+    for j in range(steps):
+        duty_cyc=1.0*j/(steps);
+        pwm.duty_cycle=int(65535.0*duty_cyc/10.0)
+        time.sleep(0.150)
+    #Spin reverse 
+    led.value=False
+    for j in range(steps):
+        duty_cyc=(1-(1.0*j/(steps)))
+        pwm.duty_cycle=int(65535.0*duty_cyc/10.0)
+        time.sleep(0.150)
+
 ```
 
 #### 10.2.1 Option C: Spin the motor at different frequencies
@@ -2634,10 +2659,59 @@ Next, let's write code for the microcontroller that spins the motor at different
 
 ![Ard motor](./docPics/ardMotor.png)
 
+Additional reference: [](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8)
+
 (See file src/microcontr/motor1Ard.ino.)
 
 ```c++
-coming soon ...
+int servo = 9;
+int led=13; 
+
+    
+void setup() { 
+  pinMode(servo, OUTPUT); 
+  pinMode(led, OUTPUT);
+  //Steps represents the steps taken to go between two angles 180 degrees apart.
+  double steps=50;
+  //We're bit banging PWM as opposed to using a library or any built in pwm functions. 
+  //We're using signals with a period of 1500 microseconds which corresponds to a frequency of 667Hz.
+  int pulse_period_us=1500;
+  double pulse_high_us=0.0; 
+  for (int ii=1;ii<5;ii++)
+    {
+     //The variable ii sets the number of steps, and hence speed of going between the angles. 
+     steps=20*ii+10;
+     //Spin forward     
+     digitalWrite(led, HIGH);
+     for ( int j = 0; j < steps; j++){
+        //The variable jj sweeps from 0 to steps, and keeps track of which step we are on. 
+        //The 1.0 is needed in the next line to ensure double computation, not int.
+        pulse_high_us=1.0*pulse_period_us*j/steps;
+          digitalWrite(servo, HIGH);
+          delayMicroseconds(pulse_high_us);    
+          digitalWrite(servo, LOW);
+          delayMicroseconds(pulse_period_us-pulse_high_us);
+          delay(150); //delay 0.15 seconds between steps
+     }//close the for over j
+      
+     //Spin backwards.
+     digitalWrite(led, LOW);
+     delay(1000);
+     for(int j=0; j< steps; j++) {
+       pulse_high_us=1.0*pulse_period_us*j/steps;
+       digitalWrite(servo, HIGH);
+       delayMicroseconds(pulse_period_us-pulse_high_us);
+       digitalWrite(servo, LOW);
+       delayMicroseconds(pulse_high_us);
+       delay(150);
+    }//close the for over j
+ } //close the for over ii
+}//close the setup 
+ 
+ 
+void loop() {
+ 
+}
 ```
 
 ### 10.3 Microcontrollers, motors, and asyncio
@@ -2664,40 +2738,19 @@ More info on the keywords async and await...
 #### 10.3.1 Option A: Microcontroller code, now with asyncio
 In this section, we write MicroPython code for the RPi. Open the Mu IDE and copy the example below.
 
-Take a look at the code. As in the example of section 7.3, this asyncIO and multiple tasks. 
+Take a look at the code. As in the example of section 7.3, this example uses asyncIO and multiple tasks. 
 
-Paragraph on deques and queues. ...
+More specifically, it uses three tasks that seem to run simultaneously. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, whcih represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
 
-Task 1: use_serial_data
+The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. It is used here instead because MicroPython contains a deque class in the collections package, but it does not contain a queue class. [Queue classes](https://github.com/peterhinch/micropython-async/blob/master/v3/primitives/queue.py) have been written for MicroPython, but they are not packaged with the langauge. Information on the deque class can be found at [https://docs.micropython.org/en/latest/library/collections.html](https://docs.micropython.org/en/latest/library/collections.html) and [https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py).   
 
-Task 2: check_serial_data
+The third task is named `use_serial_data`. This takes characters off the deque, reassembles them, and casts them into floating point numbers. It assumes the messages sent from the computer end in the character `X` to make data processing easier. The values from the computer range from 0.0 to 10.0. These are scaled by 10 to represent the number of steps the motor takes as it turns back and forth between fixed points. As explained above, a larger number of steps corresponds to a slower rotation speed. 
 
-Task 3: spin_motor
+The `use_serial_data` and `check_serial_data` tasks could have been combined in to one. However, splitting them up illustrates the advantages of asyncIO. The microcontroller can continue to read data from the USB bus even if the motor is still in motion. 
 
-Can we get away with fewer tasks... yes, but I purposely split up use_serial_data and check_serial_data here...
-
-Use of the poll instruction isn't needed, but it is helpful here...
+When you first start this example, the motor spins forward and back once. At this point, it is waiting for messages from the computer before anything else happens. We will continue this example in section 10.3.2. 
 
 
-
-
-
-
-The first task `check_serial_data` reads in any messages sent over the USB serial connection. If there is information available, that data is read in and stored in a queue.  The second task `use_serial_data`  reads from the queue. It then adjusts the motor speed. The third task, `spin_motor`, actually spins the motor. The motor is controlled through PWM signals. Using low level PWM signals as opposed to motor driver libraries allows for more control of the instructions run by the processor.
-
-All we do inside main is set up the queue and begin these three tasks. 
-
-
-
-Paragaraph on the queue following ref: https://raw.githubusercontent.com/peterhinch/micropython-async/master/v3/primitives/queue.py
-
-Maybe explain how to cut and paste the queue section...
-
-Paragraph on what this code does...
-
-Comment on the poll instruction ...
-
-When you first start this example, the motor spins forward and back once. 
 
 (See file src/microcontr/Motor2MP.py.)
 ```python
@@ -2904,9 +2957,10 @@ if __name__=="__main__":
 | Ain | Abbreviation (in file names) for analog input |
 | API | Application programming interface |
 | Ard | Abbreviation (in file names) for Arduino |
-| asyncIO | Asynchronous input output, a strategy for executing two tasks almost simultaneously
+| asyncIO | Asynchronous input output, a strategy for executing two tasks almost simultaneously |
 | baud rate | Speed that information is sent in bits per second | 
 | CP  | Abbreviation (in file names) for CircuitPython |
+| deque | Double ended queue |
 | Git | A version control tool |
 | GUI | Graphical user interface |
 | IDE | Integrated development environment |
