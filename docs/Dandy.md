@@ -1728,7 +1728,7 @@ Open up the example below, and upload it to the microcontroller.
 
 To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
-
+This [MicroPython i2c tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2) was used as a reference. 
 
 (See file src/microcontr/magnetMP.py.)
 ```python
@@ -1802,7 +1802,6 @@ while True:
 
     time.sleep(1)
 
-
 ```
 
 Let's look at some lines more closely. 
@@ -1813,14 +1812,13 @@ The `devices=i2c.scan()` line looks for I2C devices connected to the microcontro
 
 Two `writeto_mem` instructions are used before the `while` loop. To use the sensor, we need to configure it. To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
 
-The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16)` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value. 
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value. 
 
 The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.    
 
 
 #### 8.5.2 Option B: Vector example, microcontroller side
 In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the RPi and CircuitPython.
-
 
 
 ##### 8.5.2.1 Wire up the sensor
@@ -1832,7 +1830,115 @@ As shown in the figure below, connect 3V3 on the sensor to pin 36 on the RPi. Co
 
 ##### 8.5.2.2. Write the microcontroller code
 
-(TODO: Finish debugging this example.)
+Now let's write the code for the microcontroller, so open up the Mu IDE. 
+
+This code reads the X, Y, and Z components of the magnetic field from the sensor. Next, it puts these quantities into a string in JSON format. Then, using the `print` instruction, it sends this JSON to the computer over the USB cable.
+
+Open up the example below, and upload it to the microcontroller.
+
+To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
+
+This [tutorial on CircuityPython and i2c](https://learn.adafruit.com/circuitpython-essentials/circuitpython-i2c) and [discussion on CircuitPython and i2c](https://stackoverflow.com/questions/69803934/trouble-using-i2c-in-circuitpython-working-micropython-example) were used as references.
+
+(See file src/microcontr/magnetCP.py.)
+
+```python
+import busio
+import time
+i2c=busio.I2C(board.GP17, board.GP16)
+ADDRESS=0x35
+data=bytearray(7)
+
+#Scan to find I2C devices.
+while not i2c.try_lock():
+        pass
+devices=i2c.scan()
+if len(devices)>0:
+    for d in devices:
+        print(hex(d))
+else:
+    print("No I2C devices found")
+
+
+#We set up the configuration register 0x10 for communication.
+#More specifically, We set bit DT to 0 indicating we want to measure temperature.
+#We set bit AM to 0 indicating we want to measure BZ.
+#We set bits TRIG to 01 to triger on read before first most significant bit.
+#We set bits X2 and TL_mag to 000 for more sensitivity and no temperature correction.
+#We set bit CP to 1 for odd parity.
+#To do all this, we write the bytes 0x11 and 0x91.
+msg=bytearray()
+msg.append(0x10)
+msg.append(0x11)
+msg2=bytearray()
+msg2.append(0x10)
+msg.append(0x91)
+
+i2c.writeto(ADDRESS, msg)
+time.sleep(0.01)
+i2c.writeto(ADDRESS, msg2)
+time.sleep(0.01)
+
+
+while True:
+    #Read 7 registers from the i2c bus
+    i2c.writeto(ADDRESS, bytes([0x00]))
+    time.sleep(0.01)
+    i2c.readfrom_into(ADDRESS, data)
+
+    #Start with the X component of the magnetic field.
+    #Pick off each of the three hexadecimal bytes. Reassemble them so the result is an integer.
+    X_first_hex=int(data[0]/16)
+    X_second_hex=data[0]%16
+    X_third_hex=int(data[4]/16)
+    BX=X_first_hex*256+X_second_hex*16+X_third_hex
+    #Values are in 2's complement. If we get a value between 2058 and 4096, the number is actually negative.
+    #The if statement converts it to a signed value.
+    if BX>2048:
+        BX=-1*(4096-BX)
+
+    #Do the same for the Y component of the magnetic field.
+    Y_first_hex=int(data[1]/16)
+    Y_second_hex=data[1]%16
+    Y_third_hex=data[4]%16
+    BY=Y_first_hex*256+Y_second_hex*16+Y_third_hex
+    if BY>2048:
+        BY=-1*(4096-BY)
+
+    #Do the same for the Z component of the magnetic field.
+    Z_first_hex=int(data[2]/16)
+    Z_second_hex=data[2]%16
+    Z_third_hex=data[5]%16
+    BZ=Z_first_hex*256+Z_second_hex*16+Z_third_hex
+    if BZ>2048:
+        BZ=-1*(4096-BZ)
+
+    #Assemble a string in JSON format containing BX, BY, and BZ, and print it.
+    msgString="{\"BX\":\""
+    msgString=msgString+str(BX)
+    msgString=msgString+"\",\"BY\":\""
+    msgString=msgString+str(BY)
+    msgString=msgString+"\",\"BZ\":\""
+    msgString=msgString+str(BZ)
+    msgString=msgString+"\"}"
+    print(msgString)
+
+    time.sleep(1)
+
+```
+Let's look at some lines more closely.
+
+
+The line `i2c=busio.I2C(board.GP17, board.GP16)` creates the I2C object. This line uses a hardware i2c connection.
+
+The `devices=i2c.scan()` line looks for I2C devices connected to the microcontroller. If one is found, its address is printed. This sensor has address 0x35. So, if the microcontroller finds the sensor on the I2C bus, this value is printed. (Numbers beginning with 0x are given in hexadecimal.)
+
+Two `writeto` instructions are used before the `while` loop. To use the sensor, we need to configure it. To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
+
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
+
+The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
+
 
 #### 8.5.2 Option C: Vector example, microcontroller side
 In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the PSoC6 and MicroPython.
@@ -1855,6 +1961,7 @@ Open up the example below, and upload it to the microcontroller.
 
 To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
+This [MicroPython i2c tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2) and this [MicroPython PSoC page](https://github.com/Infineon/micropython/blob/ports-psoc6-ifx/docs/psoc6/quickref.rst) were used as references.
 
 
 (See file src/microcontr/magnetPSoC.py)
@@ -1943,7 +2050,7 @@ The `devices=i2c.scan()` line looks for I2C devices connected to the microcontro
 
 Two `writeto_mem` instructions are used before the `while` loop. To use the sensor, we need to configure it. To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
 
-The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16)` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
 
 The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
 
@@ -1968,12 +2075,11 @@ Open up the example below, and upload it to the microcontroller.
 
 To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
+This [Arduino example for the sensor](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707) was used as a reference. 
 
 (See file src/microcontr/magnetArd.ino)
 
 ```c++
-
-
 #include <Wire.h>
 #define ADDRESS 0x35 //Addreass of the sensor on the I2C bus
 
@@ -2049,6 +2155,13 @@ void loop () {
 
 ```
 
+Let's look at some lines more closely. 
+
+The Wire library is used to facility i2c communication. To use the sensor, we need to configure it.  To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707). We write these values inside the `setup` function. 
+
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(buf[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=buf[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(buf[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The lines `if (BX>2048) {BX=-1 * (4096-BX);}` convert the two's complement value to a signed value.
+
+The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
 
 
 #### 8.5.3 Vector example, computer side
@@ -2124,7 +2237,6 @@ if __name__=="__main__":
 
 ![](./docPics/magnet.png)
 
-(TODO: FIx example above to scale better.)
 
 
 ## 9.0 Widgets that look like microcontrollers
@@ -2545,9 +2657,9 @@ This strategy will allow us to control motors or other actuators. More specifica
 
 ### 10.1 KnobDisplay widget without hardware
 
-DANDY also includes a `KnobDisplay` widget. Try out the example below. It contains a `KnobDisplay` widget, a `SlideDisplay` widget, and a quit button. Put your cursor over the `KnobDisplay` widget and click the left or right mouse button to dial the knob. You will see the `SlideDisplay` widget change. This example relies on the KnobDisplay widget detailed in the file 'src/widgets/KnobDisplay.py'.
+DANDY also includes a `KnobDisplay` widget. Try out the example below. It contains a `KnobDisplay` widget, a `SlideDisplay` widget, and a quit button. Put your cursor over the `KnobDisplay` widget and click the left or right mouse button to dial the knob. You will see the `SlideDisplay` widget change. This example relies on the KnobDisplay widget detailed in the file `src/widgets/KnobDisplay.py`.
 
-Note that in this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
+In this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
 
 (See file src/examples/KnobDemo.py.) 
 
@@ -2600,7 +2712,9 @@ if __name__=="__main__":
 
 In this section, we'll control a small servo motor directly using Pulse Width Modulation (PWM) instructions.
 
-Instead of getting sensor data in to a microcontroller, in this section we send signals out of the microcontroller to control an actuator. More specifically, we send signals from the computer, over the USB cable to the microcontroller, and to the motor. These signals alter the motor's rotation rate.
+Instead of getting sensor data in to a microcontroller, in this section we send signals out of the microcontroller to control an actuator. More specifically, we use the microcontroller to control the rotation rate of a small servo motor. 
+
+In the next section, 10.3, we'll send signals from the computer, overthe USB cable to the microcontroller, and to the connected motor to control the rotation rate of the motor. 
 
 Most motors require a significant amount of power and are used to deliver a significant amount of torque to a load. However, we'll be using a small servo motor that can be powered directly from the microcontroller and does not need any separate power management. For this reason, the torque it can provide is limited. 
 
@@ -2612,8 +2726,8 @@ We will control the motors by PWM. The PWM signals are periodic with some pulse 
 
 Motor rotation speed will be controlled by the number of steps and the time of delays between steps instead. Suppose we want to rotate the motor shaft between an angle of ten degrees and 100 degrees. We will accomplish this rotation by breaking it up into a number of steps, and we will delay a fixed time between the steps. The motor will take three times as much time to accomplish this rotation, for example, if we go between these angles in 90 steps with a 10ms delay between each step than if we go between these angles in 30 steps with a 10ms delay between each step. In the examples below, we will have a variable number of steps involved with a fixed time between these steps. Therefore, if we set our motor to take fewer steps all else equal, it will rotate faster. 
 
-#### $${\color{red} 10.2.1 Option A: Spin the motor at different frequencies} $$
-$${\color{red}
+#### 10.2.1 Option A: Spin the motor at different frequencies
+
 In this section, we use the RPi microcontroller and code it in MicroPython. Connect the motor to the RPi as shown below.  
 
 ![RPi motor](./docPics/rpiMotor.png)
@@ -2621,7 +2735,7 @@ In this section, we use the RPi microcontroller and code it in MicroPython. Conn
 Next, let's write code for the microcontroller that spins the motor at different rates.  Open the Mu IDE, copy over the code below, and try it out.
 
 (See file src/microcontr/motor1MP.py.)
-}$$
+
 ```python
 
 from time import sleep
@@ -2643,13 +2757,13 @@ for i in range(5):
 
 
 ```
-This example rotates the motor. Each of the five times through the for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
+This example rotates the motor. Each of the five times through the outer for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
 
-As explained in section 10.2.0, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the pwm frequency, this command was not used for controlling the speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
+As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the pwm frequency, this command was not used for controlling the motor rotation speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
 
 
 #### 10.2.1 Option B: Spin the motor at different frequencies
-$${\color{darkgreen}
+
 
 In this section, we use the RPi microcontroller and code it in CircuitPython. Connect the motor to the RPi as shown below.
 
@@ -2658,7 +2772,7 @@ In this section, we use the RPi microcontroller and code it in CircuitPython. Co
 Next, let's write code for the microcontroller that spins the motor at different rates. Open the Mu IDE, copy over the code below, and try it out.
 
 (See file src/microcontr/motor1CP.py.)
-}$$
+
 ```python
 import board
 import pwmio
@@ -2687,6 +2801,11 @@ for i in range (5):
         time.sleep(0.150)
 
 ```
+
+This example rotates the motor. Each of the five times through the outer for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
+
+As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 150ms delay between each steps. While the PWM frequency is set to 50Hz in the constructor, PWM frequency is not used for controlling the motor rotation speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
+
 
 #### 10.2.1 Option C: Spin the motor at different frequencies
 
@@ -2719,9 +2838,11 @@ pwm.deinit()
 ```
 This example rotates the motor. Each of the five times through the for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
 
-As explained in section 10.2.0, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the pwm frequency, this command was not used for controlling the speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
+As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the pwm frequency, this command was not used for controlling the speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
 
-Initially, I had tried connecting the yellow wire of the motor to pin 6.0 instead. For some reason, that didn't work. I'm not sure why, but I was able to get this example to work using pin 6.1 instead. Except for the syntax of the PWM constructor, this example is the same asin 10.2.1 option A. When using the PSoC, use the four input constructor as shown. 
+During testing, I tried using pin 6.0 instead of pin 6.1 for the motor control wire. However, that did not work, and I'm not sure why.
+
+Except for the syntax of the PWM constructor, this example is the same asin 10.2.1 Option A. When using the PSoC, use the four input constructor as shown here. 
 
 #### 10.2.1 Option D: Spin the motor at different frequencies
 
@@ -2731,7 +2852,7 @@ Next, let's write code for the microcontroller that spins the motor at different
 
 ![Ard motor](./docPics/ardMotor.png)
 
-Additional reference: [](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8)
+This [Arduino servo tutorial](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8) was used as a reference.
 
 (See file src/microcontr/motor1Ard.ino.)
 ```c++
@@ -2784,6 +2905,16 @@ void loop() {
  
 }
 ```
+
+This example rotates the motor. Each of the five times through the for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
+
+As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 150ms delay between each steps. 
+
+Arduino has both servo libraries and pwm functions. However, in this example, we take a simpler approach. We directly send pulses at a fixed frequency, 1/(1500 microseconds)=667Hz. The duty cycle of these pulses determines the motor's angle. 
+
+We don't use the pulse frequency to control motor speed because it is too fast for our purposes. Instead, the number of steps used determines the motor rotation speed, which allows for slower and more observable speeds. 
+
+
 
 ### 10.3 Microcontrollers, motors, and asyncio
 
