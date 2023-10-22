@@ -2612,8 +2612,8 @@ We will control the motors by PWM. The PWM signals are periodic with some pulse 
 
 Motor rotation speed will be controlled by the number of steps and the time of delays between steps instead. Suppose we want to rotate the motor shaft between an angle of ten degrees and 100 degrees. We will accomplish this rotation by breaking it up into a number of steps, and we will delay a fixed time between the steps. The motor will take three times as much time to accomplish this rotation, for example, if we go between these angles in 90 steps with a 10ms delay between each step than if we go between these angles in 30 steps with a 10ms delay between each step. In the examples below, we will have a variable number of steps involved with a fixed time between these steps. Therefore, if we set our motor to take fewer steps all else equal, it will rotate faster. 
 
-#### 10.2.1 Option A: Spin the motor at different frequencies
-<span style="color:rgb(37,19,74)">
+#### $${\color{red} 10.2.1 Option A: Spin the motor at different frequencies} $$
+$${\color{red}
 In this section, we use the RPi microcontroller and code it in MicroPython. Connect the motor to the RPi as shown below.  
 
 ![RPi motor](./docPics/rpiMotor.png)
@@ -2621,9 +2621,8 @@ In this section, we use the RPi microcontroller and code it in MicroPython. Conn
 Next, let's write code for the microcontroller that spins the motor at different rates.  Open the Mu IDE, copy over the code below, and try it out.
 
 (See file src/microcontr/motor1MP.py.)
-</span>
+}$$
 ```python
-
 
 from time import sleep
 from machine import Pin, PWM
@@ -2650,7 +2649,8 @@ As explained in section 10.2.0, the rotation speed is actually controlled by the
 
 
 #### 10.2.1 Option B: Spin the motor at different frequencies
-<span style="color: rgb(12,48,23);">
+$${\color{darkgreen}
+
 In this section, we use the RPi microcontroller and code it in CircuitPython. Connect the motor to the RPi as shown below.
 
 ![RPi motor](./docPics/rpiMotor.png)
@@ -2658,7 +2658,7 @@ In this section, we use the RPi microcontroller and code it in CircuitPython. Co
 Next, let's write code for the microcontroller that spins the motor at different rates. Open the Mu IDE, copy over the code below, and try it out.
 
 (See file src/microcontr/motor1CP.py.)
-</span>
+}$$
 ```python
 import board
 import pwmio
@@ -2689,7 +2689,6 @@ for i in range (5):
 ```
 
 #### 10.2.1 Option C: Spin the motor at different frequencies
-<span style="color:blue">
 
 In this section, we use the PSoC and code it in MicroPython. Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.1 of the PSoC. 
 
@@ -2699,7 +2698,6 @@ Next, let's write code for the microcontroller that spins the motor at different
 
 
 (See file src/microcontr/motor1PSoC.py.)
-</span>
 ```python
 from time import sleep
 from machine import Pin, PWM
@@ -2726,7 +2724,6 @@ As explained in section 10.2.0, the rotation speed is actually controlled by the
 Initially, I had tried connecting the yellow wire of the motor to pin 6.0 instead. For some reason, that didn't work. I'm not sure why, but I was able to get this example to work using pin 6.1 instead. Except for the syntax of the PWM constructor, this example is the same asin 10.2.1 option A. When using the PSoC, use the four input constructor as shown. 
 
 #### 10.2.1 Option D: Spin the motor at different frequencies
-<span style="color:rgb(51,25,7);">
 
 In this section, we use the Arduino. Connect the motor to the Arduino. The figure below shows wiring for the Arduino Uno. 
 
@@ -2737,7 +2734,6 @@ Next, let's write code for the microcontroller that spins the motor at different
 Additional reference: [](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8)
 
 (See file src/microcontr/motor1Ard.ino.)
-</span>
 ```c++
 int servo = 9;
 int led=13; 
