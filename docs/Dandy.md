@@ -1972,10 +1972,83 @@ To generate a nonzero magnetic field, put a small refridgerator magnet near the 
 (See file src/microcontr/magnetArd.ino)
 
 ```c++
-print(hello)
+
+
+#include <Wire.h>
+#define ADDRESS 0x35 //Addreass of the sensor on the I2C bus
+
+int16_t BX=0;
+int16_t BY=0;
+int16_t BZ=0;
+int16_t T=0;
+void setup() {
+   Serial.begin(115200);
+   //Setup I2C for talking to the sensor
+   Wire.begin();
+   Wire.beginTransmission(ADDRESS);
+   //Here we set up the configuration register 10.
+   //We set bit DT to 0 indicating we want to measure temperature.
+   //We set bit AM to 0 indicating we want to measure BZ.
+   //We set bits TRIG to 01 to triger on read before first most significant bit.
+   //We set bits X2 and TL_mag to 000 for more sensitivity and no temperature correction.
+   //We set bit CP to 1 for odd parity.
+   Wire.write(0x10);
+   Wire.write(0b00010001); 
+   Wire.write(0b10010001); 
+   Wire.endTransmission();
+ }
+
+void loop () {
+  int X_first_hex, X_second_hex, X_third_hex, BX;
+  int Y_first_hex, Y_second_hex, Y_third_hex, BY;
+  int Z_first_hex, Z_second_hex, Z_third_hex, BZ;
+  
+  //Read in the first seven registers from the sensor which contain the magnetic values.
+  uint8_t buf[7];
+  Wire.requestFrom(ADDRESS, 7);
+  for (uint8_t i = 0; i < 7; i++) {
+    buf[i] = Wire.read();
+  }
+
+  //Start with the X component of the magnetic field. Pick off each of the three
+  //hexadecimal bytes. Reassemble them so the result is an itneger. 
+  X_first_hex=int(buf[0]/16);
+  X_second_hex=buf[0]%16;
+  X_third_hex=int(buf[4]/16);
+  BX=X_first_hex*256+X_second_hex*16+X_third_hex;
+  //The if statement converts it to a signed value.
+  if (BX>2048)
+    {BX=-1*(4096-BX);}
+
+  //Do the same for the Y component of the magnetic field.
+  Y_first_hex=int(buf[1]/16);
+  Y_second_hex=buf[1]%16;
+  Y_third_hex=buf[4]%16;
+  BY=Y_first_hex*256+Y_second_hex*16+Y_third_hex;
+  if (BY>2048)
+    {BY=-1*(4096-BY);}
+
+  //Do the same for the Z component of the magnetic field. 
+  Z_first_hex=int(buf[2]/16);
+  Z_second_hex=buf[2]%16;
+  Z_third_hex=buf[5]%16;
+  BZ=Z_first_hex*256+Z_second_hex*16+Z_third_hex;
+  if (BZ>2048)
+    {BZ=-1*(4096-BZ);}
+
+  //Assemble a string in JSON format containing BX, BY, and BZ, and print it.
+  Serial.print("\{\"BX\":\"");
+  Serial.print(BX);
+  Serial.print("\",\"BY\":\"");
+  Serial.print(BY);
+  Serial.print("\",\"BZ\":\"");
+  Serial.print(BZ);
+  Serial.println("\"\}");
+  delay(500);  
+}
+
 ```
 
-(TODO: Finish writing up this section.)
 
 
 #### 8.5.3 Vector example, computer side
@@ -2540,7 +2613,7 @@ We will control the motors by PWM. The PWM signals are periodic with some pulse 
 Motor rotation speed will be controlled by the number of steps and the time of delays between steps instead. Suppose we want to rotate the motor shaft between an angle of ten degrees and 100 degrees. We will accomplish this rotation by breaking it up into a number of steps, and we will delay a fixed time between the steps. The motor will take three times as much time to accomplish this rotation, for example, if we go between these angles in 90 steps with a 10ms delay between each step than if we go between these angles in 30 steps with a 10ms delay between each step. In the examples below, we will have a variable number of steps involved with a fixed time between these steps. Therefore, if we set our motor to take fewer steps all else equal, it will rotate faster. 
 
 #### 10.2.1 Option A: Spin the motor at different frequencies
-
+<span style="color:rgb(37,19,74)">
 In this section, we use the RPi microcontroller and code it in MicroPython. Connect the motor to the RPi as shown below.  
 
 ![RPi motor](./docPics/rpiMotor.png)
@@ -2548,7 +2621,7 @@ In this section, we use the RPi microcontroller and code it in MicroPython. Conn
 Next, let's write code for the microcontroller that spins the motor at different rates.  Open the Mu IDE, copy over the code below, and try it out.
 
 (See file src/microcontr/motor1MP.py.)
-
+</span>
 ```python
 
 
@@ -2577,7 +2650,7 @@ As explained in section 10.2.0, the rotation speed is actually controlled by the
 
 
 #### 10.2.1 Option B: Spin the motor at different frequencies
-
+<span style="color:rgb(12,48,23)">
 In this section, we use the RPi microcontroller and code it in CircuitPython. Connect the motor to the RPi as shown below.
 
 ![RPi motor](./docPics/rpiMotor.png)
@@ -2585,7 +2658,7 @@ In this section, we use the RPi microcontroller and code it in CircuitPython. Co
 Next, let's write code for the microcontroller that spins the motor at different rates. Open the Mu IDE, copy over the code below, and try it out.
 
 (See file src/microcontr/motor1CP.py.)
-
+</span>
 ```python
 import board
 import pwmio
@@ -2616,6 +2689,7 @@ for i in range (5):
 ```
 
 #### 10.2.1 Option C: Spin the motor at different frequencies
+<span style="color:rgb(7,13,9)">
 
 In this section, we use the PSoC and code it in MicroPython. Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.1 of the PSoC. 
 
@@ -2625,7 +2699,7 @@ Next, let's write code for the microcontroller that spins the motor at different
 
 
 (See file src/microcontr/motor1PSoC.py.)
-
+</span>
 ```python
 from time import sleep
 from machine import Pin, PWM
@@ -2652,6 +2726,7 @@ As explained in section 10.2.0, the rotation speed is actually controlled by the
 Initially, I had tried connecting the yellow wire of the motor to pin 6.0 instead. For some reason, that didn't work. I'm not sure why, but I was able to get this example to work using pin 6.1 instead. Except for the syntax of the PWM constructor, this example is the same asin 10.2.1 option A. When using the PSoC, use the four input constructor as shown. 
 
 #### 10.2.1 Option D: Spin the motor at different frequencies
+<span style="color:rgb(51,25,7)">
 
 In this section, we use the Arduino. Connect the motor to the Arduino. The figure below shows wiring for the Arduino Uno. 
 
@@ -2662,7 +2737,7 @@ Next, let's write code for the microcontroller that spins the motor at different
 Additional reference: [](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8)
 
 (See file src/microcontr/motor1Ard.ino.)
-
+</span>
 ```c++
 int servo = 9;
 int led=13; 
@@ -2869,6 +2944,141 @@ asyncio.run(main())
 
 #### 10.3.1 Option B: Microcontroller code, now with asyncio
 
+You have to separately install asyncio along with adafruit_ticks. 
+I used circup, following the reference at [circup](https://learn.adafruit.com/keep-your-circuitpython-libraries-on-devices-up-to-date-with-circup
+)
+
+```python
+#Reference on asyncio and MicroPython and the RPi:
+#https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c
+
+#MicroPython and deques:
+#https://docs.micropython.org/en/latest/library/collections.html
+#https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py
+
+#CircuitPython also has a deque in the collections class.
+#https://docs.circuitpython.org/en/latest/docs/library/collections.html
+
+#More refs:
+#https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview
+#https://learn.adafruit.com/keep-your-circuitpython-libraries-on-devices-up-to-date-with-circup
+
+import board
+import pwmio
+import time
+import digitalio
+import sys
+import asyncio
+import collections
+import select
+
+# Settings and globals
+led=digitalio.DigitalInOut(board.LED)
+led.direction=digitalio.Direction.OUTPUT
+pwm = pwmio.PWMOut(board.GP1, frequency=50)
+led.value=False
+steps=50
+# setup poll to read USB port
+poll_object = select.poll()
+poll_object.register(sys.stdin,1)
+
+#Set up a global deque that can store up to 100 elements
+q=()
+bigq=collections.deque(q, 100)
+
+# The use_serial_data task reads from the deque and uses what it finds to change the motor spin speed.
+#Pick stuff off from the deque until you get 'X'. Then, reassemble the number you found.
+#Then, spin the motor at that speed.
+#The advantage of splitting up the check_serial_data and use_serial_data tasks is that
+#the microcontroller can continue to read, even if the motor is still spinning.
+async def use_serial_data():
+    print('Started use_serial_data task')
+    val='Z'
+    steps=50
+    tempMessage=''
+    tempNum=0.0
+    while True:
+        #Check if the deque is not empty
+        if bigq:
+            #Pop stuff off the deque.
+            val= bigq.popleft()
+            #If val is not X, it is part of a number.
+            if val != 'X':
+                #Concatenate the values you read into a string.
+                tempMessage=tempMessage+val
+                led.value=True
+            #If val is X, you've reached the end of the number.
+            else:
+                #The first character is garbage. Drop it.
+                tempMessage=tempMessage[-1:]
+                #print(tempMessage)
+                #Cast the bytes you received to a float.
+                tempNum=float(tempMessage)
+                #print(tempNum)
+                led.value=False
+                #We read in floating point values 0.0 to 10.0.
+                #We multiply by 10 and cast to integer so the motor steps vary 0 to 100.
+                steps=int(tempNum*10)
+                print(steps)
+                #Reset some variables so we are ready to for the next number.
+                tempMessage=''
+                tempNum=0
+                val='Z'
+                await spin_motor(steps)
+        await asyncio.sleep(.2)
+
+
+# The check_serial_data task reads serially from USB and puts what it finds in the deque.
+#Read a character at a time and shove it in the deque.
+#Assume the transmitter ends each message with 'X'.
+async def check_serial_data():
+    print('Started check_serial_data task')
+    ch='X'
+    while True:
+        await asyncio.sleep(.2)
+        #read as character and put in queue
+        if poll_object.poll(0):
+            ch =  sys.stdin.read(1)
+            print (ch)
+            bigq.append(ch)
+
+
+# The spin_motor task spins the motor at the desired speed.
+#Note, it is really the number of steps and delays between each step that set the speed,
+#not the actual pwm frequency. This task spins the motor forward and back.
+async def spin_motor(mySteps):
+    print('Started spin_motor task')
+    #Rotate forward
+    print(mySteps)
+    for j in range(mySteps):
+        duty_cyc=1.0*j/(steps);
+        pwm.duty_cycle=int(65535.0*duty_cyc/10.0)
+        time.sleep(0.150)
+
+    #rotate back
+    for j in range(steps):
+        duty_cyc=(1-(1.0*j/(steps)))
+        pwm.duty_cycle=int(65535.0*duty_cyc/10.0)
+        time.sleep(0.150)
+    await asyncio.sleep(0.1)
+    #print('z')
+
+
+##Define the main function.
+async def main():
+    print("Hello")
+    # Start the three tasks and immediately return
+    asyncio.create_task(use_serial_data())
+    asyncio.create_task(check_serial_data())
+    asyncio.create_task(spin_motor(steps))
+    
+    await check_serial_data()
+
+
+#Run the main loop
+asyncio.run(main())
+
+```
 #### 10.3.1 Option C: Microcontroller code, now with asyncio
 
 #### 10.3.1 Option D: Microcontroller code, now with asyncio
