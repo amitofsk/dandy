@@ -2650,7 +2650,7 @@ As explained in section 10.2.0, the rotation speed is actually controlled by the
 
 
 #### 10.2.1 Option B: Spin the motor at different frequencies
-<span style="color:rgb(12,48,23)">
+<span style="color: rgb(12,48,23);">
 In this section, we use the RPi microcontroller and code it in CircuitPython. Connect the motor to the RPi as shown below.
 
 ![RPi motor](./docPics/rpiMotor.png)
@@ -2689,7 +2689,7 @@ for i in range (5):
 ```
 
 #### 10.2.1 Option C: Spin the motor at different frequencies
-<span style="color:rgb(7,13,9)">
+<span style="color:blue">
 
 In this section, we use the PSoC and code it in MicroPython. Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.1 of the PSoC. 
 
@@ -2726,7 +2726,7 @@ As explained in section 10.2.0, the rotation speed is actually controlled by the
 Initially, I had tried connecting the yellow wire of the motor to pin 6.0 instead. For some reason, that didn't work. I'm not sure why, but I was able to get this example to work using pin 6.1 instead. Except for the syntax of the PWM constructor, this example is the same asin 10.2.1 option A. When using the PSoC, use the four input constructor as shown. 
 
 #### 10.2.1 Option D: Spin the motor at different frequencies
-<span style="color:rgb(51,25,7)">
+<span style="color:rgb(51,25,7);">
 
 In this section, we use the Arduino. Connect the motor to the Arduino. The figure below shows wiring for the Arduino Uno. 
 
