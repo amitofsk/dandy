@@ -56,7 +56,7 @@ Hardware used:
 - Resistors (300 $\Omega$ - 1k $\Omega$ ) 
 - [Potentiometer](https://www.digikey.com/en/products/detail/bourns-inc/PTV09A-4025U-B103/3781137) that fits in the protoboard
 - LED
-- Small [servo motor](https://www.digikey.com/en/products/filter/motors-ac-dc/178?s=N4IgTCBcDaIM4FMBOA3A9iAugXyA) (section 10.2 only)
+- Small [servo motor](https://www.digikey.com/en/products/detail/adafruit-industries-llc/169/5154651) (Sections 10.2 and 10.3 only)
 - The TLE493DW2B6-A0 [magnetic field sensor](https://www.digikey.com/en/products/detail/infineon-technologies/S2GO3DTLE493DW2B6A0TOBO1/10667589?s=N4IgTCBcDaICoBkCiAWAnAZgCIHUwCEA2AWgEEAGEAXQF8g) (Section 8.5 only)
 - USB cable to connect your microcontroller
 - Microcontroller
@@ -2922,33 +2922,27 @@ In this example, we send a signal from the computer to the microcontroller, and 
 
 We run into an issue we also encountered in Section 7.3. We want the microcontroller to simultaneously do two things. First, we want it to communicate with the computer, and second we want it to control the motor. 
 
-In Section 7.3, we ran into this problem on the computer. Here we're running in to this problem on the microcontroller. In Section 7.3, we solved this problem using asyncIO. The MicroPython, CircuitPython, and Arduino also have asyncIO instructions, so we'll use the same technique here.
+In Section 7.3, we ran into this problem on the computer. Here we're running in to this problem on the microcontroller. In Section 7.3, we solved this problem using asyncIO. The MicroPython and CircuitPython also have asyncIO instructions, so we'll use the same technique here. Arduino does not have asyncIO instructions. 
 
 The microcontrollers we're using don't have an operating system with a scheduler, and most microcontrollers only have one processor. For these reasons, we can't run multiple threads or multiple processes. The asyncIO functionality, however, allow us to run multiple tasks in a way that seems simultaneous.  
 
-[This site](https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c) contains a nice example of using asyncIO in MicroPython, and it was used as a reference. 
+[This site](https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c) contains a nice example of using asyncIO in MicroPython, and it was used as a reference. This [tutorial on CircuitPython and ayncIO](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview)  was used as a reference too.
 
-This [tutorial on CircuitPython and ayncIO](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview)  was used as a reference too.
-Refs for Arduino...
-
-More details about the structure of this example ...
-
-More info on the keywords async and await...
+This example involves both writing Python code for the computer as well as writing code for the microcontroller. When you run the Python code on the computer, you see a KnobDisplay widget and a button. If you dial the knob then press the button, a corresponding value is transmitted via the USB cable to the microcontroller. This value sets the number of steps, and hence the speed, of the motor attached to the microcontroller. 
 
 
+#### 10.3.1 Option A: Microcontroller code, now with asyncIO
+Let's start by writing the microcontroller code for this example. In this section, we write MicroPython code for the RPi. Open the Mu IDE and copy the example below.
 
-#### 10.3.1 Option A: Microcontroller code, now with asyncio
-In this section, we write MicroPython code for the RPi. Open the Mu IDE and copy the example below.
+As in the example of section 7.3, this example uses asyncIO and multiple tasks. The use of asyncIO allows the microcontroller to appear to work on multiple tasks simultaneously.  
 
-Take a look at the code. As in the example of section 7.3, this example uses asyncIO and multiple tasks. 
+This program has three asynchronous tasks. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, which represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
 
-More specifically, it uses three tasks that seem to run simultaneously. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, whcih represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
+The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because MicroPython contains a deque class in the collections package, but it does not contain a queue class. [Queue classes](https://github.com/peterhinch/micropython-async/blob/master/v3/primitives/queue.py) have been written for MicroPython, but they are not packaged with the langauge. Information on the deque class can be found in the [MicroPython documentation](https://docs.micropython.org/en/latest/library/collections.html) and  [MicropPython source packages](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py).   
 
-The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. It is used here instead because MicroPython contains a deque class in the collections package, but it does not contain a queue class. [Queue classes](https://github.com/peterhinch/micropython-async/blob/master/v3/primitives/queue.py) have been written for MicroPython, but they are not packaged with the langauge. Information on the deque class can be found at [https://docs.micropython.org/en/latest/library/collections.html](https://docs.micropython.org/en/latest/library/collections.html) and [https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py).   
+The third task is named `use_serial_data`. This task takes characters off the deque, reassembles them, and casts them into floating point numbers. It assumes the messages sent from the computer end in the character `X` to make data processing easier. The values from the computer range from 0.0 to 10.0. These are scaled by 10 to represent the number of steps the motor takes as it turns back and forth between fixed points. As explained above, a larger number of steps corresponds to a slower rotation speed. 
 
-The third task is named `use_serial_data`. This takes characters off the deque, reassembles them, and casts them into floating point numbers. It assumes the messages sent from the computer end in the character `X` to make data processing easier. The values from the computer range from 0.0 to 10.0. These are scaled by 10 to represent the number of steps the motor takes as it turns back and forth between fixed points. As explained above, a larger number of steps corresponds to a slower rotation speed. 
-
-The `use_serial_data` and `check_serial_data` tasks could have been combined in to one. However, splitting them up illustrates the advantages of asyncIO. The microcontroller can continue to read data from the USB bus even if the motor is still in motion. 
+The `use_serial_data` and `check_serial_data` tasks could have been combined in to one. However, splitting them up illustrates the advantages of asyncIO. The microcontroller can continue to read data from the USB bus and process it even if the motor is still in motion. 
 
 When you first start this example, the motor spins forward and back once. At this point, it is waiting for messages from the computer before anything else happens. We will continue this example in section 10.3.2. 
 
@@ -3069,27 +3063,28 @@ asyncio.run(main())
 ```
 
 
-#### 10.3.1 Option B: Microcontroller code, now with asyncio
+#### 10.3.1 Option B: Microcontroller code, now with asyncIO
 
-You have to separately install asyncio along with adafruit_ticks. 
-I used circup, following the reference at [circup](https://learn.adafruit.com/keep-your-circuitpython-libraries-on-devices-up-to-date-with-circup
-)
+Let's start by writing the microcontroller code for this example. In this section, we write CircuitPython code for the RPi. Open the Mu IDE and copy the example below.
+
+This example requires two additional libraries which must be installed separately, `asyncio` and `adafruit_ticks`. You can install them manually by putting them in a `lib` directory on the RPi. Alternatively, you can use the `circup` tool following this [circup reference](https://learn.adafruit.com/keep-your-circuitpython-libraries-on-devices-up-to-date-with-circup). For more information on asyncIO, see [adafruit's tutorial on asyncIO](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview).
+
+As in the example of section 7.3, this example uses asyncIO and multiple tasks. The use of asyncIO allows the microcontroller to appear to work on multiple tasks simultaneously.
+
+This program has three asynchronous tasks. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, whcih represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
+
+The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because CircuitPython contains a deque class in the collections package, but it does not contain a queue class. Information on the deque class can be found in the [CircuitPython documentation](https://docs.circuitpython.org/en/latest/docs/library/collections.html).
+
+The third task is named `use_serial_data`. This task takes characters off the deque, reassembles them, and casts them into floating point numbers. It assumes the messages sent from the computer end in the character `X` to make data processing easier. The values from the computer range from 0.0 to 10.0. These are scaled by 10 to represent the number of steps the motor takes as it turns back and forth between fixed points. As explained above, a larger number of steps corresponds to a slower rotation speed.
+
+The `use_serial_data` and `check_serial_data` tasks could have been combined in to one. However, splitting them up illustrates the advantages of asyncIO. The microcontroller can continue to read data from the USB bus and process it even if the motor is still in motion.
+
+When you first start this example, the motor spins forward and back once. At this point, it is waiting for messages from the computer before anything else happens. We will continue this example in section 10.3.2.
+
+
+
 
 ```python
-#Reference on asyncio and MicroPython and the RPi:
-#https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c
-
-#MicroPython and deques:
-#https://docs.micropython.org/en/latest/library/collections.html
-#https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py
-
-#CircuitPython also has a deque in the collections class.
-#https://docs.circuitpython.org/en/latest/docs/library/collections.html
-
-#More refs:
-#https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview
-#https://learn.adafruit.com/keep-your-circuitpython-libraries-on-devices-up-to-date-with-circup
-
 import board
 import pwmio
 import time
@@ -3206,12 +3201,15 @@ async def main():
 asyncio.run(main())
 
 ```
-#### 10.3.1 Option C: Microcontroller code, now with asyncio
+#### 10.3.1 Option C: Microcontroller code, now with asyncIO
+This example is incomplete.
 
-#### 10.3.1 Option D: Microcontroller code, now with asyncio
+#### 10.3.1 Option D: Microcontroller code, now with asyncIO
+
+The Arduino language does not have asyncIO functions. 
 
 #### 10.3.2 Sending motor controls from the computer
-In this section, we write the Python code for the computer. Close the Mu, ArduinoLab, or Arduino IDE, and open the IDLE IDE. This code will send numerical values from the computer, over the USB cable, to the microcontroller. 
+In this section, we write the Python code that runs on the computer for this example. Close the Mu, ArduinoLab, or Arduino IDE, and open the IDLE IDE. This code will send numerical values from the computer, over the USB cable, to the microcontroller. 
 
 This code is simpler than the microcontroller code.  We only need one loop, for the GUI, so there is no need for asyncIO instructions here. 
 

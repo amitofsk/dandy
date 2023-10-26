@@ -1,5 +1,5 @@
 # Data Acquisition aNd DisplaY
-**THIS IS A SHORT VERSION OF THE TUTORIAL, FOR ECE483**
+**THIS IS A SHORT VERSION OF THE TUTORIAL, GO TO THE FILE DANDY.MD FOR THE LONG VERSION INSTEAD.**
 
 ## 1.0 Introduction
 ### 1.1 What is DANDY?
@@ -1345,10 +1345,9 @@ Therefore, the example section 10.2 is only for option D, the Arduino.
 
 ### 10.1 KnobDisplay widget without hardware
 
-DANDY also includes a `KnobDisplay` widget. Try out the example below. It contains a `KnobDisplay` widget, a `SlideDisplay` widget, and a quit button. Put your cursor over the `KnobDisplay` widget and scroll the middle mouse button.
-You will see the `SlideDisplay` widget change.
+DANDY also includes a `KnobDisplay` widget. Try out the example below. It contains a `KnobDisplay` widget, a `SlideDisplay` widget, and a quit button. Put your cursor over the `KnobDisplay` widget and click the left or right mouse button to dial the knob. You will see the `SlideDisplay` widget change. This example relies on the KnobDisplay widget detailed in the file `src/widgets/KnobDisplay.py`.
 
-Note that in this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
+In this example, we don't run Tkinter's main loop. Instead, we run the function `updater` which we define ourselves, and this function manually updates Tkinter's loop.
 
 (See file src/examples/KnobDemo.py.)
 
@@ -1357,9 +1356,10 @@ Note that in this example, we don't run Tkinter's main loop. Instead, we run the
 ```python
 import tkinter as tk
 import sys
-sys.path.append('../widgets') 
-import KnobDisplay as kd 
+sys.path.append('../widgets')
+import KnobDisplay as kd
 import SlideDisplay as sd
+import time
 
 class KnobDemo(tk.Tk):
     def __init__(self):
@@ -1385,14 +1385,16 @@ class KnobDemo(tk.Tk):
 
     def updater(self):
         while True:
+            time.sleep(0.1)
             print(self.value)
             self.value=self.knob1.get_angle()
-            self.slide1.set_to_value(10*self.value)    
+            self.slide1.set_to_value(10*self.value)
             self.update()
-            
+
 
 if __name__=="__main__":
     mygui=KnobDemo()
+
 
 ```
 ![KnobDisplay demo](./docPics/KnobDisplay.png)
