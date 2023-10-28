@@ -18,9 +18,9 @@ import SimplePlotDisplay as spd
 
 #Set up PORT.
 #If you are on Windows, uncomment the next line and adjust as needed.
-#PORT='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
+#PORT='/dev/ttyACM0'
 
 
 class AnalogHWShort(sg.SerialAndGui):

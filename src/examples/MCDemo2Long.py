@@ -1,4 +1,10 @@
-#Here's the long version.
+#See the tutorial for a full explanation of this example. Start
+#by wiring a button to a RPi microcontroller and using a USB cable
+#to connect the RPi to the computer. When you run this example, you will
+#see a RPiPicoDisplay widget that looks like the RPi microcontroller.
+#When you press the button wired to the microcontroller, you will
+#see the LED near that button on the widget change color.
+#This class is not a child of SerialAndGUI, so you can see the details here.
 
 import asyncio
 import tkinter as tk
@@ -37,11 +43,8 @@ class MCDemo2(tk.Tk):
         #data in the queue.
 
         #Set up to read from the serial port.
-        #ports=list(port_list.comports())
-        #print(ports[0].device)
-        #port=ports[0].device
         #If you are on windows and you get an error saying it can't find the port, try the line below.
-        #port='COM6'
+        #port='COM1'
         #If you are on linux and you get an error saying it can't find the port, try the line below.
         port='/dev/ttyACM0'
         baudrate=115200
@@ -88,9 +91,7 @@ class MCDemo2(tk.Tk):
             task.cancel()
             self.loop.stop()
             self.destroy()
-                
-
-
+            
 
 if __name__=="__main__":
     loop=asyncio.get_event_loop()

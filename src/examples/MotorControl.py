@@ -4,9 +4,11 @@
 #is both printed and sent serially down the USB cable. The bottom button
 #is a quit button. All messages sent via USB end in the character X to
 #identify the end of the message.
-
-#Paragraph on the relationship between dial value, motors steps, and
-#rotation speed...
+#
+#The dial controls the number of steps the motor takes in going from a
+#fixed starting angle to a fixed stopping angle. Therefore, the larger
+#the value on the dial, the more steps are taken with a fixed delay between
+#steps, and therefore the slower the motor rotates.
 
 import tkinter as tk
 import time
@@ -16,11 +18,10 @@ import sys
 sys.path.append('../widgets') 
 import KnobDisplay as kd
 
-
 #If you are on Windows, uncomment the next line and adjust as needed.
-#PORT='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
+#PORT='/dev/ttyACM0'
 
 class MotorControl(tk.Tk):
     def __init__(self):

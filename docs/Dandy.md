@@ -114,7 +114,7 @@ pip install pyserial
 ### 3.4 Download the DANDY library.
 The next step is to download the DANDY library from github. Github is a website that hosts tons of open source software projects. 
 <br><br>
-This step requires Git. Git comes with Linux, but requires separate installation with Windows.  On Windows, donwload and install it from [Git's website](https://git-scm.com). Once you install it, open a GitBash terminal.  
+This step requires Git. Git comes with Linux, but requires separate installation with Windows.  On Windows, download and install it from [Git's website](https://git-scm.com). Once you install it, open a GitBash terminal.  
 <br><br>
 Change to the directory that you want work in. Then, use the following command in the terminal to download the DANDY repository from github. 
  ```python
@@ -639,7 +639,7 @@ Now we're ready to write our first MicroPython program that will run on the PSoC
 <br><br>
 Write the following instruction in the editor, and press the `Run` button. You should see the result in the bottom terminal window.
 
-The print statement is actually evaluated on the micrcocontroller. The resulting message is sent serially via the USB cable to the computer and displayed in the terminal of the Arduino Lab IDE. 
+The print statement is actually evaluated on the microcontroller. The resulting message is sent serially via the USB cable to the computer and displayed in the terminal of the Arduino Lab IDE. 
 
 ```python
 print ("Hello")
@@ -1707,9 +1707,9 @@ More information is available in the sensor's [user's manual](https://www.infine
 
 This sensor communicates with the microcontroller using I2C, a standard protocol for connecting sensors or other related devices. For more information on this protocol, see Adafruit's [I2C tutorial](https://learn.adafruit.com/working-with-i2c-devices/overview?gclid=Cj0KCQjw6KunBhDxARIsAKFUGs8a1IfnOsOuboUUTYSDkMfGUpKmnPyXHH_ypoh6JR9ak4MTL3FhwXUaArUxEALw_wcB). 
 
-I2C communication requires four wires: 3.3V power, ground, Serial DAta (SDA) which carries the data, and Serial CLock (SCL) for a timing signal. 
+I2C communication requires four wires: 3.3V power, ground, Serial Data (SDA) which carries the data, and Serial Clock (SCL) for a timing signal. 
 
-To generate a magnetic field, put a refridgerator magnet near the sensor.
+To generate a magnetic field, put a refrigerator magnet near the sensor.
 
 
 #### 8.5.2 Option A: Vector example, microcontroller side
@@ -1726,7 +1726,7 @@ This code reads the X, Y, and Z components of the magnetic field from the sensor
 
 Open up the example below, and upload it to the microcontroller.
 
-To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
+To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
 This [MicroPython i2c tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2) was used as a reference. 
 
@@ -1814,7 +1814,7 @@ Two `writeto_mem` instructions are used before the `while` loop. To use the sens
 
 The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value. 
 
-The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.    
+The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled into  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.    
 
 
 #### 8.5.2 Option B: Vector example, microcontroller side
@@ -1836,9 +1836,9 @@ This code reads the X, Y, and Z components of the magnetic field from the sensor
 
 Open up the example below, and upload it to the microcontroller.
 
-To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
+To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
-This [tutorial on CircuityPython and i2c](https://learn.adafruit.com/circuitpython-essentials/circuitpython-i2c) and [discussion on CircuitPython and i2c](https://stackoverflow.com/questions/69803934/trouble-using-i2c-in-circuitpython-working-micropython-example) were used as references.
+This [tutorial on CircuitPython and i2c](https://learn.adafruit.com/circuitpython-essentials/circuitpython-i2c) and [discussion on CircuitPython and i2c](https://stackoverflow.com/questions/69803934/trouble-using-i2c-in-circuitpython-working-micropython-example) were used as references.
 
 (See file src/microcontr/magnetCP.py.)
 
@@ -1937,7 +1937,7 @@ Two `writeto` instructions are used before the `while` loop. To use the sensor, 
 
 The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
 
-The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
+The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled into  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
 
 
 #### 8.5.2 Option C: Vector example, microcontroller side
@@ -1959,7 +1959,7 @@ This code reads the X, Y, and Z components of the magnetic field from the sensor
 
 Open up the example below, and upload it to the microcontroller.
 
-To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
+To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
 This [MicroPython i2c tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2) and this [MicroPython PSoC page](https://github.com/Infineon/micropython/blob/ports-psoc6-ifx/docs/psoc6/quickref.rst) were used as references.
 
@@ -2052,7 +2052,7 @@ Two `writeto_mem` instructions are used before the `while` loop. To use the sens
 
 The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
 
-The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
+The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled into  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
 
 
 
@@ -2073,7 +2073,7 @@ This code reads the X, Y, and Z components of the magnetic field from the sensor
 
 Open up the example below, and upload it to the microcontroller.
 
-To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
+To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
 This [Arduino example for the sensor](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707) was used as a reference. 
 
@@ -2161,7 +2161,7 @@ The Wire library is used to facility i2c communication. To use the sensor, we ne
 
 The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(buf[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=buf[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(buf[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The lines `if (BX>2048) {BX=-1 * (4096-BX);}` convert the two's complement value to a signed value.
 
-The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled inot  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
+The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled into  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
 
 
 #### 8.5.3 Vector example, computer side
@@ -2172,7 +2172,7 @@ This example sets up a GUI with a `VectorDisplay` widget as well as a quit butto
 
 This example uses asyncIO to simultaneously read the data and update the GUI. The `MagnetDemo` class of this example is a child of class `SerialAndGUI`. The class `SerialAndGUI` uses three tasks: `check_serial_data`, `use_serial_data`, and `updater`. Here, we just overload the `use_serial_data` function so that it is specific for this example.  
 
-Run this example. To generate a nonzero magnetic field, put a small refridgerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.  
+Run this example. To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.  
 
 (See file src/examples/MagnetDemo.py.)
 
@@ -2344,13 +2344,13 @@ if __name__=="__main__":
 
 #### 9.2 Microcontroller widgets, example with hardware
 
-Follow the instructions in section 5.1.1 to wire a pushbutton to your micrcontroller, and use a USB cable to plug your micrcontroller into the computer. Upload the `serialWriteMP.py`, `serialWriteCP.py`, `serialWritePSoC.py`, or `serialWriteArd.ino` example used in section 5.1.4 to that microcontroller. When the user presses the pushbutton, `T` is sent serially to the computer. When the pushbutton is not pressed, `F` is sent.
+Follow the instructions in section 5.1.1 to wire a pushbutton to your microcontroller, and use a USB cable to plug your microcontroller into the computer. Upload the `serialWriteMP.py`, `serialWriteCP.py`, `serialWritePSoC.py`, or `serialWriteArd.ino` example used in section 5.1.4 to that microcontroller. When the user presses the pushbutton, `T` is sent serially to the computer. When the pushbutton is not pressed, `F` is sent.
 
 Next, we'll program the computer to respond to the character received. Close the Arduino or Mu IDE. Open the IDLE IDE. Copy the example below or load the file `examples/MCDemo2Short.py` that came with the DANDY library. Set `PORT` at the top of the example for your machine.
 
 When you run this example, you will see a widget that looks like a RPi microcontroller. The line which creates the widget, `self.mc1=rpp.RPiPicoDisplay(self)`, can be replaced with a line to create one of the widgets for the other microcontrollers instead if desired. 
 
-Run the example on the computer. Press the pushbutton attached to the microcontroller. You should see the color of the `LEDDisplay` widget near pin 21 cahnge. 
+Run the example on the computer. Press the pushbutton attached to the microcontroller. You should see the color of the `LEDDisplay` widget near pin 21 change. 
 
 This example uses the asyncIO library. The `MCDemo2Short` class defined in this example is a child of the `SerialAndGui` class defined in the file `src/utilities/SerialAndGui.py`. The `MCDemo2Short` class redefines the parent's `use_serial_data` member function. The file `MCDemo2Long.py` contains the same example without relying on the `SerialAndGui` parent class.
 
@@ -2439,7 +2439,7 @@ Now let's write the Python program for the computer that displays the widgets. O
 
 This example uses the asyncIO library. It involves four tasks: `check_serial_dataA`, `check_serial_dataB`, `use_serial_data`, and `updater`. In example with one microcontroller, the details of the use of asyncIO were hidden in the parent class `SerialAndGui`. That technique won't work here because we have a fourth task, so the details of the use of asyncIO are included in this example.
 
-When you first run this example, you will see two widgets that look like the Arduino Nano Every microcontroller. The microcontrollers are sending infromation to the computer in JSON format, and one element of the JSON, `boardType`, contains the microcontroller type. For the first messages received, this example identifies the board type and changes the widget to look like that particular microcontroller. This example is set up to recognize only Arduino Nano Everys, RPis, and Arduino Unos, but other microcontroller types with avaialble widgets could be included too. 
+When you first run this example, you will see two widgets that look like the Arduino Nano Every microcontroller. The microcontrollers are sending information to the computer in JSON format, and one element of the JSON, `boardType`, contains the microcontroller type. For the first messages received, this example identifies the board type and changes the widget to look like that particular microcontroller. This example is set up to recognize only Arduino Nano Everys, RPis, and Arduino Unos, but other microcontroller types with available widgets could be included too. 
 
 The `set_slide` member function is used to display a `SlideDisplay` widget near one pin of a microcontroller widget. The `set_dial` member function is used to display a `DialDisplay` widget near one pin of the other microcontroller widget.
 
@@ -2714,7 +2714,7 @@ In this section, we'll control a small servo motor directly using Pulse Width Mo
 
 Instead of getting sensor data in to a microcontroller, in this section we send signals out of the microcontroller to control an actuator. More specifically, we use the microcontroller to control the rotation rate of a small servo motor. 
 
-In the next section, 10.3, we'll send signals from the computer, overthe USB cable to the microcontroller, and to the connected motor to control the rotation rate of the motor. 
+In the next section, 10.3, we'll send signals from the computer, over the USB cable to the microcontroller, and to the connected motor to control the rotation rate of the motor. 
 
 Most motors require a significant amount of power and are used to deliver a significant amount of torque to a load. However, we'll be using a small servo motor that can be powered directly from the microcontroller and does not need any separate power management. For this reason, the torque it can provide is limited. 
 
@@ -2759,7 +2759,7 @@ for i in range(5):
 ```
 This example rotates the motor. Each of the five times through the outer for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
 
-As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the pwm frequency, this command was not used for controlling the motor rotation speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
+As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the PWM frequency, this command was not used for controlling the motor rotation speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
 
 
 #### 10.2.1 Option B: Spin the motor at different frequencies
@@ -2838,11 +2838,11 @@ pwm.deinit()
 ```
 This example rotates the motor. Each of the five times through the for loop, the motor spins at a different speed. In each of theses times through the loop, the motor spins to a fixed location forward then back.
 
-As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the pwm frequency, this command was not used for controlling the speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
+As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the PWM frequency, this command was not used for controlling the speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
 
 During testing, I tried using pin 6.0 instead of pin 6.1 for the motor control wire. However, that did not work, and I'm not sure why.
 
-Except for the syntax of the PWM constructor, this example is the same asin 10.2.1 Option A. When using the PSoC, use the four input constructor as shown here. 
+Except for the syntax of the PWM constructor, this example is the same as in 10.2.1 Option A. When using the PSoC, use the four input constructor as shown here. 
 
 #### 10.2.1 Option D: Spin the motor at different frequencies
 
@@ -2910,7 +2910,7 @@ This example rotates the motor. Each of the five times through the for loop, the
 
 As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 150ms delay between each steps. 
 
-Arduino has both servo libraries and pwm functions. However, in this example, we take a simpler approach. We directly send pulses at a fixed frequency, 1/(1500 microseconds)=667Hz. The duty cycle of these pulses determines the motor's angle. 
+Arduino has both servo libraries and PWM functions. However, in this example, we take a simpler approach. We directly send pulses at a fixed frequency, 1/(1500 microseconds)=667Hz. The duty cycle of these pulses determines the motor's angle. 
 
 We don't use the pulse frequency to control motor speed because it is too fast for our purposes. Instead, the number of steps used determines the motor rotation speed, which allows for slower and more observable speeds. 
 
@@ -2938,7 +2938,7 @@ As in the example of section 7.3, this example uses asyncIO and multiple tasks. 
 
 This program has three asynchronous tasks. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, which represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
 
-The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because MicroPython contains a deque class in the collections package, but it does not contain a queue class. [Queue classes](https://github.com/peterhinch/micropython-async/blob/master/v3/primitives/queue.py) have been written for MicroPython, but they are not packaged with the langauge. Information on the deque class can be found in the [MicroPython documentation](https://docs.micropython.org/en/latest/library/collections.html) and  [MicropPython source packages](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py).   
+The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because MicroPython contains a deque class in the collections package, but it does not contain a queue class. [Queue classes](https://github.com/peterhinch/micropython-async/blob/master/v3/primitives/queue.py) have been written for MicroPython, but they are not packaged with the language. Information on the deque class can be found in the [MicroPython documentation](https://docs.micropython.org/en/latest/library/collections.html) and  [MicropPython source packages](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py).   
 
 The third task is named `use_serial_data`. This task takes characters off the deque, reassembles them, and casts them into floating point numbers. It assumes the messages sent from the computer end in the character `X` to make data processing easier. The values from the computer range from 0.0 to 10.0. These are scaled by 10 to represent the number of steps the motor takes as it turns back and forth between fixed points. As explained above, a larger number of steps corresponds to a slower rotation speed. 
 
@@ -3067,11 +3067,11 @@ asyncio.run(main())
 
 Let's start by writing the microcontroller code for this example. In this section, we write CircuitPython code for the RPi. Open the Mu IDE and copy the example below.
 
-This example requires two additional libraries which must be installed separately, `asyncio` and `adafruit_ticks`. You can install them manually by putting them in a `lib` directory on the RPi. Alternatively, you can use the `circup` tool following this [circup reference](https://learn.adafruit.com/keep-your-circuitpython-libraries-on-devices-up-to-date-with-circup). For more information on asyncIO, see [adafruit's tutorial on asyncIO](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview).
+This example requires two additional libraries which must be installed separately, `asyncio` and `adafruit_ticks`. You can install them manually by putting them in a `lib` directory on the RPi. Alternatively, you can use the `circup` tool following this [circup reference](https://learn.adafruit.com/keep-your-circuitpython-libraries-on-devices-up-to-date-with-circup). For more information on asyncIO, see [Adafruit's tutorial on asyncIO](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview).
 
 As in the example of section 7.3, this example uses asyncIO and multiple tasks. The use of asyncIO allows the microcontroller to appear to work on multiple tasks simultaneously.
 
-This program has three asynchronous tasks. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, whcih represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
+This program has three asynchronous tasks. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, which represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
 
 The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because CircuitPython contains a deque class in the collections package, but it does not contain a queue class. Information on the deque class can be found in the [CircuitPython documentation](https://docs.circuitpython.org/en/latest/docs/library/collections.html).
 
@@ -3213,13 +3213,13 @@ In this section, we write the Python code that runs on the computer for this exa
 
 This code is simpler than the microcontroller code.  We only need one loop, for the GUI, so there is no need for asyncIO instructions here. 
 
-When you run this example, you see two buttons and a knob. To turn the knob, put your cursor on it and click with either the left or right mouse button. When you click the top button, a float representing the knob value is both printed and sent serially down the USB cableto the microcontroller. The bottom button is a quit button.
+When you run this example, you see two buttons and a knob. To turn the knob, put your cursor on it and click with either the left or right mouse button. When you click the top button, a float representing the knob value is both printed and sent serially down the USB cable to the microcontroller. The bottom button is a quit button.
 
 All messages sent via USB end in the character `X` to identify the end of the message. 
 
 Let's test this example out. Make sure the motor controller is still wired to your microcontroller, and make sure your microcontroller is connected to your computer with a USB cable.  Open the Mu, ArduinoLab, or Arduino IDE and run the example of section 10.3.1. Close the Mu, ArduinoLab, or Arduino IDE. Open IDLE and run the example below. 
 
-Dial the knob by putting your cursor on it and clicking the right or left mouse button. Then, press the top button above the knob to send a corresponding float value from the computer to the microcontroller. This knob varies from 0.0 to 10.0. It is used to control the number of steps the servo motor takes in travelling between one angle and another. Because there is a fixed time delay between each step, this knob essentially controls the motor speed. As explained above, this strategy is used to control motor rotation speed instead of directly using PWM frequency because it allows for slower motor rotation speeds which are more observable. 
+Dial the knob by putting your cursor on it and clicking the right or left mouse button. Then, press the top button above the knob to send a corresponding float value from the computer to the microcontroller. This knob varies from 0.0 to 10.0. It is used to control the number of steps the servo motor takes in traveling between one angle and another. Because there is a fixed time delay between each step, this knob essentially controls the motor speed. As explained above, this strategy is used to control motor rotation speed instead of directly using PWM frequency because it allows for slower motor rotation speeds which are more observable. 
 
 (See file src/examples/MotorControl.py.)
 

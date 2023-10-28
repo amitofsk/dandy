@@ -1,8 +1,7 @@
-#Run this code on a Raspberry Pi Pico with MicroPython.
-#Wire a pushbutton to pin 21 (GP16).
 #This program sends characters from the microcontroller to a computer
-#and controls an LED.
-
+#and controls an LED. It assumes you are writing code for a Raspberry
+#Pi Pico microcontroller in MicroPython.
+#Wire a pushbutton to pin 21 (GP16).
 
 from machine import Pin
 import time

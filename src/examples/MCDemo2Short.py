@@ -1,5 +1,10 @@
-#MCDemo2Short is a child of class SerialAndGui which is a child of class Tk.
-
+#See the tutorial for a full explanation of this example. Start
+#by wiring a button to a RPi microcontroller and using a USB cable
+#to connect the RPi to the computer. When you run this example, you will
+#see a RPiPicoDisplay widget that looks like the RPi microcontroller.
+#When you press the button wired to the microcontroller, you will
+#see the LED near that button on the widget change color.
+#This class is a child of SerialAndGUI.
 
 import asyncio
 import tkinter as tk
@@ -15,10 +20,9 @@ import RPiPicoDisplay as rpp
 
 #Set up PORT.
 #If you are on Windows, uncomment the next line and adjust as needed.
-#PORT='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
-
+#PORT='/dev/ttyACM0'
 
 #Button is wired to pin 21
 BUTTON_NO=21
@@ -39,8 +43,7 @@ class MCDemo2Short(sg.SerialAndGui):
         self.mc1.pack()
         self.button_quit.pack()
 
-  
-    
+      
     async def use_serial_data(self, interval, qIn: asyncio.Queue):
     #This async function reads from the queue and uses the data it finds.
     #We're overloading the parent's version of this function.
@@ -54,7 +57,6 @@ class MCDemo2Short(sg.SerialAndGui):
                 print("F")
                 self.mc1.set_led_color(BUTTON_NO, "blue")  
  
-
 
 if __name__=="__main__":
     loop=asyncio.get_event_loop()

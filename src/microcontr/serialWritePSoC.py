@@ -1,3 +1,7 @@
+#This program sends characters from the microcontroller to a computer
+#and controls an LED. It assumes you are writing code for a 
+#PSoC microcontroller in MicroPython. Wire a pushbutton to pin 0.4.
+
 from machine import Pin
 import time
 print ("hello")

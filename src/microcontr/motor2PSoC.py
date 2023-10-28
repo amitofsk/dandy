@@ -11,6 +11,11 @@
 #https://docs.micropython.org/en/latest/library/collections.html
 #https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py
 
+#This example does not currently work. It needs more debugging.
+#It compiles, but doesn't do what it is supposed to do.
+#MicroPython for the PSoC doesn't have the poll instruction,
+#so I think that is the main problem here. 
+
 from time import sleep
 from machine import Pin, PWM
 import sys

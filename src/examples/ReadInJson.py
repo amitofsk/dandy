@@ -1,5 +1,3 @@
-##UNTESTED... TEST ME
-
 #The purpose of this code is to read from the serial port.
 #Reference https://gist.github.com/yptheangel/fcd62ad59a569ace75eb07025b8e9c4f
 
@@ -9,9 +7,9 @@ import json
 
 #Set up PORT.
 #If you are on Windows, uncomment the next line and adjust as needed.
-#PORT='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
+#PORT='/dev/ttyACM0'
 
 
 class ReadInJson():

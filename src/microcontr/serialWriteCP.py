@@ -1,9 +1,7 @@
-#TEST ME... THIS CODE NEEDS DEBUGGING
-
-#Run this code on a Raspberry Pi Pico with CircuitPython.
-#Wire a pushbutton to pin 21 (GP16).
 #This program sends characters from the microcontroller to a computer
-#and controls an LED.
+#and controls an LED. It assumes you are writing code for a Raspberry
+#Pi Pico microcontroller in CircuitPython.
+#Wire a pushbutton to pin 21 (GP16).
 
 import time
 import board

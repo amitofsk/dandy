@@ -1,3 +1,7 @@
+#This example reads an analog value from pin GP26, puts together a message
+#in JSON format, and prints it. This example assumes you are using a
+#Raspberry Pi Pico microcontroller coded in MicroPython.
+
 from machine import Pin
 from machine import ADC
 import time

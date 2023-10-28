@@ -1,22 +1,15 @@
 #This example has a potentiometer wired to a Raspberry Pi Pico.
 #It has a second potentiometer wired to an Arduino. Both microcontrollers
-#send data, via USB cables, to a computer. 
-#
-#This class is a child of the SerialAndGui class, which uses Python's asyncio
-#functionality.
-#
-#It automatically detects which MC to display...
-#This assumes each MC sends the computer data in json form.
-#Assume both potentiometers are wired to microcontroller pin 2?
+#send data, via USB cables, to a computer.
+#Information is displayed in a DialDisplay widget for each microcontroller. 
 
 #Set up your ports. 
 #If you are on Windows, uncomment the next lines and adjust as needed.
-#PORTA='COM1'
-#PORTB='COM2'
+PORTA='COM1'
+PORTB='COM2'
 #If you are on Linux, uncomment the next lines and adjust as needed.
-PORTA='/dev/ttyACM0'
-PORTB='/dev/ttyACM1'
-
+#PORTA='/dev/ttyACM0'
+#PORTB='/dev/ttyACM1'
 
 import asyncio
 import tkinter as tk
@@ -29,8 +22,6 @@ sys.path.append('../widgets')
 sys.path.append('../utilities')
 import SerialAndGui as sg
 import DialDisplay as dd
-#import RPiPicoDisplay as rpp
-#import AUnoDisplay as aud
 
 class TwoMC(tk.Tk):
     def __init__(self, loop, interval=1/20):
@@ -140,7 +131,6 @@ class TwoMC(tk.Tk):
                 #print(serial_byte)
         serial_port.close()
         
-
 
     async def updater(self, interval):
         #This async function manually updates the Tkinter GUI.

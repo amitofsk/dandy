@@ -5,27 +5,22 @@
 #This is very similar to DigitalWithHW.py. Essentially, I'm splitting that example
 #up into a parent and child class.
 
-
 #Information on asyncIO came from:
 #https://realpython.com/async-io-python
 #Information on getting tkinter and asyncio to work together came from:
 #https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the-gui-lib-together-without-freezing-the
-
-#TODO:Clean up use of private (mangled) variables.
 
 import asyncio
 import tkinter as tk
 import time
 import serial
 import serial.tools.list_ports as port_list
-#import sys
-#sys.path.append('../widgets')
 
 #Set up PORT.
 #If you are on Windows, uncomment the next line and adjust as needed.
-#PORT='COM1'
+PORT='COM1'
 #If you are on Linux, uncomment the next line and adjust as needed.
-PORT='/dev/ttyACM0'
+#PORT='/dev/ttyACM0'
 #The following lines may automatically set the port but aren't too reliable.
 #ports=list(port_list.comports())
 #print(ports[0].device)
@@ -33,9 +28,9 @@ PORT='/dev/ttyACM0'
 
 
 class SerialAndGui(tk.Tk):
-    #Here's the constructor for the DigitalWithHW class.
-    #DigitalWithHW is a child of class tk.Tk, which opens a window.
-    #The parameter data_format should be either char or string.
+    #Here's the constructor for the SerialAndGui class.
+    #It is a child of class tk.Tk, which opens a window.
+    #The parameter data_format should be either "char" or "string".
     def __init__(self, loop, interval=1/20, port=PORT, data_format="string"):
         super().__init__()
         self.__loop=loop

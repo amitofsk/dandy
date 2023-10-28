@@ -2,10 +2,6 @@
 #Reference on the pinout
 #https://store-usa.arduino.cc/products/arduino-mkr-wifi-1010
 #Dimensions are 61.5x25mm
-
-
-
-
  
 import tkinter as tk
 import sys 

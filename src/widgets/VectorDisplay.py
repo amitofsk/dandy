@@ -3,7 +3,8 @@
 #It is a child of AnalogInDisplay.
 
 #Reference on Isometric Projection: https://en.wikipedia.org/wiki/Isometric_projection
-#Let's start by assuming a viewing angle of theta=45 and phi=45. Later I can generalize this...
+#Let's start by assuming a viewing angle of theta=45 and phi=45. Later I can
+#generalize this...
 
 #Watch the minus signs carefully here, positive x is to the LEFT, (origin - newXValue).
 #However, positive y is DOWN, so (origin-newYValue).

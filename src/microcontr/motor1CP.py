@@ -1,4 +1,15 @@
-#References
+#This example rotates the motor. Each of the five times through the for loop,
+#the motor spins at a different speed. In each of theses times through the loop,
+#the motor spins to a fixed location forward then back.
+#
+#The rotation speed is actually controlled by the number of steps in the
+#motor rotation because there is a 10ms delay between each steps.
+#While the command pwm.freq() sets the pwm frequency, this command was not
+#used for controlling the speed because it was just too fast to be observable.
+#The number of steps was used instead because it allowed for slower speeds which
+#are observable.
+#
+#References:
 #https://learn.adafruit.com/using-servos-with-circuitpython/low-level-servo-control
 #https://microcontrollerslab.com/servo-motor-raspberry-pi-pico-micropython/
  

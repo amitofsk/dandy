@@ -1,4 +1,4 @@
-#KnobDisplay displays a widget shaped like a knob. #When you click with the left
+#KnobDisplay displays a widget shaped like a knob. When you click with the left
 #mouse button, the knob turns counter clockwise, and when you click with the
 #right button, the knob turns clockwise. 
 
