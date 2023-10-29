@@ -1,3 +1,18 @@
+#Wire a small servo motor to the RPi. The black wire of the motor should
+#connect to ground on the RPi. The red wire of the motor should connect
+#to 5V on the RPi, and the yellow wire of the motor should connect to
+#pin 1, the second pin from the top on the left, of the RPi. Connect
+#the RPi to the computer with a USB cable.
+
+#A Python program on the computer lets a user spin a knob and send a
+#corresponding float value, ending in the character X, to the microcontroller.
+#The microcontroller uses this value to set the motor speed, and the
+#motor spins forward and back.
+
+#This example runs on the microcontroller, an RPi running MicroPython.
+#It uses asyncIO to simultaneously both read characters from the USB cable
+#and spin the motor.
+
 #Reference on asyncio and MicroPython and the RPi:
 #https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c
 

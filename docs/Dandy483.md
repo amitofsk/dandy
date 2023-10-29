@@ -3,7 +3,7 @@
 
 ## 1.0 Introduction
 ### 1.1 What is DANDY?
-[`DANDY`](https://github.com/amitofsk/dandy) is a set of reusable python examples and a library of python functions to help display sensor data in a graphical user interface (GUI).
+[`DANDY`](https://github.com/amitofsk/dandy) is a set of reusable python examples and a library of python functions to help display sensor data in a Graphical User Interface (GUI).
 
 ### 1.2 What are we building?
 Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a computer either over USB or wirelessly. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, using a slider, or on a chart plot.
@@ -72,9 +72,9 @@ pip install pyserial
  
 ### 3.4 Download the DANDY library.
 The next step is to download the DANDY library from github. Github is a website that hosts tons of open source software projects. 
-<br><br>
+
 This step requires Git. Git comes with Linux, but requires separate installation with Windows.  On Windows, open the gitbash terminal. Git is also available in AppsAnywhere. 
-<br><br>
+
 Change to the directory that you want work in. Then, use the following command in the terminal to download the DANDY repository from github. 
  ```python
  git clone https://github.com/amitofsk/dandy.git
@@ -105,16 +105,16 @@ Files used in section 4:
 DANDY contains a set of widgets useful for displaying input data and other functions. In this section, we'll learn how to program GUIs with Tkinter as well as use the DANDY widgets. We will be programming for the computer here using the IDLE IDE.
    
 
-### 4.1 What Tkinter is?
+### 4.1 What is Tkinter?
 Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs). Tkinter is Python's version of the library, and it comes preinstalled with Python. 
-<br><br>
+
 Tkinter contains many widgets including labels, buttons, scales, and spinboxes. For a nice list along with the API reference, see [tkdocs](https://tkdocs.com/pyref/). 
 
 ### 4.2 Tkinter widgets
 
 #### 4.2.1 Example with a quit button 
 Let's write our first GUI program using Python and Tkinter. We're writing code to run on the computer, not the microcontroller, in this section, so use the IDLE IDE. In this example, we use two Tkinter widgets: `Label` and `Button`. The `pack` function puts a widget into a window. 
-<br><br>
+
 Try out the example below. You should see a window with a label and a working quit button. 
 
 If you downloaded the DANDY library, examples are in the `src/examples` directory. 
@@ -142,15 +142,15 @@ if __name__=="__main__":
     mygui=ButtonGUI()
 ```
 ![ButtonGUI output](docPics/buttongui.png)
-<br><br><br>
+
 #### 4.2.2 Example with two buttons
 
 Let's try another example to get more familiar with Tkinter. This example has two `Buttons` and a `Label` which shows a `PhotoImage`. If you press one of the buttons, the label toggles between two images. Here we write our own function, named `toggle_me`, that is executed when the button is pressed. 
-<br><br> 
-Either make sure the images smileOn.png and smileOff.png are in the same directory as the example, or alter the code below to point to their location. This example and the images are also in the `example` directory of the DANDY library you downloaded. 
-<br><br>
+
+Either make sure the images smileOn.png and smileOff.png are in the same directory as the example, or alter the code below to point to their location. This example and the images are also in the `examples` directory of the DANDY library you downloaded. 
+
 Try out this example too.
-<br><br>
+
 (See file src/examples/ButtonPicGUI.py.)
 ```python
 import tkinter as tk
@@ -321,28 +321,28 @@ In section 4, we wrote Python code for the computer, and we used the IDLE IDE. I
 
 Note that all of the example files in the `microcontr` directory contain code for the microcontroller. All of the files in the `examples`, `widgets`, and `utilities` directories, however, contain code for the computer.
 
-### 5.1 Option A: Micropython and RPi
+### 5.1 Option A: Starting examples using the RPi programmed in MicroPython
 #### 5.1.1 Build the circuit
 Connect a button between pin 21 (GP16) and pin 36 (3.3V power)<br>
 
-Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) for the Raspberry Pi Pico (RPi). <br>
+Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) for the Raspberry Pi Pico (RPi). 
 ![](docPics/PiAndButton5.png)
 
 #### 5.1.2 Install MicroPython firmware on the RPi
 The RPi does not have a full operating system. Instead, we'll install MicroPython firmware, which contains a Python interpreter specifically for embedded devices. Think of MicroPython firmware as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program. 
-<br><br>
+
 Download the latest release of MicroPython from [here](https://micropython.org/download/rp2-pico/).
-<br><br>
+
 The RPi has a small button on it labeled `BOOTSEL`. Hold that button down, and use a USB cable to plug the RPi into the computer. Once it is plugged in, you can release the button.
-<br><br>
+
 You should now see the RPi drive available (for example, in Windows Explorer). Drag the file that you just downloaded to that drive. 
-<br><br>
+
 Disconnect the RPi by unplugging the USB cable. Reconnect the RPi, this time without holding down the `BOOTSEL` button.  
 
 #### 5.1.3 Hello world
 
 Now we're ready to write our first MicroPython program that will run on the RPi. We'll use the Mu IDE, so open it now.
-<br><br>
+
 This step requires some libraries for interacting with the hardware, so you can't use IDLE or a text editor unless you manually download those libraries. If you don't want to use Mu, Thonny is another IDE option that has the needed libraries. This tutorial, however, uses Mu.
 
 Click on the `Mode` button and select `RP2040` to tell the Mu IDE that you will be programming in MicroPython. You should now see `RP2040` on the lower right of the MU IDE window.
@@ -388,18 +388,19 @@ while True:
     time.sleep(1)
 ```
 The fourth line tells the RPi that we will call GP16 (pin 21) the name `button`. This line also says `button` will be an input. The `Pin.PULL_DOWN` option connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low. 
-<br><br>
+
 The fifth line tells the RPi that we will call GP25, the internal LED, the name `led`. This line also says `led` will be an output.
-<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED. 
+
+When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED. 
 ![](./docPics/Section3.4.3.2_step4.png)
 
 #### 5.1.5 Reading data from the computer
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and MicroPython code for the microcontroller. While we're programming the microcontroller, let's write this code. 
-<br><br> 
+ 
 Create a new file in the Mu editor and copy in the code below. Alternatively, load the `microcontr/serialReadMP.py` example file. 
 
 Run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6. 
-<br><br>
+
 If you close the Mu IDE, the microcontroller continues to run this code. If you unplug the RPi and plug it back into your computer, the microcontroller continues to run this code.
  
 (See file src/microcontr/serialReadMP.py.)
@@ -428,31 +429,29 @@ while True:
 ```
 
 
-
-
-## 6.0 Sending characters TO the MICROCONTROLLER from the computer
+## 6.0 Sending CHARACTERS TO the MICROCONTROLLER from the computer
 
 Files used in 6.0:
 - examples/DigitalOut.py
 - examples/DigitalOutDisplay.py
 
 Now let's get the computer to talk to the microcontroller. More specifically, in this section, we'll send a character from the computer to the microcontroller. When the microcontroller receives a character, the internal light will blink on and off.
-<br><br>
+
 In section 5.1.4, you wrote the necessary code for the microcontroller and ran it. Make sure your microcontroller is still plugged in and running that code. We won't use the pushbutton connected to the microcontroller in this example, so it doesn't matter if it is connected or not. 
-<br><br>
+
 Close the Mu, Arduino, or Arduino Lab IDE that you used to program the microcontroller.
-<br><br> 
+ 
 In this section we write Python code for the computer. When we wrote code for the microcontroller, there were different options for the different hardware choices: MicroPython and the RPi, CircuitPython and the RPi, MicroPython and the PSoC6, and Arduino. Examples in this section will apply for any computer with a Python interpreter, whether that computer runs Windows or Linux.
 
 ### 6.1 Sending characters to the microcontroller, without a GUI
 Let's write the Python code that will run on the computer for this example. Open the IDLE IDE, and copy the code below, and run it. Every second, this program sends the character `Z` from the computer, down the USB cable, to the microcontroller. 
-<br><br>
+
 This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Device Manager of the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
-<br><br>
+
 If you are used CircuitPython to write the microcontroller code (Option B), make sure to use the port for the communication channel that doesn't involve the REPL terminal.
 
 We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baud rate, bytesize, and number of stopbits. If you are using the PSoC6 (Option C), replace `STOPBITS_TWO` with `STOPBITS_ONE` near line 17. 
-<br><br>
+
 
 (See file src/examples/DigitalOut.py.)
 
@@ -483,16 +482,15 @@ if __name__=="__main__":
     example=DigitalOut()
 ```
 When you run the example above, the computer sends a character to the microcontroller every second. The microcontroller is still running code that blinks the LED when it receives a character, so you should see the microcontroller's internal LED blink every second. To verify that it works, replace `time.sleep(1)` with `time.sleep(3)`. Now the computer will send a character every three seconds, and the microcontroller's LED will blink at this slower rate.
-<br><br>
 
-You may be able to automatically assign the serial port with the following lines. However, these lines aren't too reliable, so it is better to set `PORT` manually.
+You may be able to automatically assign the port variable with the following lines. However, these lines aren't too reliable, so it is better to set `PORT` manually.
 
 ```python
 ports=list(port_list.comports())
-port=(ports[0].device)
+PORT=(ports[0].device)
 print(ports[0].device)
 ```
-Keep in mind that whenever you send serially using the USB cable in this way, you are sending characters. You can send characters like `4` or `3`, but even though these look like integers, they are actually characters. If you are writing software for the receiver, you can include an instruction that, for example, casts the character `4` into an integer if you want to treat it as a number.
+Keep in mind that whenever you send serially using the USB cable in this way, you are sending characters. You can send characters like `3` or `4`, but even though these look like integers, they are actually characters. If you are writing software for the receiver, you can include an instruction that, for example, casts the character `4` into an integer if it is helpful.
 
 ### 6.2 Sending characters to the microcontroller, with a GUI
 
@@ -559,25 +557,25 @@ Files used in section 7:
 - widgets/LEDDisplay.py
 - utilities/SerialAndGui.py
 
-<br><br>
+
 In this section, we will send data from the microcontroller to the computer. 
 
 More specifically, you should have a pushbutton wired to a microcontroller, and your microcontroller should be connected to the computer by a USB cable. If you aren't pressing the pushbutton, the microcontroller sends the character `F` to the computer. If you are pressing the pushbutton, it sends `T`. We'll go through this example multiple ways. 
 
-Think of the pushbutton like a digital input sensor that can either be in one of two possible states. You could instead replace it with a [tilt switch](https://www.digikey.com/en/products/detail/c-k/RB-220-07A-R/2747176), [limit switch](https://www.digikey.com/en/products/detail/e-switch/SS0750302F035P1A/16018860), or other such type of digital input sensor instead. 
+Think of the pushbutton like a digital input sensor that can either be in one of two possible states. You could instead replace it with a [tilt switch](https://www.digikey.com/en/products/detail/c-k/RB-220-07A-R/2747176), [limit switch](https://www.digikey.com/en/products/detail/e-switch/SS0750302F035P1A/16018860), or another type of digital input sensor instead. 
 
 ### 7.1 Set up the microcontroller and run the example
 
 You should still have the pushbutton wired to the microcontroller. We'll need it for this example. Now, let's program the microcontroller. Open the Mu or Arduino IDE. Re-open the blinky lights example from section 5.1.3. (See file microcontr/serialWriteMP.py.)
  We'll use this program once again in this section. Run it, and then close the IDE for your microcontroller. Leave the microcontroller connected to your computer with the USB cable. 
-<br><br>
+
 
 ### 7.2 Receiving characters from the microcontroller, no GUI
 
 In the previous section, we wrote code for the microcontroller using the Mu or Arduino IDE. In this section, we will be writing code for the computer using IDLE IDE. 
-<br><br> 
+ 
 Copy the code below or open the example that came with the DANDY library. Make sure to set your port appropriately. 
-<br><br>
+
 Run the code. When you are not pressing the pushbutton wired to the microcontroller, it will print `F`. When you are pressing the pushbutton, it will print `T`. 
 
 (See file src/examples/DigitalIn.py.)
@@ -613,29 +611,29 @@ if __name__=="__main__":
 
 
 ### 7.3 Receiving data from the microcontroller, now with widgets and asyncIO
-#### 7.3.1 What is asyncio and why do we need it here.
-We are using the graphics library Tkinter. Typically, tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serial data.
+#### 7.3.1 What is asyncio and why do we need it here?
+We are using the graphics library Tkinter. Typically, Tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serial data.
 The problem is that we want both loops to run continuously and simultaneously. One possible solution would be to put each of these tasks in a different thread. 
 We are not quite doing this, but we are doing something quite similar. 
-<br><br>
+
 We will be using the asyncIO Python library. This library isn't quite multithreading, but it accomplishes the same task. 
 Also, instead of telling Tkinter to loop continually, we will tell it to manually update inside a loop. 
 The asyncIO library is new to Python, so make sure you are at least using Python version 3.7.
-<br><br> 
+ 
 More info on asyncIO can be found at [async-io-python](https://realpython.com/async-io-python).
-Information on using asyncIO with Tkinter came from [asyncio-and-tkinter](https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui) 
+Information on using asyncIO with Tkinter came from [asyncio-and-tkinter](https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui). 
 
 #### 7.3.2 Tkinter and widgets, the short way (recommended)
 
 Make sure the microcontroller is plugged in and still running the previous example.
-<br><br>
+
 Run the example below. When you run it, you will see a window with an `LEDDisplay` widget and a quit button. When the pushbutton connected to your microcontroller is held down, the `LEDDisplay` widget will be yellow. Otherwise it will be blue.
-<br><br>
+
 Even though this example is short, it has a lot going on. The `DigitalHWShort` class defined in this example is a child of class `SerialAndGui` which is a child of `Tk`. The class `SerialAndGui` comes with the DANDY library, and it is detailed in `src/utilities/SerialAndGui.py`. 
 The class `SerialAndGui` is an abstract class. If you run it by itself, you see an empty window which is not useful. Instead, as shown below, you should define a child class and overload the constructor and the `use_serial_data` function.
-<br><br>
+
 The `SerialAndGui` class involves three asynchronous tasks: `check_serial_data`, `use_serial_data`, and `updater`. Each is defined in its own function. The `check_serial_data` task reads serially from the USB cable and writes the result to a queue. The `use_serial_data` task reads from the queue and does something with the data it finds. The `updater` task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
-<br><br>
+
 You don't have to write all the code for these tasks every time you want to use them. Instead, you can just define a child class of `SerialAndGui` as shown below.   
 
 (See file src/examples/DigitalHWShort.py.)
@@ -697,20 +695,18 @@ if __name__=="__main__":
     loop.close()
 ```
 ![Digital With Hardware Picture](./docPics/digwithHW.png)
-<br><br>
 
-#### 7.3.3 Tkinter and Widgets, the long way
+
+#### 7.3.3 Tkinter and widgets, the long way
 The previous example relied on the `SerialAndGui` class. A lot of the details were swept up into that class. What actually  happened? What if you want to write all the instructions yourself without relying on any parent classes? 
-<br><br>
-This example accomplishes the same task as the previous example. Before you run it, make sure your microcontroller is still plugged in and running its code. As in the last section, when you run this example, you will see a window with an `LEDDisplay` widget. When the pushbutton connected to the microcontroller is pressed, the `LEDDisplay` is yellow, and otherwise it is blue. 
-<br><br>
-In this example, you can see the details of how to use asyncIO to both read serially from the USB cable and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions `check_serial_data`, `use_serial_data`, and `updater`. The `DigitalWithHW` class defined below is a child only of `Tk`, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
+
+This example accomplishes the same task as the previous example. Before you run it, make sure your microcontroller is still plugged in and running its code. As in the last section, when you run this example on the computer, you will see a window with an `LEDDisplay` widget. When the pushbutton connected to the microcontroller is pressed, the `LEDDisplay` is yellow, and otherwise it is blue. 
+
+In this example, you can see the details of how to use asyncIO to both read serially from the USB cable and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions `check_serial_data`, `use_serial_data`, and `updater`. The `DigitalHWLong` class defined below is a child only of `Tk`, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
 
 (See file src/examples/DigitalHWLong.py.)
 
 ```python
-
-
 import asyncio
 import tkinter as tk
 import time
@@ -840,9 +836,9 @@ The DANDY library contains multiple widgets designed to display numerical data. 
 #### 8.1.1 Displaying a scalar numerical value
 
 Try out the example below. When you run it, you see a number of widgets. The `Label`, `Button`, and `Scale` widgets are built into Tkinter. The `SlideDisplay`, `DialDisplay`, `TricolorDisplay`, and `SimplePlotDisplay` widgets are from the DANDY library. 
-<br><br>
+
 Adjust the `Scale` then press the `Get value` button. You will see the DANDY widgets change appropriately. The `TricolorDisplay` widget is one color below some cutoff value, a second color above another cutoff value, and a third color between those values. 
-<br><br>
+
 This example uses Tkinter as well as multiple widgets that come with the DANDY library. It does not use asyncIO because it only needs one loop, for the GUI. 
 
 (See file src/examples/SingleAInDemo.py)
@@ -964,7 +960,7 @@ The inputs in this section will come from a potentiometer wired to the microcont
 
 Follow the option for the hardware of your choice. 
 
-#### 8.2.1 Option A: Micropython and RPi
+#### 8.2.1 Option A: Sending data from a RPi coded in MicroPython 
 ##### 8.2.1.1 Build the circuit
 
 Connect a resistor and a potentiometer in series between pin 36 (3.3V power) and pin 38 (GND). Also, add a wire from the node between the resistor and potentiometer to pin 31. Pin 31 is also known as GP26, and it is connected to the internal analog to digital converter ADC0.
@@ -1015,11 +1011,11 @@ while True:
 
 ### 8.3 Displaying numerical data, the computer side
 
-Back to writing code for the computer in Python using the IDLE IDE. 
-This example reads the data from the microcontroller. It also picks off the part of the json that we're interested in. This example does not use a GUI. We'll add a GUI in the next section.  
+Let's get back to writing code for the computer in Python using the IDLE IDE. 
+This example reads the data from the microcontroller. It also picks off the part of the JSON that we're interested in. This example does not use a GUI. We'll add a GUI in the next section.  
 
 Make sure your microcontroller is still plugged in and running the example from the last section.
-Also make sure you've closed your Mu or Arduino IDE. Additionally, set port for your computer.
+Also make sure you've closed your Mu IDE. Additionally, set port for your computer.
 
 (See file src/examples/ReadInJson.py)
 
@@ -1066,9 +1062,9 @@ Now let's put all the pieces together. The microcontroller reads analog data fro
 
 You should still have the potentiometer wired to the microcontroller. The microcontroller should still be connected to your computer with the USB cable, and it should still be running the same example used in section 8.2.
 
-Make sure to set `PORT` near line 21 for your machine.
+Make sure to set `PORT` near line 21 for your machine. Also make sure `PORT` is set correctly in the file src/utilities/SerialAndGUI.py.
 
-Try out the example below. While this example is short, it is not simple. It has a lot going on.  
+Try out the example below. While this example is short, it is not simple. It has a lot going on. It involves three asynchronous tasks, defined in SerialAndGUI.py. In the code below, we write our own constructor for the AnalogHWShort class, and we overload the `use_serial_data` task from the parent class `SerialAndGUI`.
 
 (See file src/examples/AnalogHWShort.py.)
 
@@ -1172,15 +1168,15 @@ Files used in section 9:
  - microcontr/serialWriteMP.py
  - microcontr/analogToComputerMP.py
 
-The DANDY library contains five widgets that look like specific microcontrollers. First we show how to use these widgets without any hardware. Next we show how to use them with one microcontroller attached, and finally we show how to use them with two microcontrollers connected to the computer.
+The DANDY library contains five widgets that look like specific microcontrollers. First we show how to use these widgets without any hardware. Next we show how to use them with one microcontroller attached. In the long version of the tutorial, we show how to use them with two microcontrollers connected to the computer.
 
 ![](./docPics/summaryPicMC.png)
 
 
 #### 9.1 Microcontroller widgets, example with no hardware
-This example demonstrates the widgets that look like microcontrollers. This section does not use hardware.  The file `MCDisplay.py` is a parent class. The files `RPiPicoDisplay.py`, `AUnoDisplay.py`, `AMKRDisplay.py`, `ANanoEveryDisplay.py`, and `PSoCDisplay.py` are child classes that look like the RPi, Arduino Uno, Arduino MKR1010, Arduino Nano Every, and PSoC microcontrollers respectfully. These child classes have access to member functions of the parent.
+This example demonstrates the widgets that look like microcontrollers. This section does not use hardware.  The file `MCDisplay.py` is a parent class. The files `RPiPicoDisplay.py`, `AUnoDisplay.py`, `AMKRDisplay.py`, `ANanoEveryDisplay.py`, and `PSoCDisplay.py` are child classes that look like the RPi, Arduino Uno, Arduino MKR1010, Arduino Nano Every, and PSoC6 microcontrollers respectfully. These child classes have access to member functions of the parent.
 
-When you run this example, you will see a widget that looks like the RPi. Pin 6 shows a `LEDDisplay` widget, and pin 21 shows a button. Additionally, a `toggle` button is at the bottom of the screen. If you press either the button near bin 31 or the toggle button, the `LEDDisplay` changes color.
+When you run this example, you will see a widget that looks like the RPi. Pin 6 shows a `LEDDisplay` widget, and pin 21 shows a button. Additionally, a `toggle` button is at the bottom of the screen. If you press either the button near pin 21 or the toggle button, the `LEDDisplay` changes color.
 
 The `set_led` function of line 39 displays the `LEDDisplay` widget near pin 6. Other member functions display `SlideDisplay`, `DialDisplay`, or `TricolorDisplay` widgets near individual pins.
 
@@ -1257,13 +1253,13 @@ if __name__=="__main__":
 
 #### 9.2 Microcontroller widgets, example with hardware
 
-Follow the instructions in section 5.1.1 to wire a pushbutton to your micrcontroller, and use a USB cable to plug your micrcontroller into the computer. Upload the `serialWriteMP.py`, `serialWriteCP.py`, `serialWritePSoC.py`, or `serialWriteArd.ino` example used in section 5.1.4 to that microcontroller. When the user presses the pushbutton, `T` is sent serially to the computer. When the pushbutton is not pressed, `F` is sent.
+Follow the instructions in section 5.1.1 to wire a pushbutton to your micrcontroller, and use a USB cable to plug your micrcontroller into the computer. Upload the `serialWriteMP.py` example used in section 5.1.4 to that microcontroller. When the user presses the pushbutton, `T` is sent serially to the computer. When the pushbutton is not pressed, `F` is sent.
 
-Next, we'll program the computer to respond to the character received. Close the Arduino or Mu IDE. Open the IDLE IDE. Copy the example below or load the file `examples/MCDemo2Short.py` that came with the DANDY library. Set `PORT` at the top of the example for your machine.
+Next, we'll program the computer to respond to the character received. Close the Mu IDE. Open the IDLE IDE. Copy the example below or load the file `examples/MCDemo2Short.py` that came with the DANDY library. Set `PORT` at the top of the example for your machine.
 
 When you run this example, you will see a widget that looks like a RPi microcontroller. The line which creates the widget, `self.mc1=rpp.RPiPicoDisplay(self)`, can be replaced with a line to create one of the widgets for the other microcontrollers instead if desired. 
 
-Run the example on the computer. Press the pushbutton attached to the microcontroller. You should see the color of the `LEDDisplay` widget near pin 21 cahnge. 
+Run the example on the computer. Press the pushbutton attached to the microcontroller. You should see the color of the `LEDDisplay` widget near pin 21 change. 
 
 This example uses the asyncIO library. The `MCDemo2Short` class defined in this example is a child of the `SerialAndGui` class defined in the file `src/utilities/SerialAndGui.py`. The `MCDemo2Short` class redefines the parent's `use_serial_data` member function. The file `MCDemo2Long.py` contains the same example without relying on the `SerialAndGui` parent class.
 
@@ -1335,7 +1331,7 @@ if __name__=="__main__":
 
 
 
-## 10.0 Widgets for ANALOG or PWM OUTPUT
+## 10.0 Sending NUMERICAL data TO the MICROCONTROLLER from the computer
 In this section, we demonstrate a widget that is useful when sending analog or pulse width modulated (PWM) signals out of the computer.
 This will allow us to control motors or other actuators that accept an analog voltage.
 
@@ -1408,7 +1404,9 @@ if __name__=="__main__":
 | Ain | Abbreviation (in file names) for analog input |
 | API | Application programming interface |
 | Ard | Abbreviation (in file names) for Arduino |
+| asyncIO | Asynchronous input output, a strategy for executing two tasks almost simultaneously |
 | baud rate | Speed that information is sent in bits per second | 
+| deque | Double ended queue |
 | CP  | Abbreviation (in file names) for CircuitPython |
 | Git | A version control tool |
 | GUI | Graphical user interface |

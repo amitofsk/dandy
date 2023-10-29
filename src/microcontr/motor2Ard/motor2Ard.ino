@@ -1,100 +1,114 @@
 /*
-Now with protothreads?..
-Refs:
+This example doesn't work. It still needs a lot of development. 
+
+Here's the example I'm trying for... Assume a small servo motor is wired
+to an Arduino. The Arduino is connected to the computer by USB cable. A Python
+program on the computer lets a user spin a dial and send a corresponing
+float value, ending in the character X, to the microcontroller. 
+The microcontroller uses this value to set the motor speed, and the motor
+spins forward and back.
+
+This example would require the user to do two things almost simultaneously.
+The first thing would be to read characters from the USB cable and the second
+is to spin the motor. 
+
+Arduinos don't have multiple processors or allow multithreading. In Python, 
+CircuitPython, and MicroPython, the asyncIO library lets you do two tasks
+almost simultaneously. Arduino doesn't have asyncIO. It does, however, 
+have a library called protothreads. 
+
+Here's my reference for the protothread library:
 https://roboticsbackend.com/arduino-protothreads-tutorial/
 
-Sketch->Include Libraries -> Manage Library -> Add the protothreads library
-*/
-#include <pt.h>
+In this example, I try to use protothreads for this purpose.
+Parts of this example closely follow the reference above.
+I was able to get multiple protothreads started. However,
+this example still needs a lot more development before it actually
+does what it should.
 
-int servo=0;
-int led=13;
+*/
+
+
+#include <pt.h>
+#define led LED_BUILTIN
+#define servo 9
+
+
+// Declare 3 protothreads
 static struct pt pt1, pt2, pt3;
 
-double steps=50;
-int pulse_period_us=1500;
-double pulse_high_us=0.0; 
-
-
+// First protothread function to blink LED 1 every 1 second
 static int protothreadUseSerial(struct pt *pt)
 {
-   static unsigned long lastTimeBlink = 0;
+  static unsigned long lastTimeBlink = 0;
   PT_BEGIN(pt);
-  Serial.println("Started UseSerial");
+  Serial.println("Use Serial Thread");
+  //protothreadSpinMotor(&pt3);
   while(1) {
     lastTimeBlink = millis();
     PT_WAIT_UNTIL(pt, millis() - lastTimeBlink > 1000);
-    digitalWrite(led,  HIGH);
+    digitalWrite(led, HIGH);
     lastTimeBlink = millis();
     PT_WAIT_UNTIL(pt, millis() - lastTimeBlink > 1000);
     digitalWrite(led, LOW);
-    protothreadSpinMotor(&pt3, 50);
   }
   PT_END(pt);
 }
 
+// Second protothread function to blink LED 2 every 0.5 second
 static int protothreadCheckSerial(struct pt *pt)
 {
   static unsigned long lastTimeBlink = 0;
   PT_BEGIN(pt);
-  Serial.println("Started CheckSerial");
+  Serial.println("Check Serial Thread");
+  /*
+  while(1) {
+    lastTimeBlink = millis();
+    PT_WAIT_UNTIL(pt, millis() - lastTimeBlink > 500);
+    digitalWrite(LED_2_PIN, HIGH);
+    lastTimeBlink = millis();
+    PT_WAIT_UNTIL(pt, millis() - lastTimeBlink > 500);
+    digitalWrite(LED_2_PIN, LOW);
+  }
+  */
   PT_END(pt);
-  
 }
 
-static int protothreadSpinMotor(struct pt *pt, int mySteps)
+// Third protothread function to power on LED 3 if
+// the push button is pressed.
+static int protothreadSpinMotor(struct pt *pt)
 {
-  
+  static unsigned long startTime = 0;
+  static double pulse_high_us=0;
+  static int pulse_period_us=1500;
   PT_BEGIN(pt);
-     Serial.println("Started SpinMotor");
-     int steps;
-     //steps=mySteps;
-     steps=50;
-     //Spin forward  
-     Serial.println("Forward");   
-     digitalWrite(led, HIGH);
-     for ( int j = 0; j < steps; j++){
-          //The variable jj sweeps from 0 to steps, and keeps track of which step we are on. 
-          //The 1.0 is needed in the next line to ensure double computation, not int.
-          pulse_high_us=1.0*pulse_period_us*j/steps;
-          digitalWrite(servo, HIGH);
-          delayMicroseconds(pulse_high_us);    
-          digitalWrite(servo, LOW);
-          delayMicroseconds(pulse_period_us-pulse_high_us);
-          delay(150); //delay 0.15 seconds between steps
-     }//close the for over j
-     
-     //Spin backwards.
-     Serial.println("Back");
-     digitalWrite(led, LOW);
-     //delay(1000);
-     for(int j=0; j< steps; j++) {
-       pulse_high_us=1.0*pulse_period_us*j/steps;
-       digitalWrite(servo, HIGH);
-       delayMicroseconds(pulse_period_us-pulse_high_us);
-       digitalWrite(servo, LOW);
-       delayMicroseconds(pulse_high_us);
-       delay(150);
-    }//close the for over j
-  
+  Serial.println("Spin Motor Thread");
+  for (int j=0; j< 100; j++)
+  {
+    startTime=millis();
+    pulse_high_us=1.0*pulse_period_us*j/30;
+    digitalWrite(servo, HIGH);
+    PT_WAIT_UNTIL(pt, millis()-startTime>(0.001*pulse_high_us));
+    digitalWrite(servo, LOW);
+    PT_WAIT_UNTIL(pt, millis()-startTime>(0.001*pulse_period_us));
+    
+  }
   PT_END(pt);
-  
 }
 
+// In setup, set all LEDs as OUTPUT, push button as INPUT, and
+// init all protothreads
 void setup() {
-
-  Serial.begin(115200);
-  pinMode(servo, OUTPUT); 
   pinMode(led, OUTPUT);
-  
+  pinMode(servo, OUTPUT);
   PT_INIT(&pt1);
   PT_INIT(&pt2);
   PT_INIT(&pt3);
 }
 
-
-void loop () {
-  //protothreadCheckSerial(&pt1);
-  protothreadUseSerial(&pt2);
-  //protothreadSpinMotor(&pt3, 50);
+// In the loop we just need to call the protothreads one by one
+void loop() {
+  protothreadUseSerial(&pt1);
+ // protothreadCheckSerial(&pt2);
+  protothreadSpinMotor(&pt3);
 }

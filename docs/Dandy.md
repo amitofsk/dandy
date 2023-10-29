@@ -2,7 +2,7 @@
 
 ## 1.0 Introduction
 ### 1.1 What is DANDY?
-[`DANDY`](https://github.com/amitofsk/dandy) is a set of reusable python examples and a library of python functions to help display sensor data in a graphical user interface (GUI).
+[`DANDY`](https://github.com/amitofsk/dandy) is a set of reusable python examples and a library of python functions to help display sensor data in a Graphical User Interface (GUI).
 
 ### 1.2 What are we building?
 Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a computer either over USB or wirelessly. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, using a slider, or on a chart plot.
@@ -72,13 +72,13 @@ If you are using the RPi and your microcontroller didn't come with headers pre-i
 
 ![Digital With Hardware Picture](./docPics/headers2.png)
 
-If you are using the PSoC microcontroller, solder headers near pins 6.0, 6.1, and 10.0 as well as to a power and ground connection.
+If you are using the PSoC6 microcontroller, solder headers near pins 6.0, 6.1, and 10.0 as well as to a power and ground connection. No external button is needed since the board has buttons built into it.
 
 ![PSOC headers](./docPics/headersPSoC.png)
 
 If you are using the Arduino, you can use any version. However, these instructions show pin numbers and details for the Uno.
 
-This tutorial will be entered into the hackster.io [Connect Things With Code](https://www.hackster.io/contests/connectthingswithcode) contest, and the PSoC6 microcontroller was chosen since it is part of that contest. If you are using the PSoC6, you do not need the button, potentiometer, and other components because the microcontroller has these built in. The magnetic field sensor is also part of that contest.
+This tutorial will be entered into the hackster.io [Connect Things With Code](https://www.hackster.io/contests/connectthingswithcode) contest, and the PSoC6 microcontroller was chosen since it is part of that contest. The magnetic field sensor is also part of that contest.
 
 
 
@@ -88,9 +88,9 @@ This tutorial involves both writing Python code for a computer as well as writin
 ### 3.1 Check your Python installation
 
 We will write Python code with a GUI for the computer. This tutorial requires at least Python version 3.7. It has been tested on both Windows and Linux systems.
-<br><br>
+
 If you do not have Python, you can download the latest version from [`Python's website`](https://www.python.org/downloads/).
-<br><br>
+
 If you do not know what version you have, run the command below in a command line terminal. On a Windows machine, use a Windows PowerShell window as the terminal.
 
  ```python
@@ -104,18 +104,15 @@ The pyserial library is used to communicate with devices connected by a USB cabl
 
 On Windows, execute the following command in a Windows Powershell terminal. On Linux, execute the following command in a terminal.
 
-
 ```python
 pip install pyserial
 ```
-
-
  
 ### 3.4 Download the DANDY library.
 The next step is to download the DANDY library from github. Github is a website that hosts tons of open source software projects. 
-<br><br>
+
 This step requires Git. Git comes with Linux, but requires separate installation with Windows.  On Windows, download and install it from [Git's website](https://git-scm.com). Once you install it, open a GitBash terminal.  
-<br><br>
+
 Change to the directory that you want work in. Then, use the following command in the terminal to download the DANDY repository from github. 
  ```python
  git clone https://github.com/amitofsk/dandy.git
@@ -127,9 +124,8 @@ One advantage of using a different IDE for the computer code and the microcontro
 
 If you will be using MicroPython or CircuitPython with the RPi, download and install the [Mu IDE](https://codewith.mu/en/download). The Thonny IDE could also work, but this tutorial will use Mu. Most other Python IDEs do not have the needed libraries.
 
-<br><br>
 If you will be using Arduino, download and install the [Arduino IDE](https://www.arduino.cc/en/software/). 
-<br><br>
+
 If you are using the PSoC6, download and install the Arduino Lab for MicroPython IDE by following the instructions [here](https://www.hackster.io/Infineon_Team/micropython-on-psoc-fcf1d0) or [here](https://ifx-micropython.readthedocs.io/en/latest/psoc6/intro.html). 
 
 
@@ -147,16 +143,16 @@ Files used in section 4:
 DANDY contains a set of widgets useful for displaying input data and other functions. In this section, we'll learn how to program GUIs with Tkinter as well as use the DANDY widgets. We will be programming for the computer here using the IDLE IDE.
    
 
-### 4.1 What Tkinter is?
+### 4.1 What is Tkinter?
 Tk is a cross-platform set of tools for writing graphical user interfaces (GUIs). Tkinter is Python's version of the library, and it comes preinstalled with Python. 
-<br><br>
+
 Tkinter contains many widgets including labels, buttons, scales, and spinboxes. For a nice list along with the API reference, see [tkdocs](https://tkdocs.com/pyref/). 
 
 ### 4.2 Tkinter widgets
 
 #### 4.2.1 Example with a quit button 
 Let's write our first GUI program using Python and Tkinter. We're writing code to run on the computer, not the microcontroller, in this section, so use the IDLE IDE. In this example, we use two Tkinter widgets: `Label` and `Button`. The `pack` function puts a widget into a window. 
-<br><br>
+
 Try out the example below. You should see a window with a label and a working quit button. 
 
 If you downloaded the DANDY library, examples are in the `src/examples` directory. 
@@ -184,15 +180,15 @@ if __name__=="__main__":
     mygui=ButtonGUI()
 ```
 ![ButtonGUI output](docPics/buttongui.png)
-<br><br><br>
+
 #### 4.2.2 Example with two buttons
 
 Let's try another example to get more familiar with Tkinter. This example has two `Buttons` and a `Label` which shows a `PhotoImage`. If you press one of the buttons, the label toggles between two images. Here we write our own function, named `toggle_me`, that is executed when the button is pressed. 
-<br><br> 
-Either make sure the images smileOn.png and smileOff.png are in the same directory as the example, or alter the code below to point to their location. This example and the images are also in the `example` directory of the DANDY library you downloaded. 
-<br><br>
+
+Either make sure the images smileOn.png and smileOff.png are in the same directory as the example, or alter the code below to point to their location. This example and the images are also in the `examples` directory of the DANDY library you downloaded. 
+
 Try out this example too.
-<br><br>
+
 (See file src/examples/ButtonPicGUI.py.)
 ```python
 import tkinter as tk
@@ -250,13 +246,13 @@ See the [DANDY API](./WidgetApi.md) for additional details about the available w
 
 
 The next example uses the DANDY widget `LEDDisplay`. When you run it, you will see two buttons and an image of an LED. When you press the button, the LED color changes. Try it out.
-<br><br>
+
+
 You may need to change the third line to point to the location of the widgets folder of the DANDY library. This example is also available in the examples folder of the DANDY library. If you open that version, Python should find the widgets folder correctly.
 
 (See file src/examples/DigitalNoHW.py.)
 
 ```python
-
 import tkinter as tk
 import sys
 #We need to import the file for the LEDDisplay widget
@@ -297,7 +293,7 @@ if __name__=="__main__":
 
 #### 4.3.2 The LEDBarDisplay Widget
 The DANDY library contains the class `SymbolDisplay` for displaying ground and power symbols. It also contains the class `LEDBarDisplay` for displaying bars of LEDs. 
-<br><br>
+
 Try out the example below. When you run it, you will see a bar of 5 `LEDDisplay` widgets as well as three additional buttons. The first button toggles the LED color, the second button toggles the LED orientation, and the third button is a quit button.
 
 (See file src/examples/LEDBarDemo.py.)
@@ -371,32 +367,34 @@ In section 4, we wrote Python code for the computer, and we used the IDLE IDE. I
 
 Follow the option of your choice for this section.
 
-All of the examples in this section have four versions. File names ending in MP are for Option A, file names ending in CP are for option B, file names ending in PSoC are for option C, and file names ending in Ard are for option D. 
+All of the examples in this section have four versions. File names ending in MP are for option A, file names ending in CP are for option B, file names ending in PSoC are for option C, and file names ending in Ard are for option D. 
 
 Note that all of the example files in the `microcontr` directory contain code for the microcontroller. All of the files in the `examples`, `widgets`, and `utilities` directories, however, contain code for the computer.
 
-### 5.1 Option A: Micropython and RPi
+### 5.1 Option A: Starting examples using the RPi programmed in Micropython 
 #### 5.1.1 Build the circuit
 Connect a button between pin 21 (GP16) and pin 36 (3.3V power)<br>
 
-Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) for the Raspberry Pi Pico (RPi). <br>
+Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf) for the Raspberry Pi Pico (RPi). 
+
+
 ![](docPics/PiAndButton5.png)
 
 #### 5.1.2 Install MicroPython firmware on the RPi
 The RPi does not have a full operating system. Instead, we'll install MicroPython firmware, which contains a Python interpreter specifically for embedded devices. Think of MicroPython firmware as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program. 
-<br><br>
+
 Download the latest release of MicroPython from [here](https://micropython.org/download/rp2-pico/).
-<br><br>
+
 The RPi has a small button on it labeled `BOOTSEL`. Hold that button down, and use a USB cable to plug the RPi into the computer. Once it is plugged in, you can release the button.
-<br><br>
+
 You should now see the RPi drive available (for example, in Windows Explorer). Drag the file that you just downloaded to that drive. 
-<br><br>
+
 Disconnect the RPi by unplugging the USB cable. Reconnect the RPi, this time without holding down the `BOOTSEL` button.  
 
 #### 5.1.3 Hello world
 
 Now we're ready to write our first MicroPython program that will run on the RPi. We'll use the Mu IDE, so open it now.
-<br><br>
+
 This step requires some libraries for interacting with the hardware, so you can't use IDLE or a text editor unless you manually download those libraries. If you don't want to use Mu, Thonny is another IDE option that has the needed libraries. This tutorial, however, uses Mu.
 
 Click on the `Mode` button and select `RP2040` to tell the Mu IDE that you will be programming in MicroPython. You should now see `RP2040` on the lower right of the MU IDE window.
@@ -442,18 +440,19 @@ while True:
     time.sleep(1)
 ```
 The fourth line tells the RPi that we will call GP16 (pin 21) the name `button`. This line also says `button` will be an input. The `Pin.PULL_DOWN` option connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low. 
-<br><br>
+
 The fifth line tells the RPi that we will call GP25, the internal LED, the name `led`. This line also says `led` will be an output.
-<br><br>When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED. 
+
+When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED. 
 ![](./docPics/Section3.4.3.2_step4.png)
 
 #### 5.1.5 Reading data from the computer
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and MicroPython code for the microcontroller. While we're programming the microcontroller, let's write this code. 
-<br><br> 
+ 
 Create a new file in the Mu editor and copy in the code below. Alternatively, load the `microcontr/serialReadMP.py` example file. 
 
 Run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6. 
-<br><br>
+
 If you close the Mu IDE, the microcontroller continues to run this code. If you unplug the RPi and plug it back into your computer, the microcontroller continues to run this code.
  
 (See file src/microcontr/serialReadMP.py.)
@@ -482,7 +481,7 @@ while True:
 ```
 
 
-### 5.1 Option B: CircuitPython and the RPi
+### 5.1 Option B: Starting examples using the RPi programmed in CircuitPython
 
 #### 5.1.1 Build the circuit
 
@@ -513,7 +512,7 @@ Click on the `Mode` button and select `CircuitPython` to tell the Mu IDE that yo
 
 The middle of the Mu IDE is a text editor where you can enter your code. The section below is called the [REPL](https://learn.adafruit.com/getting-started-with-raspberry-pi-pico-circuitpython/circuitpython-programming-basics) terminal, short for Read, Evaluate, Print, and Loop. If you don't see the REPL terminal, press the `Serial` button at the top of the Mu IDE.
 
-You can type individual MicroPython instructions in the REPL terminal. They will be evaluated on the microcontroller. If they contain any print statements, the microcontroller will send the message serially via the USB cable, and you will see the result in the REPL terminal.
+You can type individual CircuitPython instructions in the REPL terminal. They will be evaluated on the microcontroller. If they contain any print statements, the microcontroller will send the message serially via the USB cable, and you will see the result in the REPL terminal.
 
 Since most of our programs will be more than one line, we'll write our instructions in the editor instead of the REPL terminal. After we run our programs, we will still see results of any print statements on the REPL terminal.
 
@@ -573,7 +572,7 @@ In section 6.0, we will send data from the computer to the microcontroller. To c
 
 When we plug the RPi into the computer and open the Mu IDE, a communication channel is set up between the computer and the RPi. The computer refers to this communication channel by a port name such as `COM1`. We see the communication between the computer and the RPi in the REPL terminal of the Mu IDE. 
 
-If we want to send data from the computer to the RPi using something other than the REPL terminal of the IDE, we run into a problem because the REPL terminal controls all of the communication. We can avoid this problem by setting up a second communication channel. This channel is specifically for communication between the computer and the RPi without using the REPL terminal. The computer will refer to this communication channel with a different port name, such as `COM2`. The port names used may be different on your computer. Windows port names may be `COM3`, `COM4`, and so on, while Linux port names are likely `\dev\ttyACM0` or `\dev\ttyACM`.
+If we want to send data from the computer to the RPi using something other than the REPL terminal of the IDE, we run into a problem because the REPL terminal controls all of the communication. We can avoid this problem by setting up a second communication channel. This channel is specifically for communication between the computer and the RPi without using the REPL terminal. The computer will refer to this communication channel with a different port name, such as `COM2`. The port names used may be different on your computer. Windows port names may be `COM3`, `COM4`, and so on, while Linux port names are likely `\dev\ttyACM0` or `\dev\ttyACM1`.
 
 To set up this second communication channel, we have to use the `usb_cdc` library in the code we write for the RPi. We also have to write two files and save them on the RPi.
 
@@ -589,7 +588,7 @@ Next, open the file `code.py` that is saved on the RPi and copy in the example b
  
 
 Run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
-<br><br>
+
 If you close the Mu IDE, the microcontroller continues to run this code. If you unplug the RPi and plug it back into your computer, the microcontroller continues to run this code.
 
 (See file src/microcontr/serialReadCP.py.)
@@ -617,12 +616,10 @@ while True:
 
 ```
 
-For more information on communicating using the usb_cdc library, see the following references which were used in coming up with this example.
-[](https://github.com/Neradoc/circuitpython-sample-scripts/blob/main/usb_serial/README.md)
-[](https://docs.circuitpython.org/en/latest/shared-bindings/usb_cdc/index.html)
+For more information on communicating using the usb_cdc library, see references [here](https://github.com/Neradoc/circuitpython-sample-scripts/blob/main/usb_serial/README.md) and [here](https://docs.circuitpython.org/en/latest/shared-bindings/usb_cdc/index.html), which were used in coming up with this example.
 
 
-### 5.1 Option C: Micropython and the PSoC6
+### 5.1 Option C: Starting examples using the PSoC6 programmed in MicroPython 
 #### 5.1.1 Build the circuit
 
 The PSoC6 has an internal button and LED, so we don't need to wire any external components. We'll use the button labeled `SW2 USER` in this section. 
@@ -635,8 +632,8 @@ Connect a USB cable between the USB port on the PSoC6 labeled `KITPROG3` and com
 
 #### 5.1.3 Hello world
 
-Now we're ready to write our first MicroPython program that will run on the PSoC. We'll use the Arduino Lab IDE, so open it now.
-<br><br>
+Now we're ready to write our first MicroPython program that will run on the PSoC6. We'll use the Arduino Lab IDE, so open it now.
+
 Write the following instruction in the editor, and press the `Run` button. You should see the result in the bottom terminal window.
 
 The print statement is actually evaluated on the microcontroller. The resulting message is sent serially via the USB cable to the computer and displayed in the terminal of the Arduino Lab IDE. 
@@ -670,20 +667,21 @@ while True:
     time.sleep(1)
 ```
 The fourth line tells the PSoC6 that we will call the `SW2 User` pushbutton  (pin P0.4) the name `button`. This line also says `button` will be an input. The `Pin.PULL_DOWN` option connects this pin to an internal resistor so that when nothing is connected to it, the pin will be low.
-<br><br>
-The fifth line tells the PSoC6 that we will call pin 13.7, the internal LED, the name `led`. This line also says `led` will be an output.
-<br><br>When you run this example and hold down the button, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED.
 
-Unlike the RPi, the PSoC6 is active low, so low values are considered 'True' and high values are considered 'False'. 
+The fifth line tells the PSoC6 that we will call pin 13.7, the internal LED, the name `led`. This line also says `led` will be an output.
+
+When you run this example and hold down the button, the program prints `T` and turns on the internal LED. Otherwise it prints `F` and turns off the LED.
+
+Unlike the RPi, the PSoC6 is active low, so low values are considered `True` and high values are considered `False`. 
 
 #### 5.1.5 Reading data from the computer
 
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and MicroPython code for the microcontroller. While we're programming the microcontroller, let's write this code.
-<br><br>
+
 Create a new file and copy in the code below, or load the `microcontr/serialReadPSoC.py` example file.
 
 Run it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
-<br><br>
+
 If you close the Arduino Lab IDE, the microcontroller continues to run this code. If you unplug the PSoC6 and plug it back into your computer, the microcontroller continues to run this code.
 
 (See file src/microcontr/serialReadPSoC.py.)
@@ -708,7 +706,7 @@ while True:
 ```
 
 
-### 5.1 Option D: Arduino
+### 5.1 Option D: Starting Examples using the Arduino
 #### 5.1.1 Build the circuit
 Connect a button between the 3.3V pin and D8. Using the USB cable, plug the Arduino into the computer. 
 
@@ -722,8 +720,8 @@ Arduino hardware comes pre-installed with the instructions needed to run Arduino
 #### 5.1.3 Hello world
 
 Now we're ready to write our first Arduino program that will run on the Arduino hardware. We'll use the Arduino's IDE, so open it now.
-<br><br>
-Write the following instruction in the editor, and press the `Upload` button. 
+
+Write the following instructions in the editor, and press the `Upload` button. 
 
 
 ```c++
@@ -740,7 +738,7 @@ void loop()
 }
 ```
 
-To see the printed characters, open `Serial Monitor` under the `Tools` menu. All of this code is evaluated in on the microcontoller, not the computer. Even print statements are evaluated on the microcontroller. The resulting message is sent via the USB cable to the computer and displayed in the Serial Monitor.  
+To see the printed characters, open `Serial Monitor` under the `Tools` menu. All of this code is evaluated on the microcontoller, not the computer. Even print statements are evaluated on the microcontroller. The resulting message is sent via the USB cable to the computer and displayed in the Serial Monitor.  
 
 The Serial Monitor sometimes takes over the resources of the USB serial communication channel with the microcontroller, so you may have to close the Serial Monitor before you upload new code to the Arduino or send other signals from the computer to the Arduino.
 
@@ -783,17 +781,16 @@ void loop() {
 ```
 Line 5 tells the Arduino that we will call pin 8 the name `button`. Line 6 tells the Arduino that we will call the internal LED, connected to pin 13, `led`. Line 11 tells the Arduino that `button` is an input, line 12 tells the Arduino that `led` is an output.
 
-<br><br>
 When you run this example and hold down the pushbutton wired to the RPi, the program prints `T` and turns on the LED. Otherwise it prints `F` and turns off the LED.
 
 
 #### 5.1.5 Reading data from the computer
 In section 6.0, we will send data from the computer to the microcontroller. To complete this example, we will need to write both Python code for the computer and Arduino code for the Arduino hardware. While we're programming the microcontroller, let's write this code.
-<br><br>
+
 Create a new file in the Arduino editor and copy in the code below. Alternatively, load the `microcontr/serailReadArd.ino` example file.
 
 Upload it. When you run it, nothing will happen until you send a character from the computer to the microcontroller. If the microcontroller receives a character, the internal LED will blink. We'll complete this example in section 6.
-<br><br>
+
 If you close the Arduino IDE, the microcontroller continues to run this code. If you unplug the Arduino and plug it back into your computer, the microcontroller continues to run this code.
 
 (See file src/microcontr/serialReadArd.ino.)
@@ -822,29 +819,29 @@ void loop() {
 ```
 
 
-## 6.0 Sending characters TO the MICROCONTROLLER from the computer
+## 6.0 Sending CHARACTERS TO the MICROCONTROLLER from the computer
 
 Files used in 6.0:
 - examples/DigitalOut.py
 - examples/DigitalOutDisplay.py
 
 Now let's get the computer to talk to the microcontroller. More specifically, in this section, we'll send a character from the computer to the microcontroller. When the microcontroller receives a character, the internal light will blink on and off.
-<br><br>
+
 In section 5.1.4, you wrote the necessary code for the microcontroller and ran it. Make sure your microcontroller is still plugged in and running that code. We won't use the pushbutton connected to the microcontroller in this example, so it doesn't matter if it is connected or not. 
-<br><br>
+
 Close the Mu, Arduino, or Arduino Lab IDE that you used to program the microcontroller.
-<br><br> 
+ 
 In this section we write Python code for the computer. When we wrote code for the microcontroller, there were different options for the different hardware choices: MicroPython and the RPi, CircuitPython and the RPi, MicroPython and the PSoC6, and Arduino. Examples in this section will apply for any computer with a Python interpreter, whether that computer runs Windows or Linux.
 
 ### 6.1 Sending characters to the microcontroller, without a GUI
 Let's write the Python code that will run on the computer for this example. Open the IDLE IDE, and copy the code below, and run it. Every second, this program sends the character `Z` from the computer, down the USB cable, to the microcontroller. 
-<br><br>
+
 This code needs to know the port of your microcontroller. On a Windows machine, the port is something like `COM1`, but it may be `COM2`, `COM3`, and so on. Look in the Device Manager of the Windows Control Panel to find the appropriate port. On a Linux machine, the port is likely `/dev/ttyACM0` or `/dev/ttyACM1`. Alter the code below so that the correct port is used. 
-<br><br>
-If you are used CircuitPython to write the microcontroller code (Option B), make sure to use the port for the communication channel that doesn't involve the REPL terminal.
+
+If you used CircuitPython to write the microcontroller code (Option B), make sure to use the port for the communication channel that doesn't involve the REPL terminal.
 
 We'll be communicating over a serial channel, using the USB cable. For this type of communication, the sender and receiver must agree on the baud rate, bytesize, and number of stopbits. If you are using the PSoC6 (Option C), replace `STOPBITS_TWO` with `STOPBITS_ONE` near line 17. 
-<br><br>
+
 
 (See file src/examples/DigitalOut.py.)
 
@@ -875,16 +872,15 @@ if __name__=="__main__":
     example=DigitalOut()
 ```
 When you run the example above, the computer sends a character to the microcontroller every second. The microcontroller is still running code that blinks the LED when it receives a character, so you should see the microcontroller's internal LED blink every second. To verify that it works, replace `time.sleep(1)` with `time.sleep(3)`. Now the computer will send a character every three seconds, and the microcontroller's LED will blink at this slower rate.
-<br><br>
 
-You may be able to automatically assign the serial port with the following lines. However, these lines aren't too reliable, so it is better to set `PORT` manually.
+You may be able to automatically assign the port variable with the following lines. However, these lines aren't too reliable, so it is better to set `PORT` manually.
 
 ```python
 ports=list(port_list.comports())
-port=(ports[0].device)
+PORT=(ports[0].device)
 print(ports[0].device)
 ```
-Keep in mind that whenever you send serially using the USB cable in this way, you are sending characters. You can send characters like `4` or `3`, but even though these look like integers, they are actually characters. If you are writing software for the receiver, you can include an instruction that, for example, casts the character `4` into an integer if you want to treat it as a number.
+Keep in mind that whenever you send serially using the USB cable in this way, you are sending characters. You can send characters like `3` or `4`, but even though these look like integers, they are actually characters. If you are writing software for the receiver, you can include an instruction that casts characters to integers if it is helpful. 
 
 ### 6.2 Sending characters to the microcontroller, with a GUI
 
@@ -952,25 +948,25 @@ Files used in section 7:
 - widgets/LEDDisplay.py
 - utilities/SerialAndGui.py
 
-<br><br>
 In this section, we will send data from the microcontroller to the computer. 
 
-More specifically, you should have a pushbutton wired to a microcontroller, and your microcontroller should be connected to the computer by a USB cable. If you aren't pressing the pushbutton, the microcontroller sends the character `F` to the computer. If you are pressing the pushbutton, it sends `T`. We'll go through this example multiple ways. 
+For examples in this section, a pushbutton will be wired to a microcontroller, and your microcontroller will be connected to the computer by a USB cable. When the push button is not pressed, the microcontroller will send the character `F` to the computer. When the pushbutton is pressed, it sends `T`. We'll go through this example multiple ways. 
 
-Think of the pushbutton like a digital input sensor that can either be in one of two possible states. You could instead replace it with a [tilt switch](https://www.digikey.com/en/products/detail/c-k/RB-220-07A-R/2747176), [limit switch](https://www.digikey.com/en/products/detail/e-switch/SS0750302F035P1A/16018860), or other such type of digital input sensor instead. 
+Think of the pushbutton like a digital input sensor that can either be in one of two possible states. You could instead replace it with a [tilt switch](https://www.digikey.com/en/products/detail/c-k/RB-220-07A-R/2747176), [limit switch](https://www.digikey.com/en/products/detail/e-switch/SS0750302F035P1A/16018860), or another type of digital input sensor instead. 
 
 ### 7.1 Set up the microcontroller and run the example
 
-You should still have the pushbutton wired to the microcontroller. We'll need it for this example. Now, let's program the microcontroller. Open the Mu or Arduino IDE. Re-open the blinky lights example from section 5.1.3. (See file microcontr/serialWriteMP.py, microcontr/serialWriteCP.py, microcontr/serialWritePSoC.py, or src/microcontr/serialWriteArd.py.)
- We'll use this program once again in this section. Run it, and then close the IDE for your microcontroller. Leave the microcontroller connected to your computer with the USB cable. 
-<br><br>
+You should still have the pushbutton wired to the microcontroller. We'll need it for this example. Now, let's program the microcontroller. Open the Mu, Arduino Lab,  or Arduino IDE. Re-open the blinky lights example from section 5.1.3. (See file microcontr/serialWriteMP.py, microcontr/serialWriteCP.py, microcontr/serialWritePSoC.py, or src/microcontr/serialWriteArd.py.) We'll use this program once again in this section. 
+
+Run it, and then close the IDE for your microcontroller. Leave the microcontroller connected to your computer with the USB cable. 
+
 
 ### 7.2 Receiving characters from the microcontroller, no GUI
 
-In the previous section, we wrote code for the microcontroller using the Mu or Arduino IDE. In this section, we will be writing code for the computer using IDLE IDE. 
-<br><br> 
+In the previous section, we wrote code for the microcontroller using the Mu, Arduino Lab, or Arduino IDE. In this section, we will be writing code for the computer using IDLE IDE. 
+
 Copy the code below or open the example that came with the DANDY library. Make sure to set your port appropriately. 
-<br><br>
+
 Run the code. When you are not pressing the pushbutton wired to the microcontroller, it will print `F`. When you are pressing the pushbutton, it will print `T`. 
 
 (See file src/examples/DigitalIn.py.)
@@ -1006,29 +1002,30 @@ if __name__=="__main__":
 
 
 ### 7.3 Receiving data from the microcontroller, now with widgets and asyncIO
-#### 7.3.1 What is asyncio and why do we need it here.
-We are using the graphics library Tkinter. Typically, tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serial data.
+
+#### 7.3.1 What is asyncIO and why do we need it here?
+We are using the graphics library Tkinter. Typically, Tkinter runs in a loop to continually refresh the graphical user interface. In the previous example, we used a loop to continually read serial data.
 The problem is that we want both loops to run continuously and simultaneously. One possible solution would be to put each of these tasks in a different thread. 
 We are not quite doing this, but we are doing something quite similar. 
-<br><br>
+
 We will be using the asyncIO Python library. This library isn't quite multithreading, but it accomplishes the same task. 
 Also, instead of telling Tkinter to loop continually, we will tell it to manually update inside a loop. 
 The asyncIO library is new to Python, so make sure you are at least using Python version 3.7.
-<br><br> 
+ 
 More info on asyncIO can be found at [async-io-python](https://realpython.com/async-io-python).
-Information on using asyncIO with Tkinter came from [asyncio-and-tkinter](https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui) 
+Information on using asyncIO with Tkinter came from [asyncio-and-tkinter](https://stackoverflow.com/questions/47895765/use-asyncio-and-tkinter-or-another-gui-lib-together-without-freezing-the-gui). 
 
 #### 7.3.2 Tkinter and widgets, the short way (recommended)
 
 Make sure the microcontroller is plugged in and still running the previous example.
-<br><br>
-Run the example below. When you run it, you will see a window with an `LEDDisplay` widget and a quit button. When the pushbutton connected to your microcontroller is held down, the `LEDDisplay` widget will be yellow. Otherwise it will be blue.
-<br><br>
+
+Open the IDLE IDE on the computer and copy or open the example below. Run it on the computer. When you run it, you will see a window with an `LEDDisplay` widget and a quit button. When the pushbutton connected to your microcontroller is held down, the `LEDDisplay` widget will be yellow. Otherwise it will be blue.
+
 Even though this example is short, it has a lot going on. The `DigitalHWShort` class defined in this example is a child of class `SerialAndGui` which is a child of `Tk`. The class `SerialAndGui` comes with the DANDY library, and it is detailed in `src/utilities/SerialAndGui.py`. 
 The class `SerialAndGui` is an abstract class. If you run it by itself, you see an empty window which is not useful. Instead, as shown below, you should define a child class and overload the constructor and the `use_serial_data` function.
-<br><br>
+
 The `SerialAndGui` class involves three asynchronous tasks: `check_serial_data`, `use_serial_data`, and `updater`. Each is defined in its own function. The `check_serial_data` task reads serially from the USB cable and writes the result to a queue. The `use_serial_data` task reads from the queue and does something with the data it finds. The `updater` task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
-<br><br>
+
 You don't have to write all the code for these tasks every time you want to use them. Instead, you can just define a child class of `SerialAndGui` as shown below.   
 
 (See file src/examples/DigitalHWShort.py.)
@@ -1090,20 +1087,18 @@ if __name__=="__main__":
     loop.close()
 ```
 ![Digital With Hardware Picture](./docPics/digwithHW.png)
-<br><br>
 
-#### 7.3.3 Tkinter and Widgets, the long way
+
+#### 7.3.3 Tkinter and widgets, the long way
 The previous example relied on the `SerialAndGui` class. A lot of the details were swept up into that class. What actually  happened? What if you want to write all the instructions yourself without relying on any parent classes? 
-<br><br>
-This example accomplishes the same task as the previous example. Before you run it, make sure your microcontroller is still plugged in and running its code. As in the last section, when you run this example, you will see a window with an `LEDDisplay` widget. When the pushbutton connected to the microcontroller is pressed, the `LEDDisplay` is yellow, and otherwise it is blue. 
-<br><br>
-In this example, you can see the details of how to use asyncIO to both read serially from the USB cable and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions `check_serial_data`, `use_serial_data`, and `updater`. The `DigitalWithHW` class defined below is a child only of `Tk`, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
+
+This example accomplishes the same task as the previous example. Before you run it, make sure your microcontroller is still plugged in and running its code. As in the last section, when you run this example on the computer, you will see a window with an `LEDDisplay` widget. When the pushbutton connected to the microcontroller is pressed, the `LEDDisplay` is yellow, and otherwise it is blue. 
+
+In this example, you can see the details of how to use asyncIO to both read serially from the USB cable and update the Tkinter GUI. As explained above, it involves three asynchronous tasks, which are detailed in the functions `check_serial_data`, `use_serial_data`, and `updater`. The `DigitalHWLong` class defined below is a child only of `Tk`, so the details of using asyncIO are not hidden in a parent class. You don't need to understand every line of this example, and I recommend using the short example above instead. 
 
 (See file src/examples/DigitalHWLong.py.)
 
 ```python
-
-
 import asyncio
 import tkinter as tk
 import time
@@ -1235,9 +1230,9 @@ The DANDY library contains multiple widgets designed to display numerical data. 
 #### 8.1.1 Displaying a scalar numerical value
 
 Try out the example below. When you run it, you see a number of widgets. The `Label`, `Button`, and `Scale` widgets are built into Tkinter. The `SlideDisplay`, `DialDisplay`, `TricolorDisplay`, and `SimplePlotDisplay` widgets are from the DANDY library. 
-<br><br>
+
 Adjust the `Scale` then press the `Get value` button. You will see the DANDY widgets change appropriately. The `TricolorDisplay` widget is one color below some cutoff value, a second color above another cutoff value, and a third color between those values. 
-<br><br>
+
 This example uses Tkinter as well as multiple widgets that come with the DANDY library. It does not use asyncIO because it only needs one loop, for the GUI. 
 
 (See file src/examples/SingleAInDemo.py)
@@ -1359,7 +1354,7 @@ The inputs in this section will come from a potentiometer wired to the microcont
 
 Follow the option for the hardware of your choice. 
 
-#### 8.2.1 Option A: Micropython and RPi
+#### 8.2.1 Option A: Sending data from a RPi coded in Micropython
 ##### 8.2.1.1 Build the circuit
 
 Connect a resistor and a potentiometer in series between pin 36 (3.3V power) and pin 38 (GND). Also, add a wire from the node between the resistor and potentiometer to pin 31. Pin 31 is also known as GP26, and it is connected to the internal analog to digital converter ADC0.
@@ -1370,7 +1365,7 @@ If your potentiometer has three pins, make sure to use the middle pin and one of
 
 ![Circuit with potentiometer](./docPics/potCircuit1.png)
 
-##### 8.2.2.2 Write the microcontroller code
+##### 8.2.1.2 Write the microcontroller code
 
 Let's write the code for the microcontroller, so open the Mu IDE.
 
@@ -1405,7 +1400,7 @@ while True:
 
 ```
 
-#### 8.2.1 Option B: Circuitpython and the RPiPico
+#### 8.2.1 Option B: Sending data from a RPi coded in CircuitPython
 
 ##### 8.2.1.1 Build the circuit
 
@@ -1416,7 +1411,7 @@ If your potentiometer has three pins, make sure to use the middle pin and one of
 ![Circuit with potentiometer](./docPics/potCircuit1.png)
 
 
-##### 8.2.2.2 Write the microcontroller code
+##### 8.2.1.2 Write the microcontroller code
 Let's write the code for the microcontroller, so open the Mu IDE.
 
 The microcontroller code below reads an analog value from pin 31, also known as GP26 and ADC0. This value is then written serially to the computer.
@@ -1448,7 +1443,7 @@ while True:
 ```
 
 
-#### 8.2.1 Option C: MicroPython and the PSoC
+#### 8.2.1 Option C: Sending data from a PSoC6 coded in MicroPython
 
 ##### 8.2.1.1 Build the circuit
 Connect a resistor and a potentiometer in series between VTarg and ground. Also, add a wire from the node between the resistor and potentiometer to pin 10.0. Pin 10.0 is connected to the internal analog to digital converter ADC0.
@@ -1458,11 +1453,11 @@ If your potentiometer has three pins, make sure to use the middle pin and one of
 
 ![Potentiometer and PSoC](./docPics/potPSoC.png)
 
-##### 8.2.2. Write the microcontroller code
+##### 8.2.1.2 Write the microcontroller code
 
 Let's write the code for the microcontroller, so open the Arduino Lab IDE.
 
-The microcontroller code below reads an analog value pin 10.0, also known as ADC channel 0. This value is then written serially to the computer.
+The microcontroller code below reads an analog value from pin 10.0, also known as ADC channel 0. This value is then written serially to the computer.
 
 We could just print out the value itself. Instead, here we're a bit smarter. We're printing a message in JSON format that contains the value we read in addition to other pieces of information.
 
@@ -1490,7 +1485,7 @@ while True:
 ```
 
 
-#### 8.2.1 Option D: Arduino
+#### 8.2.1 Option D: Sending data from an Arduino
 
 ##### 8.2.1.1 Build the circuit
 Connect a resistor and a potentiometer in series between 3.3V power and GND. Also add a wire from the node between the resistor and the potentiometer to ADC0. The figure below shows the wiring for the Arduino Uno.
@@ -1501,7 +1496,7 @@ If your potentiometer has three pins, make sure to use the middle pin and one of
 
 ![Arduino circuit with potentiometer](./docPics/potCircuit2.png)
 
-##### 8.2.2.2 Write the microcontroller code
+##### 8.2.1.2 Write the microcontroller code
 
 Let's write the code for the microcontroller, so open the Arduino IDE.
 
@@ -1541,11 +1536,11 @@ void loop() {
 
 ### 8.3 Displaying numerical data, the computer side
 
-Back to writing code for the computer in Python using the IDLE IDE. 
-This example reads the data from the microcontroller. It also picks off the part of the json that we're interested in. This example does not use a GUI. We'll add a GUI in the next section.  
+Let's get back to writing code for the computer in Python using the IDLE IDE. 
+This example reads the data from the microcontroller. It also picks off the part of the JSON that we're interested in. This example does not use a GUI. We'll add a GUI in the next section.  
 
 Make sure your microcontroller is still plugged in and running the example from the last section.
-Also make sure you've closed your Mu or Arduino IDE. Additionally, set port for your computer.
+Also make sure you've closed your Mu, Arduino Lab, or Arduino IDE. Additionally, set `PORT` for your computer.
 
 (See file src/examples/ReadInJson.py)
 
@@ -1592,9 +1587,9 @@ Now let's put all the pieces together. The microcontroller reads analog data fro
 
 You should still have the potentiometer wired to the microcontroller. The microcontroller should still be connected to your computer with the USB cable, and it should still be running the same example used in section 8.2.
 
-Make sure to set `PORT` near line 21 for your machine.
+Make sure to set `PORT` near line 21 for your machine. Also make sure `PORT` is set correctly in the file src/utilities/SerialAndGUI.py.
 
-Try out the example below. While this example is short, it is not simple. It has a lot going on.  
+Try out the example below. While this example is short, it is not simple. It has a lot going on. It involves three asynchronous tasks, defined in SerialAndGUI.py. In the code below, we write our own constructor for AnalogHWShort class, and we overload the `use_serial_data` task from the parent class `SerialAndGUI`.
 
 (See file src/examples/AnalogHWShort.py.)
 
@@ -1712,7 +1707,7 @@ I2C communication requires four wires: 3.3V power, ground, Serial Data (SDA) whi
 To generate a magnetic field, put a refrigerator magnet near the sensor.
 
 
-#### 8.5.2 Option A: Vector example, microcontroller side
+#### 8.5.2 Option A: Vector example, microcontroller side, for the RPi in MicroPython
 In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the RPi and MicroPython.
 
 ##### 8.5.2.1 Wire up the sensor
@@ -1728,7 +1723,7 @@ Open up the example below, and upload it to the microcontroller.
 
 To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
-This [MicroPython i2c tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2) was used as a reference. 
+This [MicroPython I2C tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2) was used as a reference. 
 
 (See file src/microcontr/magnetMP.py.)
 ```python
@@ -1806,18 +1801,18 @@ while True:
 
 Let's look at some lines more closely. 
 
-The line `i2c=I2C(0, sda=Pin(16), scl=Pin(17))` creates the I2C object. This example in MicroPython for the RPi and the example in MicroPython for the PSoC are identical to each other except for the syntax of this line. This line uses a hardware i2c connection. 
+The line `i2c=I2C(0, sda=Pin(16), scl=Pin(17))` creates the I2C object. This example in MicroPython for the RPi and the example in MicroPython for the PSoC6 are identical to each other except for the syntax of this line. This line uses a hardware, not software, I2C connection. 
 
 The `devices=i2c.scan()` line looks for I2C devices connected to the microcontroller. If one is found, its address is printed. This sensor has address 0x35. So, if the microcontroller finds the sensor on the I2C bus, this value is printed. (Numbers beginning with 0x are given in hexadecimal.)
 
 Two `writeto_mem` instructions are used before the `while` loop. To use the sensor, we need to configure it. To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
 
-The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value. 
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. The binary value from the registers, however, was in 2's complement. Values of `BX` below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value. 
 
 The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled into  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.    
 
 
-#### 8.5.2 Option B: Vector example, microcontroller side
+#### 8.5.2 Option B: Vector example, microcontroller side, for the RPi in CircuitPython
 In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the RPi and CircuitPython.
 
 
@@ -1838,7 +1833,7 @@ Open up the example below, and upload it to the microcontroller.
 
 To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
-This [tutorial on CircuitPython and i2c](https://learn.adafruit.com/circuitpython-essentials/circuitpython-i2c) and [discussion on CircuitPython and i2c](https://stackoverflow.com/questions/69803934/trouble-using-i2c-in-circuitpython-working-micropython-example) were used as references.
+This [tutorial on CircuitPython and I2C](https://learn.adafruit.com/circuitpython-essentials/circuitpython-i2c) and [discussion on CircuitPython and I2C](https://stackoverflow.com/questions/69803934/trouble-using-i2c-in-circuitpython-working-micropython-example) were used as references.
 
 (See file src/microcontr/magnetCP.py.)
 
@@ -1929,23 +1924,23 @@ while True:
 Let's look at some lines more closely.
 
 
-The line `i2c=busio.I2C(board.GP17, board.GP16)` creates the I2C object. This line uses a hardware i2c connection.
+The line `i2c=busio.I2C(board.GP17, board.GP16)` creates the I2C object. This line uses a hardware, not software, I2C connection.
 
 The `devices=i2c.scan()` line looks for I2C devices connected to the microcontroller. If one is found, its address is printed. This sensor has address 0x35. So, if the microcontroller finds the sensor on the I2C bus, this value is printed. (Numbers beginning with 0x are given in hexadecimal.)
 
 Two `writeto` instructions are used before the `while` loop. To use the sensor, we need to configure it. To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
 
-The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. The binary values from the registers, however, were in 2's complement. Values of `BX` below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
 
 The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled into  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
 
 
-#### 8.5.2 Option C: Vector example, microcontroller side
+#### 8.5.2 Option C: Vector example, microcontroller side, for the PSoC6 in MicroPython
 In this section, we wire up the sensor and write the code for the microcontroller.  This section assumes you are using the PSoC6 and MicroPython.
 
 
 ##### 8.5.2.1 Wire up the sensor
-As shown in the figure below, connect 3V3 on the sensor to power on the PSoC. Connect GND on the sensor to GND on the PSoC. Connect SCL on the sensor to 6.0 on the PSoC, and connect pin SDA on the sensor to 6.1 on the PSoC.
+As shown in the figure below, connect 3V3 on the sensor to power on the PSoC6. Connect GND on the sensor to GND on the PSoC6. Connect SCL on the sensor to 6.0 on the PSoC6, and connect pin SDA on the sensor to 6.1 on the PSoC6.
 
 
 ![Magnet sensor and PSoC](./docPics/magnetPSoC.png)
@@ -1961,7 +1956,7 @@ Open up the example below, and upload it to the microcontroller.
 
 To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.
 
-This [MicroPython i2c tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2) and this [MicroPython PSoC page](https://github.com/Infineon/micropython/blob/ports-psoc6-ifx/docs/psoc6/quickref.rst) were used as references.
+This [MicroPython I2C tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-rp2040-i2c-example-with-micropython-and-cc/47d0c922b79342779cdbd4b37b7eb7e2) and this [MicroPython PSoC6 page](https://github.com/Infineon/micropython/blob/ports-psoc6-ifx/docs/psoc6/quickref.rst) were used as references.
 
 
 (See file src/microcontr/magnetPSoC.py)
@@ -2044,19 +2039,19 @@ while True:
 
 Let's look at some lines more closely.
 
-The line `i2c=SoftI2C(scl="P6_0", sda="P6_1")` creates the I2C object. This example in MicroPython for the PSoC and the example in MicroPython for the RPi are identical to each other except for the syntax of this line. This line uses a software i2c connection because the hardware i2c connection was not acting reliably.
+The line `i2c=SoftI2C(scl="P6_0", sda="P6_1")` creates the I2C object. This example in MicroPython for the PSoC6 and the example in MicroPython for the RPi are identical to each other except for the syntax of this line. This line uses a software i2c connection because the hardware i2c connection was not acting reliably.
 
 The `devices=i2c.scan()` line looks for I2C devices connected to the microcontroller. If one is found, its address is printed. This sensor has address 0x35. So, if the microcontroller finds the sensor on the I2C bus, this value is printed. (Numbers beginning with 0x are given in hexadecimal.)
 
 Two `writeto_mem` instructions are used before the `while` loop. To use the sensor, we need to configure it. To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707).
 
-The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(data[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=data[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(data[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. The binary values from the registers, however, were in 2's complement. Values of `BX` below 2048 are positive while values above 2048 are negative. The line `if BX>2048: BX=-1 * (4096-BX)` converts the two's complement value to a signed value.
 
 The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled into  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
 
 
 
-#### 8.5.2 Option D: Vector example, microcontroller side
+#### 8.5.2 Option D: Vector example, microcontroller side, for the Arduino
 In this section, we wire up the sensor and write the code for the microcontroller. This section assumes you are using an Arduino.
 
 
@@ -2157,20 +2152,22 @@ void loop () {
 
 Let's look at some lines more closely. 
 
-The Wire library is used to facility i2c communication. To use the sensor, we need to configure it.  To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707). We write these values inside the `setup` function. 
+The `Wire` library is used to facility I2C communication. To use the sensor, we need to configure it.  To do so, we write the values 0x11 and 0x91 into register 0x10. For more information, see  the sensor's [user's manual](https://www.infineon.com/dgdl/Infineon-TLI_493D-W2BW-UserManual-v01_10-EN.pdf?fileId=5546d46273a5366f0173be229e1b1512) or this [Arduino example](https://community.infineon.com/t5/Knowledge-Base-Articles/XENSIV-TLI493D-W2BW-I2C-interface-example-KBA237409/ta-p/437707). We write these values inside the `setup` function. 
 
-The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(buf[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=buf[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(buf[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. This value, however, is in 2's complement. Values below 2048 are positive while values above 2048 are negative. The lines `if (BX>2048) {BX=-1 * (4096-BX);}` convert the two's complement value to a signed value.
+The first four bits of register 0 contain the four most significant bits of the X component of the magnetic field. These four bits can be represented in one hexadecimal digit or a decimal number between 0 and 15. The line `X_first_hex=int(buf[0]/16)` identifies these bits and converts the result to an integer from 0 to 15. The last four bits of register 0 contain the middle four bits of the X component of the magnetic field. The line `X_second_hex=buf[0]%16` identifies these bits. The first four bits of register 4 contain the four least significant bits of the X component of the magnetic field. The line `X_third_hex=int(buf[4]/16)` identifies these bits. These three sets of bits are assembled into `BX`, which is an integer representing the X component of the magnetic field. The binary values from the registers, however, were in 2's complement. Values of `BX` below 2048 are positive while values above 2048 are negative. The lines `if (BX>2048) {BX=-1 * (4096-BX);}` convert the two's complement value to a signed value.
 
 The same strategy is repeated for the Y and Z components of the magnetic field too. The values are then assembled into  a string named `msgString` in JSON format. Using the `print` instruction, this string is then sent to the computer serially over the USB cable.
 
 
 #### 8.5.3 Vector example, computer side
 
-Now let's write the code that will run on the computer and display the data from the magnetic field sensor. Close your Mu or Arduino IDE. Open the IDLE IDE to write Python code for the computer.
+Now let's write the code that will run on the computer and display the data from the magnetic field sensor. Close your Mu, Arduino Lab, or Arduino IDE. Open the IDLE IDE to write Python code for the computer.
 
 This example sets up a GUI with a `VectorDisplay` widget as well as a quit button. The microcontroller sends the X, Y, and Z values of the magnetic field to the computer packaged in a JSON. This example reads the information sent by the microcontroller, picks off the components of the data, and displays the magnetic field as a vector using the `VectorDisplay` widget.
 
-This example uses asyncIO to simultaneously read the data and update the GUI. The `MagnetDemo` class of this example is a child of class `SerialAndGUI`. The class `SerialAndGUI` uses three tasks: `check_serial_data`, `use_serial_data`, and `updater`. Here, we just overload the `use_serial_data` function so that it is specific for this example.  
+This example uses asyncIO to simultaneously read the data and update the GUI. The `MagnetDemo` class of this example is a child of class `SerialAndGUI`. The class `SerialAndGUI` uses three tasks: `check_serial_data`, `use_serial_data`, and `updater`. Here, we just overload the `use_serial_data` function so that it is specific for this example. 
+
+Make sure to set `PORT` at the top of this file for your computer. You may need to set `PORT` in src/utilities/SerialAndGUI.py too.  
 
 Run this example. To generate a nonzero magnetic field, put a small refrigerator magnet near the sensor. Try to get the magnet within a few millimeters of the integrated circuit chip at the top of the sensor.  
 
@@ -2259,15 +2256,15 @@ Files used in section 9:
  - microcontr/analogToComputerPSoC.py
  - microcontr/analogToComputerArd.ino
 
-The DANDY library contains five widgets that look like specific microcontrollers. First we show how to use these widgets without any hardware. Next we show how to use them with one microcontroller attached, and finally we show how to use them with two microcontrollers connected to the computer.
+The DANDY library contains five widgets that look like specific microcontrollers. First we show how to use these widgets without any hardware. Next we show how to use them with one microcontroller attached to the computer, and finally we show how to use them with two microcontrollers attached.
 
 ![](./docPics/summaryPicMC.png)
 
 
 #### 9.1 Microcontroller widgets, example with no hardware
-This example demonstrates the widgets that look like microcontrollers. This section does not use hardware.  The file `MCDisplay.py` is a parent class. The files `RPiPicoDisplay.py`, `AUnoDisplay.py`, `AMKRDisplay.py`, `ANanoEveryDisplay.py`, and `PSoCDisplay.py` are child classes that look like the RPi, Arduino Uno, Arduino MKR1010, Arduino Nano Every, and PSoC microcontrollers respectfully. These child classes have access to member functions of the parent.
+This example demonstrates the widgets that look like microcontrollers. This section does not use hardware.  The file `MCDisplay.py` is a parent class. The files `RPiPicoDisplay.py`, `AUnoDisplay.py`, `AMKRDisplay.py`, `ANanoEveryDisplay.py`, and `PSoCDisplay.py` are child classes that look like the RPi, Arduino Uno, Arduino MKR1010, Arduino Nano Every, and PSoC6 microcontrollers respectfully. These child classes have access to member functions of the parent.
 
-When you run this example, you will see a widget that looks like the RPi. Pin 6 shows a `LEDDisplay` widget, and pin 21 shows a button. Additionally, a `toggle` button is at the bottom of the screen. If you press either the button near bin 31 or the toggle button, the `LEDDisplay` changes color.
+When you run this example, you will see a widget that looks like the RPi. Pin 6 shows a `LEDDisplay` widget, and pin 21 shows a button. Additionally, a `toggle` button is at the bottom of the screen. If you press either the button near pin 21 or the toggle button, the `LEDDisplay` changes color.
 
 The `set_led` function of line 39 displays the `LEDDisplay` widget near pin 6. Other member functions display `SlideDisplay`, `DialDisplay`, or `TricolorDisplay` widgets near individual pins.
 
@@ -2346,7 +2343,7 @@ if __name__=="__main__":
 
 Follow the instructions in section 5.1.1 to wire a pushbutton to your microcontroller, and use a USB cable to plug your microcontroller into the computer. Upload the `serialWriteMP.py`, `serialWriteCP.py`, `serialWritePSoC.py`, or `serialWriteArd.ino` example used in section 5.1.4 to that microcontroller. When the user presses the pushbutton, `T` is sent serially to the computer. When the pushbutton is not pressed, `F` is sent.
 
-Next, we'll program the computer to respond to the character received. Close the Arduino or Mu IDE. Open the IDLE IDE. Copy the example below or load the file `examples/MCDemo2Short.py` that came with the DANDY library. Set `PORT` at the top of the example for your machine.
+Next, we'll program the computer to respond to the character received. Close the Mu, Arduino Lab, or Arduino IDE. Open the IDLE IDE. Copy the example below or load the file `examples/MCDemo2Short.py` that came with the DANDY library. Set `PORT` at the top of the example for your machine.
 
 When you run this example, you will see a widget that looks like a RPi microcontroller. The line which creates the widget, `self.mc1=rpp.RPiPicoDisplay(self)`, can be replaced with a line to create one of the widgets for the other microcontrollers instead if desired. 
 
@@ -2437,11 +2434,11 @@ Follow the instructions in section 8.2 to set up two microcontrollers. More spec
 
 Now let's write the Python program for the computer that displays the widgets. Open the IDLE IDE and copy the code below or load the example from the file `src/examples/twoMCv2.py`. Set the ports for your two microcontrollers at the top of the code. 
 
-This example uses the asyncIO library. It involves four tasks: `check_serial_dataA`, `check_serial_dataB`, `use_serial_data`, and `updater`. In example with one microcontroller, the details of the use of asyncIO were hidden in the parent class `SerialAndGui`. That technique won't work here because we have a fourth task, so the details of the use of asyncIO are included in this example.
+This example uses the asyncIO library. It involves four tasks: `check_serial_dataA`, `check_serial_dataB`, `use_serial_data`, and `updater`. In the example with one microcontroller, the details of the use of asyncIO were hidden in the parent class `SerialAndGui`. That technique won't work here because we have a fourth task, so the details of the use of asyncIO are included in this example.
 
 When you first run this example, you will see two widgets that look like the Arduino Nano Every microcontroller. The microcontrollers are sending information to the computer in JSON format, and one element of the JSON, `boardType`, contains the microcontroller type. For the first messages received, this example identifies the board type and changes the widget to look like that particular microcontroller. This example is set up to recognize only Arduino Nano Everys, RPis, and Arduino Unos, but other microcontroller types with available widgets could be included too. 
 
-The `set_slide` member function is used to display a `SlideDisplay` widget near one pin of a microcontroller widget. The `set_dial` member function is used to display a `DialDisplay` widget near one pin of the other microcontroller widget.
+The `set_slide` member function is used to display a `SlideDisplay` widget near one pin of a microcontroller widget. The `set_dial` member function is used to display a `DialDisplay` widget near one pin of the other microcontroller widget. As you adjust the potentiometers wired to the microcontrollers, these widgets change to display corresponding values.
 
 Try out the example.
 
@@ -2650,7 +2647,7 @@ if __name__=="__main__":
 ![TwoMC example](./docPics/twoMC.png)
 
 
-## 10.0 Widgets for ANALOG or PWM OUTPUT
+## 10.0 Sending NUMERICAL data TO the MICROCONTROLLER from the computer
 In this section, we demonstrate a widget that is useful when sending values other than individual characters out of the computer.
 This strategy will allow us to control motors or other actuators. More specifically, in the example of section 10.3, we will send a floating point value from the computer to a microcontroller and use this number to set a motor's rotation speed.
 
@@ -2714,19 +2711,19 @@ In this section, we'll control a small servo motor directly using Pulse Width Mo
 
 Instead of getting sensor data in to a microcontroller, in this section we send signals out of the microcontroller to control an actuator. More specifically, we use the microcontroller to control the rotation rate of a small servo motor. 
 
-In the next section, 10.3, we'll send signals from the computer, over the USB cable to the microcontroller, and to the connected motor to control the rotation rate of the motor. 
+In the next section, 10.3, we'll send signals out from the computer, over the USB cable to the microcontroller, and to the connected motor to control the rotation rate of the motor. 
 
 Most motors require a significant amount of power and are used to deliver a significant amount of torque to a load. However, we'll be using a small servo motor that can be powered directly from the microcontroller and does not need any separate power management. For this reason, the torque it can provide is limited. 
 
 Often, the easiest way to control a motor using a microcontroller is to use a library written specifically for the task. For example, open libraries are available for controlling [servos with Arduino](https://docs.arduino.cc/learn/electronics/servo-motors) and [servos with the RPi and CircuitPython](https://learn.adafruit.com/use-dc-stepper-servo-motor-solenoid-rp2040-pico/servo-motors). 
 
-In this section, however, we do not use an external library. Instead, we directly use PWM signals. This approach allows us to have more control of the instructions run by the microcontroller. Information on PWM and the RPi in MicroPython came from [https://microcontrollerslab.com/servo-motor-raspberry-pi-pico-micropython/](https://microcontrollerslab.com/servo-motor-raspberry-pi-pico-micropython/). Information on PWM and the RPi in CircuitPython came from [https://learn.adafruit.com/using-servos-with-circuitpython/low-level-servo-control](https://learn.adafruit.com/using-servos-with-circuitpython/low-level-servo-control). Information on PWM and Arduino came from [https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8).
+In this section, however, we do not use an external library. Instead, we directly use PWM signals. This approach allows us to have more control of the instructions run by the microcontroller. Information on PWM and the RPi in MicroPython came from [here](https://microcontrollerslab.com/servo-motor-raspberry-pi-pico-micropython/). Information on PWM and the RPi in CircuitPython came from [here](https://learn.adafruit.com/using-servos-with-circuitpython/low-level-servo-control). Information on PWM and Arduino came from [here](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8).
 
-We will control the motors by PWM. The PWM signals are periodic with some pulse width and some frequency. The pulse width sets the desired rotation angle for the servo. The examples below use a PWM frequency of 50Hz. While PWM frequency influences rotation speed to some extent, it is not used here to control rotation speed. The servo motors operate so quickly that changing the PWM frequency is not a useful way to control motor speed for our purposes here. 
+We will control the motors by PWM. The PWM signals are periodic with some pulse width and some frequency. The pulse width sets the desired rotation angle for the servo. The examples below mostly use a PWM frequency of 50Hz. While PWM frequency influences rotation speed to some extent, it is not used here to control rotation speed. Servo motors operate so quickly that changing the PWM frequency is not a useful way to control motor speed here. 
 
 Motor rotation speed will be controlled by the number of steps and the time of delays between steps instead. Suppose we want to rotate the motor shaft between an angle of ten degrees and 100 degrees. We will accomplish this rotation by breaking it up into a number of steps, and we will delay a fixed time between the steps. The motor will take three times as much time to accomplish this rotation, for example, if we go between these angles in 90 steps with a 10ms delay between each step than if we go between these angles in 30 steps with a 10ms delay between each step. In the examples below, we will have a variable number of steps involved with a fixed time between these steps. Therefore, if we set our motor to take fewer steps all else equal, it will rotate faster. 
 
-#### 10.2.1 Option A: Spin the motor at different frequencies
+#### 10.2.1 Option A: Spin the motor, with the RPi in MicroPython
 
 In this section, we use the RPi microcontroller and code it in MicroPython. Connect the motor to the RPi as shown below.  
 
@@ -2762,7 +2759,7 @@ This example rotates the motor. Each of the five times through the outer for loo
 As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 10ms delay between each steps. While the command `pwm.freq()` sets the PWM frequency, this command was not used for controlling the motor rotation speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
 
 
-#### 10.2.1 Option B: Spin the motor at different frequencies
+#### 10.2.1 Option B: Spin the motor, with the RPi in CircuitPython
 
 
 In this section, we use the RPi microcontroller and code it in CircuitPython. Connect the motor to the RPi as shown below.
@@ -2807,9 +2804,9 @@ This example rotates the motor. Each of the five times through the outer for loo
 As explained in section 10.2, the rotation speed is actually controlled by the number of steps in the motor rotation because there is a 150ms delay between each steps. While the PWM frequency is set to 50Hz in the constructor, PWM frequency is not used for controlling the motor rotation speed because it was just too fast to be observable. The number of steps was used instead because it allowed for slower speeds which are observable.
 
 
-#### 10.2.1 Option C: Spin the motor at different frequencies
+#### 10.2.1 Option C: Spin the motor, with the PSoC6 in MicroPython
 
-In this section, we use the PSoC and code it in MicroPython. Connect the motor to the PSoC as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC, and the yellow wire of the motor is connected to pin 6.1 of the PSoC. 
+In this section, we use the PSoC6 and code it in MicroPython. Connect the motor to the PSoC6 as shown below. The brown wire of the motor is connected to any ground pin of the PSoC. The red wire of the motor is connected to the VDD pin of the PSoC6, and the yellow wire of the motor is connected to pin 6.1 of the PSoC6. 
 
 ![PSoC motor](./docPics/psocMotor.png)
 
@@ -2842,15 +2839,18 @@ As explained in section 10.2, the rotation speed is actually controlled by the n
 
 During testing, I tried using pin 6.0 instead of pin 6.1 for the motor control wire. However, that did not work, and I'm not sure why.
 
-Except for the syntax of the PWM constructor, this example is the same as in 10.2.1 Option A. When using the PSoC, use the four input constructor as shown here. 
+Except for the syntax of the PWM constructor, this example is the same as in 10.2.1 Option A. When using the PSoC6, use the four input constructor as shown here. 
 
-#### 10.2.1 Option D: Spin the motor at different frequencies
+#### 10.2.1 Option D: Spin the motor, with the Arduino
 
 In this section, we use the Arduino. Connect the motor to the Arduino. The figure below shows wiring for the Arduino Uno. 
 
-Next, let's write code for the microcontroller that spins the motor at different rates. Open the Arduino IDE, copy over the code below, and try it out.
+Connect the black wire of the motor to GND of the Arduino. Connect the red wire of the motor to 5.0V of the Arduino, and connect the yellow wire of the motor to pin D9 of the Arduino.
+
 
 ![Ard motor](./docPics/ardMotor.png)
+
+Next, let's write code for the microcontroller that spins the motor at different rates. Open the Arduino IDE, copy over the code below, and try it out.
 
 This [Arduino servo tutorial](https://forum.arduino.cc/t/creating-your-own-pwm-to-control-a-servo/129869/8) was used as a reference.
 
@@ -2922,23 +2922,23 @@ In this example, we send a signal from the computer to the microcontroller, and 
 
 We run into an issue we also encountered in Section 7.3. We want the microcontroller to simultaneously do two things. First, we want it to communicate with the computer, and second we want it to control the motor. 
 
-In Section 7.3, we ran into this problem on the computer. Here we're running in to this problem on the microcontroller. In Section 7.3, we solved this problem using asyncIO. The MicroPython and CircuitPython also have asyncIO instructions, so we'll use the same technique here. Arduino does not have asyncIO instructions. 
+In Section 7.3, we ran into this problem on the computer. Here we're running in to this problem on the microcontroller. In Section 7.3, we solved this problem using asyncIO. Both MicroPython and CircuitPython also have asyncIO instructions, so we'll use the same technique here. Arduino does not have asyncIO instructions. 
 
 The microcontrollers we're using don't have an operating system with a scheduler, and most microcontrollers only have one processor. For these reasons, we can't run multiple threads or multiple processes. The asyncIO functionality, however, allow us to run multiple tasks in a way that seems simultaneous.  
 
 [This site](https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c) contains a nice example of using asyncIO in MicroPython, and it was used as a reference. This [tutorial on CircuitPython and ayncIO](https://learn.adafruit.com/cooperative-multitasking-in-circuitpython-with-asyncio/overview)  was used as a reference too.
 
-This example involves both writing Python code for the computer as well as writing code for the microcontroller. When you run the Python code on the computer, you see a KnobDisplay widget and a button. If you dial the knob then press the button, a corresponding value is transmitted via the USB cable to the microcontroller. This value sets the number of steps, and hence the speed, of the motor attached to the microcontroller. 
+This example involves both writing Python code for the computer as well as writing code for the microcontroller. When you run the Python code on the computer, you see a `KnobDisplay` widget and a button. If you dial the knob then press the button, a corresponding value is transmitted via the USB cable to the microcontroller. This value sets the number of steps, and hence the speed, of the motor attached to the microcontroller. 
 
 
-#### 10.3.1 Option A: Microcontroller code, now with asyncIO
+#### 10.3.1 Option A: Microcontroller code, now with asyncIO, with the RPi and MicroPython
 Let's start by writing the microcontroller code for this example. In this section, we write MicroPython code for the RPi. Open the Mu IDE and copy the example below.
 
 As in the example of section 7.3, this example uses asyncIO and multiple tasks. The use of asyncIO allows the microcontroller to appear to work on multiple tasks simultaneously.  
 
 This program has three asynchronous tasks. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, which represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
 
-The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because MicroPython contains a deque class in the collections package, but it does not contain a queue class. [Queue classes](https://github.com/peterhinch/micropython-async/blob/master/v3/primitives/queue.py) have been written for MicroPython, but they are not packaged with the language. Information on the deque class can be found in the [MicroPython documentation](https://docs.micropython.org/en/latest/library/collections.html) and  [MicropPython source packages](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py).   
+The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because MicroPython contains a deque class in the `collections package`, but it does not contain a queue class. [Queue classes](https://github.com/peterhinch/micropython-async/blob/master/v3/primitives/queue.py) have been written for MicroPython, but they are not packaged with the language. Information on the deque class can be found in the [MicroPython documentation](https://docs.micropython.org/en/latest/library/collections.html) and  [MicropPython source packages](https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py).   
 
 The third task is named `use_serial_data`. This task takes characters off the deque, reassembles them, and casts them into floating point numbers. It assumes the messages sent from the computer end in the character `X` to make data processing easier. The values from the computer range from 0.0 to 10.0. These are scaled by 10 to represent the number of steps the motor takes as it turns back and forth between fixed points. As explained above, a larger number of steps corresponds to a slower rotation speed. 
 
@@ -3063,7 +3063,7 @@ asyncio.run(main())
 ```
 
 
-#### 10.3.1 Option B: Microcontroller code, now with asyncIO
+#### 10.3.1 Option B: Microcontroller code, now with asyncIO, with the RPi in CircuitPython
 
 Let's start by writing the microcontroller code for this example. In this section, we write CircuitPython code for the RPi. Open the Mu IDE and copy the example below.
 
@@ -3073,7 +3073,7 @@ As in the example of section 7.3, this example uses asyncIO and multiple tasks. 
 
 This program has three asynchronous tasks. The first task is called `spin_motor`, and as the name implies, it spins the motor forward and back between fixed endpoints. It takes one input parameter, which represents the number of steps to accomplish this rotation. There is a fixed delay between each step. Therefore a large number of steps corresponds to a slower motor rotation speed.
 
-The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because CircuitPython contains a deque class in the collections package, but it does not contain a queue class. Information on the deque class can be found in the [CircuitPython documentation](https://docs.circuitpython.org/en/latest/docs/library/collections.html).
+The second task, named `check_serial_data`, reads information sent on the USB bus. Information is always sent as characters, and this task reads one character at a time. Once a character is read, it is put in a deque. In the example of section 7.3, information was put in a queue. A deque is a double ended queue. A deque is used instead of a queue because CircuitPython contains a deque class in the `collections` package, but it does not contain a queue class. Information on the deque class can be found in the [CircuitPython documentation](https://docs.circuitpython.org/en/latest/docs/library/collections.html).
 
 The third task is named `use_serial_data`. This task takes characters off the deque, reassembles them, and casts them into floating point numbers. It assumes the messages sent from the computer end in the character `X` to make data processing easier. The values from the computer range from 0.0 to 10.0. These are scaled by 10 to represent the number of steps the motor takes as it turns back and forth between fixed points. As explained above, a larger number of steps corresponds to a slower rotation speed.
 
@@ -3201,12 +3201,19 @@ async def main():
 asyncio.run(main())
 
 ```
-#### 10.3.1 Option C: Microcontroller code, now with asyncIO
-This example is incomplete.
+#### 10.3.1 Option C: Microcontroller code, now with asyncIO, with the PSoC6 in MicroPython
 
-#### 10.3.1 Option D: Microcontroller code, now with asyncIO
+See section 10.3.1 Option A and the file `src/microcontr/motor2PSoC.py`. 
 
-The Arduino language does not have asyncIO functions. 
+This example mostly works, but is flaky. It needs more debugging. The problem is that MicroPython for the PSoC6 doesn't have `poll` instructions. In the `check_serial_data` function, the microcontroller tries to read from the USB cable then waits instead of properly polls. Therefore, it sometimes correctly reads characters and sometimes misses them.
+
+
+
+#### 10.3.1 Option D: Microcontroller code, now with asyncIO, with the Arduino
+
+The Arduino language does not have asyncIO functions. Furthermore, the Arduino does not all for programs with multiple processes or multiple threads.
+
+Arduino does, however, have a [protothread library](https://roboticsbackend.com/arduino-protothreads-tutorial/). It may be possible to use protothreads to get the microcontroller to both read characters from the USB cable and spin the motor in a way that seems simultaneous. 
 
 #### 10.3.2 Sending motor controls from the computer
 In this section, we write the Python code that runs on the computer for this example. Close the Mu, ArduinoLab, or Arduino IDE, and open the IDLE IDE. This code will send numerical values from the computer, over the USB cable, to the microcontroller. 
@@ -3217,9 +3224,11 @@ When you run this example, you see two buttons and a knob. To turn the knob, put
 
 All messages sent via USB end in the character `X` to identify the end of the message. 
 
-Let's test this example out. Make sure the motor controller is still wired to your microcontroller, and make sure your microcontroller is connected to your computer with a USB cable.  Open the Mu, ArduinoLab, or Arduino IDE and run the example of section 10.3.1. Close the Mu, ArduinoLab, or Arduino IDE. Open IDLE and run the example below. 
+Let's test this example out. Make sure the motor is still wired to your microcontroller, and make sure your microcontroller is connected to your computer with a USB cable.  Open the Mu, ArduinoLab, or Arduino IDE and run the example of section 10.3.1. Wait for the motor to spin forward and back once. Close the Mu, ArduinoLab, or Arduino IDE. Open IDLE and run the example below. 
 
-Dial the knob by putting your cursor on it and clicking the right or left mouse button. Then, press the top button above the knob to send a corresponding float value from the computer to the microcontroller. This knob varies from 0.0 to 10.0. It is used to control the number of steps the servo motor takes in traveling between one angle and another. Because there is a fixed time delay between each step, this knob essentially controls the motor speed. As explained above, this strategy is used to control motor rotation speed instead of directly using PWM frequency because it allows for slower motor rotation speeds which are more observable. 
+Dial the knob by putting your cursor on it and clicking the right or left mouse button. Then, press the top button above the knob to send a corresponding float value from the computer to the microcontroller. You should see the LED on the microcontroller blink while it follows instructions of the `use_serial_data` task, and uou should see the motor spin forward and back. It can continue to read data even while the motor spins, and the LED will blink indicating that the data is being processed. 
+
+This knob varies from 0.0 to 10.0. It is used to control the number of steps the servo motor takes in traveling between one angle and another. Because there is a fixed time delay between each step, this knob essentially controls the motor speed. As explained above, this strategy is used to control motor rotation speed instead of directly using PWM frequency because it allows for slower motor rotation speeds which are more observable. 
 
 (See file src/examples/MotorControl.py.)
 
@@ -3284,9 +3293,10 @@ if __name__=="__main__":
     mygui=MotorControl()
 ```
 
-## 11.0 Glossary
+## 11.0 Glossary and class diagrams
 
- 
+Glossary:
+
 | Terms and Abbreviations| Definition |
 | ---------------------- | ------------------------------------------------------------ |
 | Ain | Abbreviation (in file names) for analog input |
@@ -3311,3 +3321,14 @@ if __name__=="__main__":
 | RPi | Raspberry Pi Pico microcontroller |
 | Tkinter | A Python library for making graphical user interfaces |
 
+<br><br><br>
+
+Class diagram for the `src/widgets` directory:
+
+![](./docPics/widgetClasses.png)
+
+<br><br><br>
+
+Class diagram for the `src/examples` directory:
+
+![](./docPics/exampleClasses.png) 

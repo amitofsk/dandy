@@ -1,3 +1,17 @@
+#Wire a small servo motor to the PSoC. The black wire of the motor should
+#connect to ground of the PSoC6. The red wire of the motor should connect
+#to 5V, and the yellow wire of the motor should connect to pin 6.1. Connect
+#the PSoC6 to the computer with a USB cable.
+
+#A Python program on the computer lets a user spin a knob and send a
+#corresponding float value, ending in the character X, to the microcontroller.
+#The microcontroller uses this value to set the motor speed, and the
+#motor spins forward and back.
+
+#This example runs on the microcontroller, a PSoC6 running MicroPython.
+#It uses asyncIO to simultaneously both read characters from the USB cable
+#and spin the motor.
+
 #Reference on asyncio and MicroPython and the RPi:
 #https://www.digikey.com/en/maker/projects/getting-started-with-asyncio-in-micropython-raspberry-pi-pico/110b4243a2f544b6af60411a85f0437c
 
@@ -11,26 +25,28 @@
 #https://docs.micropython.org/en/latest/library/collections.html
 #https://github.com/micropython/micropython-lib/blob/master/python-stdlib/collections-deque/collections/deque.py
 
-#This example does not currently work. It needs more debugging.
-#It compiles, but doesn't do what it is supposed to do.
-#MicroPython for the PSoC doesn't have the poll instruction,
-#so I think that is the main problem here. 
+#This example mostly works, but is flaky. It needs more debugging.
+#The problem is that MicroPython for the PSoC doesn't have poll instructions. In the 
+#check_serial_data function below, the microcontroller tries to read from the USB cable then waits instead
+#of properly polls. Therefore, it sometimes correctly reads characters and sometimes misses them.
+
 
 from time import sleep
 from machine import Pin, PWM
 import sys
 import uasyncio as asyncio
 import collections
-import select
+import uselect
 
 # Settings and globals
-pwm = PWM('P6_0', freq=50, duty_u16=2000, invert=0)
-#pwm = PWM(Pin(1))
-led=Pin(25, Pin.OUT)
+
+pwm = PWM('P6_1', freq=50, duty_u16=2000, invert=0)
+led=Pin("P13_7", Pin.OUT)
 led.value(False)
+pwm.freq(50)
 steps=50
 # setup poll to read USB port
-#poll_object = select.poll()
+##poll_object = select.poll()
 #poll_object.register(sys.stdin,1)
 
 #Set up a global deque that can store up to 100 elements
@@ -71,7 +87,6 @@ async def use_serial_data():
                 await spin_motor(steps)
         await asyncio.sleep(.2)
 
-
 # The check_serial_data task reads serially from USB and puts what it finds in the deque.
 #Read a character at a time and shove it in the deque.
 #Assume the transmitter ends each message with 'X'.
@@ -79,12 +94,16 @@ async def check_serial_data():
     print('Started check_serial_data task')
     ch='X'
     while True:
-        await asyncio.sleep(.2)
+        await asyncio.sleep(.5)
+        
+        ch=sys.stdin.read(1)
+        print(ch)
+        bigq.append(ch)
         #read as character and put in queue
         #if poll_object.poll(0):
-            ch =  sys.stdin.read(1)
-            print (ch)
-            bigq.append(ch)
+        #    ch =  sys.stdin.read(1)
+        #    print (ch)
+        #    bigq.append(ch)
 
 
 # The spin_motor task spins the motor at the desired speed.
@@ -97,13 +116,13 @@ async def spin_motor(mySteps):
     print(mySteps)
     for position in range(1000,9000,mySteps):
         pwm.duty_u16(position)
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)
     #rotate back
     for position in range(9000,1000,-1*mySteps):
         pwm.duty_u16(position)
-        await asyncio.sleep(0.1)
-    await asyncio.sleep(0.1)
-    #print('z')
+        await asyncio.sleep(0.01)
+    await asyncio.sleep(0.01)
+    print('z')
 
 
 ##Define the main function.
@@ -117,6 +136,6 @@ async def main():
     await check_serial_data()
 
 
-
 #Run the main loop
 asyncio.run(main())
+
