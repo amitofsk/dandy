@@ -35,7 +35,7 @@ This project is NOT for you if:
  - You want to collect data using elaborate equipment. This project involves small discrete sensors.
 
 
-## What is in DANDY?
+## What is contained in DANDY?
 
 This project contains:
  - Example MicroPython, CircuitPython, and Arduino programs for reading from sensors connected to a Raspberry Pi Pico, Arduino, or PSoC6 microcontroller

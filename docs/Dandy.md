@@ -32,7 +32,7 @@ This guide is NOT for you if:
  - You want to acquire sensor data with precise timing. In this project, data collection happens with an inexpensive microcontroller without a real time operating system.
  - You want to collect data using elaborate equipment. This project involves small discrete sensors.  
 
-### What is in DANDY?
+### 1.4 What is contained in DANDY?
 
 This project contains:
  - Example MicroPython, CircuitPython, and Arduino programs for reading from sensors connected to a Raspberry Pi Pico, Arduino, or PSoC6 microcontroller
@@ -999,7 +999,7 @@ if __name__=="__main__":
     example=DigitalIn()
 
 ```
-
+![Sequence Diagram](./docPics/sequence2.png)
 
 ### 7.3 Receiving data from the microcontroller, now with widgets and asyncIO
 
