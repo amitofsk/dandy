@@ -380,10 +380,14 @@ Refer to the [pinout](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.
 
 ![](docPics/PiAndButton5.png)
 
+If you are using a Raspberry Pi Pico 2, add a resistor between pin 21 (GP16) and pin 23 (GND).
+
 #### 5.1.2 Install MicroPython firmware on the RPi
 The RPi does not have a full operating system. Instead, we'll install MicroPython firmware, which contains a Python interpreter specifically for embedded devices. Think of MicroPython firmware as a Python interpreter along with a minimal operating system, that contains just enough instructions to run a Python program. 
 
 Download the latest release of MicroPython from [here](https://micropython.org/download/rp2-pico/).
+
+If you are using a Raspberry Pi Pico 2, download from [here](https://micropython.org/download/RPI_PICO2/).
 
 The RPi has a small button on it labeled `BOOTSEL`. Hold that button down, and use a USB cable to plug the RPi into the computer. Once it is plugged in, you can release the button.
 
@@ -1027,6 +1031,8 @@ The class `SerialAndGui` is an abstract class. If you run it by itself, you see 
 The `SerialAndGui` class involves three asynchronous tasks: `check_serial_data`, `use_serial_data`, and `updater`. Each is defined in its own function. The `check_serial_data` task reads serially from the USB cable and writes the result to a queue. The `use_serial_data` task reads from the queue and does something with the data it finds. The `updater` task updates the GUI. All of these happen inside loops which appear to happen simultaneously. 
 
 You don't have to write all the code for these tasks every time you want to use them. Instead, you can just define a child class of `SerialAndGui` as shown below.   
+
+HINT: Open the file src/utilities/SerialAndGUI.py, and set your PORT correctly for your machine in that file too.
 
 (See file src/examples/DigitalHWShort.py.)
 
