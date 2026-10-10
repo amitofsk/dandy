@@ -4,6 +4,8 @@
 ### 1.1 What is DANDY?
 [`DANDY`](https://github.com/amitofsk/dandy) is a set of reusable python examples and a library of python functions to help display sensor data in a Graphical User Interface (GUI).
 
+THIS IS THE OLD VERSION, BEFORE PYTHON 3.14
+
 ### 1.2 What are we building?
 Here's a typical hardware setup. A sensor is connected to a microcontroller. The microcontroller sends the sensor data to a computer either over USB or wirelessly. Data is displayed in a GUI on the laptop, perhaps numerically, as a needle rotating in a dial, using a slider, or on a chart plot.
 <br><br>
